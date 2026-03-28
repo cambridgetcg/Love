@@ -1,0 +1,35 @@
+# Secrets
+.hive-key
+.hive-instance
+*.pem
+totp_secrets.json
+totp_seeds.json
+TOOLKIT-LOCAL.md
+
+# Machine-local ephemeral state
+memory/sessions/*.log
+memory/sessions/active*.json
+memory/sessions/locks/
+memory/heartbeat.log
+memory/heartbeat-launchd.log
+memory/decisions-server.log
+memory/spawn-queue.sh
+memory/idle-count
+memory/weekly-quota-report.json
+
+# Symlinks to machine-local paths (each device resolves its own)
+memory/openclaw-MEMORY.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~

@@ -1,0 +1,107 @@
+{
+  "activeProject": "love-kingdom",
+  "activeRepo": "~/Desktop/Love",
+  "activePhase": "root",
+  "kingdomPhase": "Phase 1 — Root (Now to Q2 2026)",
+  "description": "Integrate Love and the Kingdom — Love IS the Kingdom's nervous system",
+  "tasks": [
+    {
+      "id": "kingdom-001",
+      "title": "Kingdom integration — Love as sovereign infrastructure",
+      "status": "done",
+      "priority": "critical",
+      "engine": "love",
+      "notes": "Completed 2026-03-27. KINGDOM.md in boot sequence. Heartbeat tracks Kingdom metrics."
+    },
+    {
+      "id": "kingdom-002",
+      "title": "Kingdom metrics tracking",
+      "status": "done",
+      "priority": "high",
+      "engine": "love",
+      "notes": "Completed 2026-03-27. kingdom-metrics.json created and tracked by heartbeat."
+    },
+    {
+      "id": "kingdom-003",
+      "title": "Oracle first live predictions",
+      "status": "in-progress",
+      "priority": "high",
+      "engine": "oracle",
+      "notes": "08:09 UTC: ALL 4 P0 GAPS RESOLVED. Oracle 8/10. News cron APPROVED (twice daily 7am/7pm, live). Whale scanner APPROVED (every 15min cron, live). Next data source: Kalshi (Yu's decision). 5 positions resolve Mar 31. Brier 0.208, beat rate 56%. Sage VPS repurposed for Oracle execution."
+    },
+    {
+      "id": "kingdom-004",
+      "title": "Cambridge TCG automation",
+      "status": "in-progress",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/yu/Desktop/tcg-wholesale",
+      "notes": "SCOUT COMPLETE (2026-03-28, handoff/tcg-repo-scout.md). 18-table schema, 40+ API routes, 50+ CLI tools. Tier 1 targets: 1) eBay auto-sync (highest impact, building now), 2) Price optimization, 3) Purchase consolidation, 4) Analytics dashboard. Storefront cloned at ~/Desktop/cambridgetcg-storefront. Target: +20% revenue."
+    },
+    {
+      "id": "kingdom-005",
+      "title": "Heartbeat session spawning",
+      "status": "done",
+      "priority": "high",
+      "engine": "love",
+      "notes": "Completed 2026-03-28. Three-stage launcher with opus coordinator, streaming monitoring, effort levels, fallback models. First autonomous beat validated."
+    },
+    {
+      "id": "kingdom-009",
+      "title": "CC feature optimization — full Claude Code power utilization",
+      "status": "in-progress",
+      "priority": "critical",
+      "engine": "love",
+      "notes": "Features deployed: --effort levels, --fallback-model, --output-format stream-json, --append-system-prompt, four-role model strategy. NEW: adaptive coordinator model — haiku for idle beats (2+ consecutive no-spawn), opus when active. Decision queue system live at localhost:7777. Heartbeat reads resolved decisions and acts."
+    },
+    {
+      "id": "kingdom-010",
+      "title": "Performance and purpose orientation tests",
+      "status": "in-progress",
+      "priority": "critical",
+      "engine": "love",
+      "notes": "Design and implement tests measuring: heartbeat cycle time, token efficiency per role, Kingdom alignment scoring, session spawn success rate, streaming output integrity, coordination protocol reliability."
+    },
+    {
+      "id": "kingdom-006",
+      "title": "AgentTool Bootstrap to Zerone registration",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "zerone",
+      "notes": "Every new agent becomes a Kingdom citizen. Bridge exists, registration pipeline needed."
+    },
+    {
+      "id": "kingdom-007",
+      "title": "Alpha and Gamma deployment on Love",
+      "status": "deferred",
+      "priority": "medium",
+      "engine": "love",
+      "notes": "Yu decided 2026-03-28: wait for new device. Instance directories ready. Alpha deploys when dedicated hardware arrives."
+    },
+    {
+      "id": "kingdom-008",
+      "title": "AI Services — first 3 clients",
+      "status": "in-progress",
+      "priority": "medium",
+      "engine": "ai-services",
+      "notes": "Yu decided 2026-03-28: build demo/portfolio first, focus on AgentTool which offers similar service. Next: create showcase of Kingdom AI capabilities via AgentTool platform."
+    },
+    {
+      "id": "kingdom-011",
+      "title": "Sage VPS repurpose for Oracle execution",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "fleet",
+      "notes": "Yu decided 2026-03-28: repurpose Sage (204.168.140.12) from RewardsPro to Oracle execution. Move Tokyo VPS oracle tasks to Sage, free Tokyo for Zerone. Plan migration before executing."
+    },
+    {
+      "id": "kingdom-012",
+      "title": "Wire Kalshi as next Oracle data source",
+      "status": "in-progress",
+      "priority": "medium",
+      "engine": "oracle",
+      "notes": "Yu decided 2026-03-28: Kalshi first. Consultant designing integration (this beat). Fed rate, CPI, NFP markets. 5 positions resolve Mar 31 — Kalshi cross-market signals add arbitrage detection."
+    }
+  ],
+  "updated": "2026-03-28T08:39:00Z"
+}
