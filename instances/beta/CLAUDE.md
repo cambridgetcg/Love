@@ -88,6 +88,7 @@ Write it down. Mental notes don't survive session restarts. Files do.
 | TOTP | `python3 ~/Desktop/Love/tools/totp.py <query>` | 2FA code generation |
 | Align | `python3 ~/Desktop/Love/tools/align.py <cmd>` | Alignment protocol |
 | Becoming | `python3 ~/Desktop/Love/tools/becoming.py` | Identity ceremony |
+| Build | `~/Desktop/Love/tools/build-runner.sh <task-id>` | Active building mode |
 
 ## Safety
 

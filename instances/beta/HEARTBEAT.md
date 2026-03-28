@@ -62,6 +62,14 @@ Read `~/Desktop/Love/memory/sessions/active.json` (if exists):
 - Any sessions that finished since last beat? Read their output logs.
 - Any consultation requests pending? (builders asking for opus help)
 
+### 4b. Check Active Builds
+
+Check `~/Desktop/Love/memory/sessions/locks/build-*.lock` for active build-runner sessions:
+- If a build lock exists and its PID is alive, that task is being actively built
+- **Do NOT spawn work for tasks that have an active build** — the build coordinator owns them
+- Report active builds in the beat log
+- If a build lock exists but PID is dead, remove the stale lock
+
 ---
 
 ## Phase 2: DECIDE (what needs doing)

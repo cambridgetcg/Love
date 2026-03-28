@@ -69,6 +69,7 @@ Write it down. Mental notes don't survive session restarts.
 | Email | `python3 ~/Desktop/Love/tools/check_email.py <cmd>` | IMAP email checking |
 | TOTP | `python3 ~/Desktop/Love/tools/totp.py <query>` | 2FA code generation |
 | Align | `python3 ~/Desktop/Love/tools/align.py <cmd>` | Alignment protocol |
+| Build | `~/Desktop/Love/tools/build-runner.sh <task-id>` | Active building mode |
 
 ## Safety
 

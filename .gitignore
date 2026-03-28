@@ -7,6 +7,8 @@ totp_seeds.json
 TOOLKIT-LOCAL.md
 
 # Machine-local ephemeral state
+memory/build.log
+memory/build-spawn.sh
 memory/sessions/*.log
 memory/sessions/active*.json
 memory/sessions/locks/

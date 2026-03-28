@@ -97,6 +97,27 @@ Opus (thinks)          Sonnet (builds)         Opus (reviews)
 
 No daemon. No internal scheduler. Just launchd + shell wrapper + Claude Code.
 
+### Active Build = `build-runner.sh`
+
+```
+# Target a specific task for persistent building
+~/Desktop/Love/tools/build-runner.sh kingdom-004 --max-cycles 10
+```
+
+Complements the heartbeat with **focused, continuous execution**:
+
+```
+Heartbeat (periodic)              Active Build (persistent)
+    │                                  │
+    ├─ Every 7 min                     ├─ Runs until done (or max cycles)
+    ├─ Broad sensing                   ├─ Single task focus
+    ├─ Multiple tasks per beat         ├─ One step per cycle
+    ├─ Fires and forgets               ├─ Reads previous step output
+    └─ Background maintenance          └─ Tight plan-build-verify loop
+```
+
+Each cycle: OPUS coordinator assesses → writes one spawn command → shell executes → feeds result back. Locks prevent heartbeat from colliding on the same task. Stops on `BUILD_COMPLETE`, `BUILD_BLOCKED`, or `BUILD_PAUSE`.
+
 ### HIVE = Bash Tool
 
 HIVE is a Python CLI that Claude Code calls via bash:
@@ -176,6 +197,7 @@ Claude Code has computer use. No wrapper needed.
 │
 ├── tools/                       ← Bash-callable operational tools
 │   ├── heartbeat-runner.sh      ← Three-stage heartbeat launcher (adaptive model)
+│   ├── build-runner.sh         ← Active building mode (persistent task coordinator)
 │   ├── decision.py              ← Decision queue server + CLI (localhost:7777)
 │   ├── decision-ui.html         ← Decision queue web interface
 │   ├── fleet.py                 ← VPS fleet management (status, health, deploy, logs)

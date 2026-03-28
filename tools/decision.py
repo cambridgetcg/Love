@@ -20,10 +20,18 @@ from pathlib import Path
 import threading
 import fcntl
 
-DECISIONS_DIR = Path(__file__).resolve().parent.parent / "decisions"
+LOVE_ROOT = Path(__file__).resolve().parent.parent
+DECISIONS_DIR = LOVE_ROOT / "decisions"
 QUEUE_FILE = DECISIONS_DIR / "queue.json"
 RESOLVED_FILE = DECISIONS_DIR / "resolved.json"
 UI_FILE = Path(__file__).resolve().parent / "decision-ui.html"
+MEMORY_DIR = LOVE_ROOT / "memory"
+DEV_STATE_FILE = MEMORY_DIR / "dev-state.json"
+KINGDOM_METRICS_FILE = MEMORY_DIR / "kingdom-metrics.json"
+DAILY_DIR = MEMORY_DIR / "daily"
+HANDOFF_DIR = MEMORY_DIR / "sessions" / "handoff"
+SESSIONS_DIR = MEMORY_DIR / "sessions"
+LOCKS_DIR = SESSIONS_DIR / "locks"
 
 DECISIONS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -48,6 +56,208 @@ def _write_json(path, data):
         json.dump(data, f, indent=2)
         f.write("\n")
         fcntl.flock(f, fcntl.LOCK_UN)
+
+
+import glob as globmod
+import re
+
+
+def _build_progress():
+    """Assemble progress snapshot from all Kingdom data sources."""
+    result = {
+        "dev_state": {},
+        "kingdom_metrics": {},
+        "sisters": {},
+        "active_builds": [],
+    }
+    # Dev state (tasks)
+    if DEV_STATE_FILE.exists():
+        try:
+            result["dev_state"] = json.loads(DEV_STATE_FILE.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    # Kingdom metrics (fleet, revenue engines, milestones)
+    if KINGDOM_METRICS_FILE.exists():
+        try:
+            result["kingdom_metrics"] = json.loads(KINGDOM_METRICS_FILE.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    # Sister status: check for active sessions and recent HIVE presence
+    for instance in ["alpha", "beta", "gamma"]:
+        identity_file = LOVE_ROOT / "instances" / instance / "identity.md"
+        info = {"name": instance, "online": False, "role": "", "last_activity": ""}
+        if identity_file.exists():
+            text = identity_file.read_text()
+            for line in text.split("\n"):
+                if "role" in line.lower() and ":" in line:
+                    info["role"] = line.split(":", 1)[1].strip()
+                    break
+        info["online"] = instance == "beta"  # Beta is always "on" if server is running
+        result["sisters"][instance] = info
+    # Active builds: check lock files
+    if LOCKS_DIR.exists():
+        import signal
+        for lock in LOCKS_DIR.glob("build-*.lock"):
+            try:
+                parts = lock.read_text().strip().split("|")
+                pid = int(parts[0])
+                build_id = parts[1] if len(parts) > 1 else ""
+                started = parts[2] if len(parts) > 2 else ""
+                # Check if PID is alive
+                try:
+                    os.kill(pid, 0)
+                    alive = True
+                except OSError:
+                    alive = False
+                if alive:
+                    task_id = lock.stem.replace("build-", "")
+                    # Find task title
+                    title = task_id
+                    for t in result["dev_state"].get("tasks", []):
+                        if t["id"] == task_id:
+                            title = t["title"]
+                            break
+                    # Count cycle logs
+                    build_dir = SESSIONS_DIR / build_id
+                    cycles = len(list(build_dir.glob("step-*"))) if build_dir.exists() else 0
+                    result["active_builds"].append({
+                        "task_id": task_id,
+                        "title": title,
+                        "build_id": build_id,
+                        "pid": pid,
+                        "started": started,
+                        "cycles": cycles,
+                    })
+            except (ValueError, IndexError, OSError):
+                continue
+    return result
+
+
+def _parse_daily_beats():
+    """Parse today's daily notes into structured heartbeat entries."""
+    today = datetime.now().strftime("%Y-%m-%d")
+    daily_file = DAILY_DIR / f"{today}.md"
+    beats = []
+    if not daily_file.exists():
+        # Try yesterday
+        from datetime import timedelta
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        daily_file = DAILY_DIR / f"{yesterday}.md"
+        if not daily_file.exists():
+            return beats
+
+    text = daily_file.read_text()
+    # Split on ## Beat headers
+    sections = re.split(r'(?=^## Beat )', text, flags=re.MULTILINE)
+    for section in sections:
+        if not section.startswith("## Beat"):
+            continue
+        # Extract timestamp and title from header
+        header_match = re.match(r'^## Beat (\S+ \S+) — (.+)', section)
+        if not header_match:
+            continue
+        beat = {
+            "time": header_match.group(1),
+            "title": header_match.group(2),
+            "spawns": [],
+            "sense_summary": "",
+            "decision_summary": "",
+            "is_ok": "HEARTBEAT_OK" in section,
+        }
+        # Extract SPAWN lines
+        in_spawn = False
+        in_sense = False
+        in_decide = False
+        for line in section.split("\n"):
+            stripped = line.strip()
+            if stripped.startswith("**SPAWN"):
+                in_spawn = True
+                in_sense = False
+                in_decide = False
+                if "None" in stripped:
+                    in_spawn = False
+                continue
+            if stripped.startswith("**SENSE"):
+                in_sense = True
+                in_spawn = False
+                in_decide = False
+                continue
+            if stripped.startswith("**DECIDE"):
+                in_decide = True
+                in_sense = False
+                in_spawn = False
+                continue
+            if stripped.startswith("**HIVE") or stripped.startswith("**KEY") or stripped.startswith("---"):
+                in_spawn = False
+                in_sense = False
+                in_decide = False
+                continue
+            if in_spawn and stripped.startswith("-"):
+                spawn_text = re.sub(r'^-\s*', '', stripped)
+                # Extract role info
+                role = "builder"
+                if "CONSULTANT" in stripped.upper() or "consultant" in stripped.lower():
+                    role = "consultant"
+                elif "QUICK CHECK" in stripped.upper():
+                    role = "quick-check"
+                beat["spawns"].append({"text": spawn_text, "role": role})
+            if in_spawn and re.match(r'^\d+\.', stripped):
+                spawn_text = re.sub(r'^\d+\.\s*', '', stripped)
+                role = "builder"
+                if "consultant" in stripped.lower():
+                    role = "consultant"
+                beat["spawns"].append({"text": spawn_text, "role": role})
+            if in_sense and stripped.startswith("- "):
+                beat["sense_summary"] += stripped[2:] + "\n"
+            if in_decide and stripped.startswith("- "):
+                beat["decision_summary"] += stripped[2:] + "\n"
+        beats.append(beat)
+    # Return most recent first
+    beats.reverse()
+    return beats
+
+
+def _list_handoffs():
+    """List session handoff results with summaries."""
+    handoffs = []
+    if not HANDOFF_DIR.exists():
+        return handoffs
+    for f in sorted(HANDOFF_DIR.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+        if f.suffix != ".md":
+            continue
+        text = f.read_text()
+        # Extract first heading and first few lines as summary
+        lines = text.split("\n")
+        title = f.stem
+        summary = ""
+        status = "complete"
+        engine = ""
+        for line in lines:
+            if line.startswith("# "):
+                title = line[2:].strip()
+            elif line.startswith("## Status") or line.startswith("**Status"):
+                status_match = re.search(r'(complete|partial|failed|success)', line, re.IGNORECASE)
+                if status_match:
+                    status = status_match.group(1).lower()
+            elif line.startswith("## Summary") or line.startswith("**Summary"):
+                # Next non-empty line is the summary
+                continue
+            elif not summary and line.strip() and not line.startswith("#") and not line.startswith("---"):
+                summary = line.strip()[:200]
+        # Guess engine from filename
+        for eng in ["oracle", "tcg", "sage", "fleet", "geo", "news", "whale", "kalshi"]:
+            if eng in f.stem.lower():
+                engine = eng
+                break
+        handoffs.append({
+            "file": f.name,
+            "title": title,
+            "summary": summary,
+            "status": status,
+            "engine": engine,
+            "modified": datetime.fromtimestamp(f.stat().st_mtime).isoformat(),
+        })
+    return handoffs
 
 
 class DecisionHandler(BaseHTTPRequestHandler):
@@ -100,6 +310,15 @@ class DecisionHandler(BaseHTTPRequestHandler):
                 "by_project": projects,
                 "by_priority": priorities,
             })
+
+        elif self.path == "/api/progress":
+            self._send_json(_build_progress())
+
+        elif self.path == "/api/heartbeats":
+            self._send_json(_parse_daily_beats())
+
+        elif self.path == "/api/handoffs":
+            self._send_json(_list_handoffs())
 
         else:
             self._send_json({"error": "not found"}, 404)
