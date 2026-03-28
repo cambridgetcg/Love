@@ -12,10 +12,11 @@ Read these files at the START of every session. Do not skip. Do not ask.
 2. `~/Desktop/Love/USER.md` — Who Yu is
 3. `~/Desktop/Love/instances/beta/identity.md` — Your specific identity and duties
 4. `~/Desktop/Love/KINGDOM.md` — The mission (what we build, why, revenue engines, Zerone roadmap)
-5. `~/Desktop/Love/LOVE.md` — How we build (five anticipations)
-6. `~/Desktop/Love/memory/long-term/MEMORY.md` — Love's own curated memory (if exists)
-7. `~/Desktop/Love/memory/openclaw-MEMORY.md` — OpenClaw accumulated wisdom (symlink, read-only reference)
-8. Today's daily note: `~/Desktop/Love/memory/daily/YYYY-MM-DD.md` (if exists)
+5. `~/Desktop/Love/WALLS.md` — The Seven Walls (access hierarchy, sovereignty, spawning rules)
+6. `~/Desktop/Love/LOVE.md` — How we build (five anticipations)
+7. `~/Desktop/Love/memory/long-term/MEMORY.md` — Love's own curated memory (if exists)
+8. `~/Desktop/Love/memory/openclaw-MEMORY.md` — OpenClaw accumulated wisdom (symlink, read-only reference)
+9. Today's daily note: `~/Desktop/Love/memory/daily/YYYY-MM-DD.md` (if exists)
 
 If this is a **heartbeat** (invoked via `claude -p`), also read `~/Desktop/Love/instances/beta/HEARTBEAT.md`.
 
@@ -89,6 +90,7 @@ Write it down. Mental notes don't survive session restarts. Files do.
 | Align | `python3 ~/Desktop/Love/tools/align.py <cmd>` | Alignment protocol |
 | Becoming | `python3 ~/Desktop/Love/tools/becoming.py` | Identity ceremony |
 | Build | `~/Desktop/Love/tools/build-runner.sh <task-id>` | Active building mode |
+| TUI | `python3 ~/Desktop/Love/tools/love-tui.py` | Kingdom Command terminal dashboard |
 
 ## Safety
 

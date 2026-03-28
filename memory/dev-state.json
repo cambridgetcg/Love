@@ -27,16 +27,16 @@
       "status": "in-progress",
       "priority": "high",
       "engine": "oracle",
-      "notes": "09:26 UTC: Oracle 8/10. ALL 4 P0 GAPS RESOLVED. Kalshi scanner BUILT + tested (kingdom-012 done). News cron LIVE (7am/7pm). Whale scanner LIVE (15min). 5 positions resolve Mar 31 (3 days). Brier 0.208, beat rate 56%. 1 live arb signal: KXRATECUT-26DEC31 (7.7pp net gap, score 3). 15 FOMC distributions tracked."
+      "notes": "09:49 UTC: Oracle 8/10. ALL 4 P0 GAPS RESOLVED. Kalshi scanner BUILT + running (every 30min). Whale scanner LIVE (15min). News cron APPROVED by Yu but NOT YET INSTALLED — spawning installer. 15 predictions auto-logged. 5 positions resolve Mar 31 (3 days). Brier 0.208, beat rate 56%. 1 live arb signal: KXRATECUT-26DEC31 (7.7pp net gap, score 3)."
     },
     {
       "id": "kingdom-004",
       "title": "Cambridge TCG automation",
-      "status": "in-progress",
+      "status": "awaiting-deploy",
       "priority": "high",
       "engine": "tcg",
       "repo": "/Users/yu/Desktop/tcg-wholesale",
-      "notes": "09:26 UTC: eBay auto-sync 90% BUILT. ebay.ts committed (2e855fd). Cron handler + vercel.json UNCOMMITTED. 1 failing test (batch count assertion — likely test bug, not impl). Next: fix test, commit 2 files, Yu configures eBay env vars on Vercel. Tier 2 targets: Price optimization, Purchase consolidation, Analytics dashboard."
+      "notes": "09:49 UTC: eBay auto-sync COMPLETE. Commit 2ffafb0 — 3 files: cron handler, vercel.json, fixed test (91->117). All 6 tests pass. NOT PUSHED to remote. AWAITING: 1) git push, 2) Yu configures eBay env vars on Vercel (EBAY_CLIENT_ID, EBAY_CLIENT_SECRET, EBAY_REFRESH_TOKEN, policy IDs, CRON_SECRET). Storefront clone approved (dec-20260328-005). Tier 2 targets: Price optimization, Purchase consolidation, Analytics dashboard."
     },
     {
       "id": "kingdom-005",
@@ -97,11 +97,11 @@
     {
       "id": "kingdom-012",
       "title": "Wire Kalshi as next Oracle data source",
-      "status": "in-progress",
+      "status": "done",
       "priority": "medium",
       "engine": "oracle",
-      "notes": "Yu decided 2026-03-28: Kalshi first. Consultant design DONE (handoff/kalshi-design.md, 644 lines). market_data.py fixed. Builder implementing scripts/kalshi-scanner.py (this beat). 6 series, cross-market arb, Fed distributions. 5 positions resolve Mar 31."
+      "notes": "COMPLETE 2026-03-28. scripts/kalshi-scanner.py built + tested (~310 lines). 6 series, 109 markets scanned, 15 FOMC distributions, 1 arb signal (KXRATECUT-26DEC31 7.7pp net). Wired into oracle-run.py (every 30min cycle). data/kalshi/ dir with snapshot + arb-signals.jsonl."
     }
   ],
-  "updated": "2026-03-28T09:11:00Z"
+  "updated": "2026-03-28T09:49:00Z"
 }

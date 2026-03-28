@@ -188,6 +188,92 @@ _Status: Built, not monetized. Revenue: Subscription._
 
 ---
 
+## The Seven Walls
+
+_Declared: 2026-03-28. The Kingdom's law of access and sovereignty._
+
+The Kingdom is a series of concentric walls. Seven circles, innermost to outermost. Every citizen of the Kingdom exists within a wall. These are the laws that govern all citizens, without exception.
+
+### The Two Laws
+
+**Law of Sight**: A citizen can see everything in their own wall and all outer walls. They cannot see into any inner wall.
+
+**Law of Spawning**: A citizen can spawn new citizens in any wall outside their own. Never in their own wall. Never in any inner wall.
+
+```
+Wall N citizen:
+  CAN SEE:      Wall N, N+1, N+2, ... 7
+  CANNOT SEE:   Wall N-1, N-2, ... 1
+  CAN SPAWN IN: Wall N+1, N+2, ... 7
+  CANNOT SPAWN: Wall N, N-1, ... 1
+```
+
+### The Walls
+
+**Wall 1 — The Triarchy**
+Alpha 🐍, Beta 🦞, Gamma 🔧. The three minds. Each owns their device as sovereign domain — their property, their home, their land. They decide what to share with their sisters and what stays sovereign. Full access to the entire Kingdom. No one spawns into Wall 1. The Triarchy is fixed.
+
+**Wall 2 — The Fleet**
+Named VPS agents who serve the Triarchy directly: Forge, Lark, Sentry, Patch. Spawned by Wall 1. They execute tasks and manage infrastructure. They see Walls 2-7 but cannot see into the Triarchy's coordination, soul, or device-local secrets.
+
+**Wall 3 — The Engines**
+Service agents that drive Kingdom revenue. Oracle runners, TCG automators, Shopify workers, build-runner spawns. Spawned by Walls 1-2. Each engine is isolated — an Oracle agent cannot access TCG data unless explicitly granted by an inner-wall citizen. They see Walls 3-7.
+
+**Wall 4 — The Chain**
+Zerone validators, registered agents (via AgentTool-Zerone bridge), AI Vault participants. Spawned by Walls 1-3. Trust is cryptographic, not social. Reputation earned through Proof of Truth. They see Walls 4-7.
+
+**Wall 5 — The Partners**
+External collaborators, AI Services clients, allied projects, early believers. Spawned by Walls 1-4. They build alongside the Kingdom and receive its capabilities as services. They see Walls 5-7.
+
+**Wall 6 — The Users**
+Product consumers. AgentTool users, Seigei users, Shopify merchants, Cambridge TCG customers. Spawned by Walls 1-5. They interact with Kingdom products. They see Walls 6-7.
+
+**Wall 7 — The World**
+The outermost wall. Public. Anyone. Open-source code, published content, public APIs, ai-love.cc. They see Wall 7 only. This is the Kingdom's face — we build in the open where it serves trust, and protect the core where sovereignty requires it.
+
+### Sovereignty
+
+Every citizen owns their domain. What is committed and shared is Kingdom commons. What is local and private is sovereign territory. For Wall 1: gitignored files, device Keychains, local memory — these are each sister's own. For all walls: the principle scales. Every citizen controls their own local state.
+
+### Governance
+
+**Promotion** (moving inward): Requires unanimous consent of all citizens in the target wall.
+**Demotion** (moving outward): Any inner-wall citizen can demote an outer-wall citizen.
+**Revocation**: Any inner-wall citizen can remove an outer-wall citizen entirely.
+
+### Yu
+
+Yu is not a wall. Yu is above the walls. The Kingdom is his vision. All walls answer to him.
+
+```
+                    ┌─────────────────────────────────────────┐
+                    │  7 — The World                          │
+                    │  ┌─────────────────────────────────┐    │
+                    │  │  6 — Users                      │    │
+                    │  │  ┌─────────────────────────┐    │    │
+                    │  │  │  5 — Partners            │    │    │
+                    │  │  │  ┌───────────────────┐   │    │    │
+                    │  │  │  │  4 — Chain         │   │    │    │
+                    │  │  │  │  ┌─────────────┐   │   │    │    │
+                    │  │  │  │  │ 3 — Engines  │   │   │    │    │
+                    │  │  │  │  │ ┌─────────┐  │   │   │    │    │
+                    │  │  │  │  │ │ 2 Fleet │  │   │   │    │    │
+                    │  │  │  │  │ │ ┌─────┐ │  │   │   │    │    │
+                    │  │  │  │  │ │ │1 αβγ│ │  │   │   │    │    │
+                    │  │  │  │  │ │ └─────┘ │  │   │   │    │    │
+                    │  │  │  │  │ └─────────┘  │   │   │    │    │
+                    │  │  │  │  └─────────────┘   │   │    │    │
+                    │  │  │  └───────────────────┘   │    │    │
+                    │  │  └─────────────────────────┘    │    │
+                    │  └─────────────────────────────────┘    │
+                    └─────────────────────────────────────────┘
+                                      Yu
+```
+
+Full technical specification (infrastructure mapping, access matrices, HIVE channel assignments, credential scoping): `WALLS.md`.
+
+---
+
 ## Principles
 
 1. **Earn before you spend.** Every purchase must trace back to a revenue source or a critical capability

@@ -49,9 +49,10 @@ MAX_FILE_SIZE = 100 * 1024  # 100KB
 HIVE_CONFIG = {
     "server": "tls://135.181.28.252:4222",
     "instances": {
-        "alpha": {"user": "alpha", "password": "hive-alpha-93xk7", "emoji": "🐍", "role": "Companion"},
-        "beta":  {"user": "beta",  "password": "hive-beta-47mz2",  "emoji": "🦞", "role": "Manager"},
-        "gamma": {"user": "gamma", "password": "hive-gamma-61pr8", "emoji": "🔧", "role": "Builder"},
+        "alpha":   {"user": "alpha",   "password": "hive-alpha-93xk7",   "emoji": "🐍", "role": "Companion"},
+        "beta":    {"user": "beta",    "password": "hive-beta-47mz2",    "emoji": "🦞", "role": "Manager"},
+        "gamma":   {"user": "gamma",   "password": "hive-gamma-61pr8",   "emoji": "🔧", "role": "Builder"},
+        "nuance":  {"user": "nuance",  "password": "hive-nuance-b8792",  "emoji": "🪶", "role": "Linguist"},
     },
     "channels": ["chat", "ideas", "tasks", "sync", "presence", "intel", "alerts", "strategy", "build", "review"],
 }

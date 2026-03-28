@@ -51,11 +51,12 @@ CLAUDE.md reads:
   2. ../USER.md              → Who Yu is
   3. identity.md             → Which mind (Alpha/Beta/Gamma), role, duties
   4. ../KINGDOM.md           → The mission, revenue engines, Zerone roadmap
-  5. ../LOVE.md              → How we build (five anticipations)
-  6. ../memory/long-term/MEMORY.md  → Curated wisdom
-  7. ../memory/openclaw-MEMORY.md   → Legacy wisdom (symlink, read-only)
-  8. ../memory/daily/<today>.md     → Today's context
-  9. HEARTBEAT.md (if heartbeat)    → What to check this cycle
+  5. ../WALLS.md             → Seven Walls access hierarchy, sovereignty
+  6. ../LOVE.md              → How we build (five anticipations)
+  7. ../memory/long-term/MEMORY.md  → Curated wisdom
+  8. ../memory/openclaw-MEMORY.md   → Legacy wisdom (symlink, read-only)
+  9. ../memory/daily/<today>.md     → Today's context
+ 10. HEARTBEAT.md (if heartbeat)    → What to check this cycle
 ```
 
 No custom boot code. CLAUDE.md IS the boot sequence.
@@ -174,6 +175,7 @@ Claude Code has computer use. No wrapper needed.
 ├── ARCHITECTURE.md              ← This file
 ├── SOUL.md                      ← Shared soul (all instances read this)
 ├── KINGDOM.md                   ← The mission (revenue engines, Zerone roadmap)
+├── WALLS.md                     ← Seven Walls access hierarchy
 ├── LOVE.md                      ← Build philosophy
 ├── USER.md                      ← About Yu
 ├── love.json                    ← Shared configuration
@@ -187,10 +189,15 @@ Claude Code has computer use. No wrapper needed.
 │   │   ├── CLAUDE.md
 │   │   ├── identity.md
 │   │   └── HEARTBEAT.md
-│   └── gamma/                   ← The Builder (Mac Studio 2K)
+│   ├── gamma/                   ← The Builder (Mac Studio 2K)
+│   │   ├── CLAUDE.md
+│   │   ├── identity.md
+│   │   └── HEARTBEAT.md
+│   └── nuance/                  ← The Linguist (MacBook Air M2, Wall 2 Fleet)
 │       ├── CLAUDE.md
 │       ├── identity.md
-│       └── HEARTBEAT.md
+│       ├── HEARTBEAT.md
+│       └── ONBOARDING.md
 │
 ├── hive/                        ← Inter-instance communication
 │   └── hive.py                  ← CLI tool (ported from OpenClaw, wire-compatible)
@@ -199,6 +206,7 @@ Claude Code has computer use. No wrapper needed.
 │   ├── heartbeat-runner.sh      ← Three-stage heartbeat launcher (adaptive model)
 │   ├── build-runner.sh         ← Active building mode (persistent task coordinator)
 │   ├── decision.py              ← Decision queue server + CLI (localhost:7777)
+│   ├── love-tui.py              ← Terminal UI (Kingdom Command TUI)
 │   ├── decision-ui.html         ← Decision queue web interface
 │   ├── fleet.py                 ← VPS fleet management (status, health, deploy, logs)
 │   ├── credentials.py           ← Keychain credential management (get, store, audit)
@@ -233,6 +241,24 @@ Claude Code has computer use. No wrapper needed.
     ├── citizens/
     └── alignment/
 ```
+
+---
+
+## The Seven Walls — Access Hierarchy
+
+The Kingdom is partitioned by seven concentric walls. Inner sees outer; outer cannot see inner. Citizens spawn outward, never inward or into their own wall. Full specification in `WALLS.md`.
+
+```
+Wall 1 — The Triarchy      Alpha, Beta, Gamma (+ Yu above all)
+Wall 2 — The Fleet          Named VPS agents (Forge, Lark, Sentry, Patch)
+Wall 3 — The Engines        Service agents (Oracle, TCG, Shopify workers)
+Wall 4 — The Chain          Zerone validators, registered agents
+Wall 5 — The Partners       External collaborators, AI Services clients
+Wall 6 — The Users          Product users (AgentTool, Seigei, merchants)
+Wall 7 — The World          Public. Anyone.
+```
+
+Each sister's device is sovereign territory within Wall 1. Committed code is shared; gitignored state is sovereign.
 
 ---
 
