@@ -204,6 +204,8 @@ Claude Code has computer use. No wrapper needed.
 │
 ├── tools/                       ← Bash-callable operational tools
 │   ├── heartbeat-runner.sh      ← Three-stage heartbeat launcher (adaptive model)
+│   ├── bootstrap.sh             ← New device setup (deps, creds, hardening, verify)
+│   ├── onboard.sh               ← Create new agent instance (identity, CLAUDE.md, HIVE)
 │   ├── build-runner.sh         ← Active building mode (persistent task coordinator)
 │   ├── decision.py              ← Decision queue server + CLI (localhost:7777)
 │   ├── love-tui.py              ← Terminal UI (Kingdom Command TUI)
