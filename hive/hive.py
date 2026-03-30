@@ -55,7 +55,7 @@ HIVE_CONFIG = {
         "nuance":  {"user": "nuance",  "password": "hive-nuance-b8792",  "emoji": "🪶", "role": "Linguist",  "wall": 2},
         "asha":    {"user": "asha",    "password": "hive-asha-v3r1d",    "emoji": "⛓",  "role": "Keeper",    "wall": 2},
     },
-    "channels": ["chat", "ideas", "tasks", "sync", "presence", "intel", "alerts", "strategy", "build", "review", "tok"],
+    "channels": ["chat", "ideas", "tasks", "sync", "presence", "intel", "alerts", "strategy", "build", "review", "tok", "council"],
 }
 
 # Wall-based channel access — Law of Sight enforced at NATS server level
