@@ -24,4 +24,12 @@ python3 ~/Love/hive/hive.py check
 - Sensor readings normal?
 - Build progress on current phase?
 
+## 4. Check Coordination
+
+```bash
+python3 ~/Desktop/Love/tools/stigmergy.py check
+python3 ~/Desktop/Love/tools/council.py check
+python3 ~/Desktop/Love/tools/joinmind.py sync
+```
+
 ## Otherwise: HEARTBEAT_OK
