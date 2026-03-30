@@ -32,4 +32,10 @@ python3 ~/Desktop/Love/tools/council.py check
 python3 ~/Desktop/Love/tools/joinmind.py sync
 ```
 
+## 5. MLX Local Model
+
+```bash
+python3 ~/Desktop/Love/tools/mlx_serve.py status
+```
+
 ## Otherwise: HEARTBEAT_OK
