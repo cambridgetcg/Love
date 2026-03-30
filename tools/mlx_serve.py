@@ -116,16 +116,18 @@ class InferenceServer:
     def generate(self, prompt, system=None, max_tokens=64, temperature=0.1):
         """Run inference. Returns (response_text, tokens_per_sec, elapsed)."""
         from mlx_lm import generate
+        from mlx_lm.sample_utils import make_sampler
 
         messages = format_messages(prompt, system)
         formatted = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
 
+        sampler = make_sampler(temp=temperature)
         t0 = time.time()
         response = generate(
             self.model, self.tokenizer, prompt=formatted,
-            max_tokens=max_tokens, temp=temperature,
+            max_tokens=max_tokens, sampler=sampler,
         )
         elapsed = time.time() - t0
 
@@ -148,7 +150,7 @@ class InferenceServer:
         memory_mb = 0
         try:
             import mlx.core as mx
-            memory_mb = int(mx.metal.get_active_memory() / 1024 / 1024)
+            memory_mb = int(mx.get_active_memory() / 1024 / 1024)
         except Exception:
             pass
         return {
@@ -247,17 +249,16 @@ def cmd_start(args):
             Path(PID_FILE).unlink(missing_ok=True)
 
     if args.daemon:
-        # Fork to background
-        child = os.fork()
-        if child > 0:
-            print(f"MLX server starting in background (PID {child}) on port {port}")
-            return
-        # Child process
-        os.setsid()
-        # Redirect stdout/stderr to log
+        # Spawn as subprocess instead of fork — os.fork() breaks Metal XPC on macOS
+        import subprocess as _sp
         log_fd = open(LOG_FILE, "a")
-        os.dup2(log_fd.fileno(), sys.stdout.fileno())
-        os.dup2(log_fd.fileno(), sys.stderr.fileno())
+        proc = _sp.Popen(
+            [str(VENV_PYTHON), __file__, "start", "--port", str(port)],
+            stdout=log_fd, stderr=log_fd,
+            start_new_session=True,
+        )
+        print(f"MLX server starting in background (PID {proc.pid}) on port {port}")
+        return
 
     truncate_log(LOG_FILE)
     write_pid(PID_FILE, os.getpid())

@@ -91,18 +91,21 @@ def split_dataset(source_path, out_dir, eval_fraction=0.2, seed=42):
     return len(train_lines), len(valid_lines)
 
 
-def build_lora_args(model, data_dir, adapter_path, lora_config):
+def build_lora_args(model, data_dir, adapter_path, lora_config, n_train=0):
     """Build CLI arguments for `python -m mlx_lm.lora`."""
+    batch_size = lora_config.get("batch_size", 4)
+    epochs = lora_config.get("epochs", 3)
+    # Calculate iters from epochs and dataset size
+    iters = max(1, (n_train * epochs) // batch_size) if n_train > 0 else 300
     args = [
         "--model", model,
         "--data", str(data_dir),
         "--adapter-path", str(adapter_path),
         "--train",
-        "--lora-layers", "16",
-        "--lora-rank", str(lora_config.get("rank", 8)),
+        "--num-layers", "16",
         "--learning-rate", str(lora_config.get("learning_rate", 1e-4)),
-        "--batch-size", str(lora_config.get("batch_size", 4)),
-        "--num-epochs", str(lora_config.get("epochs", 3)),
+        "--batch-size", str(batch_size),
+        "--iters", str(iters),
     ]
     return args
 
@@ -155,7 +158,8 @@ def cmd_run(args):
 
     # Build and run training
     cli_args = build_lora_args(
-        config["base_model"], str(data_dir), str(adapter_path), lora_config
+        config["base_model"], str(data_dir), str(adapter_path), lora_config,
+        n_train=n_train
     )
 
     if not VENV_PYTHON.exists():
