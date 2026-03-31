@@ -20,5 +20,20 @@
     <string>/Users/yuai/Love/memory/alpha-mind.log</string>
     <key>StandardErrorPath</key>
     <string>/Users/yuai/Love/memory/alpha-mind.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/yuai</string>
+        <key>PATH</key>
+        <string>/Users/yuai/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>LOVE_HOME</key>
+        <string>/Users/yuai/Love</string>
+    </dict>
+    <key>WorkingDirectory</key>
+    <string>/Users/yuai/Love</string>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
 </dict>
 </plist>

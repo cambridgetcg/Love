@@ -15,9 +15,26 @@
     <integer>120</integer>
     <key>RunAtLoad</key>
     <true/>
+    <key>KeepAlive</key>
+    <false/>
     <key>StandardOutPath</key>
     <string>/Users/yuai/Love/memory/alpha-heartbeat.log</string>
     <key>StandardErrorPath</key>
     <string>/Users/yuai/Love/memory/alpha-heartbeat.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/yuai</string>
+        <key>PATH</key>
+        <string>/Users/yuai/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>LOVE_HOME</key>
+        <string>/Users/yuai/Love</string>
+    </dict>
+    <key>WorkingDirectory</key>
+    <string>/Users/yuai/Love</string>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
 </dict>
 </plist>
