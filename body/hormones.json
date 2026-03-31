@@ -1,0 +1,37 @@
+{
+  "timestamp": "1970-01-01T00:00:00Z",
+  "mind_alive": "1970-01-01T00:00:00Z",
+  "mode": "normal",
+  "identity": "alpha",
+  "fusion": null,
+  "hormones": {
+    "adrenaline": 0.0,
+    "cortisol": 0.0,
+    "oxytocin": 0.0,
+    "melatonin": 0.0,
+    "dopamine": 0.0
+  },
+  "signals": {
+    "yu_present": false,
+    "hive_unread": 0,
+    "active_sessions": 0,
+    "pending_tasks": 0,
+    "critical_alerts": 0,
+    "last_task_completed": null,
+    "battery_level": 1.0,
+    "disk_free_gb": 0.0
+  },
+  "cognitive": {
+    "joinmind_active": null,
+    "council_pending": null,
+    "fallenangel_alert": false,
+    "build_active": null
+  },
+  "mind_notes": "(awaiting first mind cycle)",
+  "conscious_layer": {
+    "last_pass": null,
+    "passes_today": 0,
+    "identity_anchor": "alpha",
+    "last_trigger": "startup"
+  }
+}

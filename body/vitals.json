@@ -1,0 +1,15 @@
+{
+  "last_beat": null,
+  "beat_result": "none",
+  "beats_today": 0,
+  "skips_today": 0,
+  "force": 0,
+  "effective_rate_minutes": 7,
+  "coordinator_model": null,
+  "sessions_spawned": 0,
+  "sessions_spawned_today": 0,
+  "hormones_at_beat": {},
+  "mode_at_beat": "normal",
+  "consecutive_skips": 0,
+  "heart_healthy": true
+}
