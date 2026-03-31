@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-LOVE_DIR="$HOME/Desktop/Love"
+LOVE_DIR="$HOME/Love"
 INSTANCE="${1:-alpha}"
 BODY_DIR="$LOVE_DIR/body"
 HORMONES="$BODY_DIR/hormones.json"

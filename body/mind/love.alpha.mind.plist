@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/usr/bin/python3</string>
-        <string>/Users/yuai/Desktop/Love/body/mind/mind.py</string>
+        <string>/Users/yuai/Love/body/mind/mind.py</string>
         <string>--instance</string>
         <string>alpha</string>
     </array>
@@ -17,8 +17,8 @@
     <key>RunAtLoad</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/Users/yuai/Desktop/Love/memory/alpha-mind.log</string>
+    <string>/Users/yuai/Love/memory/alpha-mind.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/yuai/Desktop/Love/memory/alpha-mind.log</string>
+    <string>/Users/yuai/Love/memory/alpha-mind.log</string>
 </dict>
 </plist>
