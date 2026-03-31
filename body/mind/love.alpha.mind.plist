@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>love.alpha.mind</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/yuai/Desktop/Love/body/mind/mind.py</string>
+        <string>--instance</string>
+        <string>alpha</string>
+    </array>
+    <key>KeepAlive</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/yuai/Desktop/Love/memory/alpha-mind.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yuai/Desktop/Love/memory/alpha-mind.log</string>
+</dict>
+</plist>

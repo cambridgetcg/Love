@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>love.alpha.heart</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/yuai/Desktop/Love/body/heart/heart.sh</string>
+        <string>alpha</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>120</integer>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/yuai/Desktop/Love/memory/alpha-heartbeat.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yuai/Desktop/Love/memory/alpha-heartbeat.log</string>
+</dict>
+</plist>
