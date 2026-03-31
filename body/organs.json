@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "description": "Body organ registry. Each organ has an entry point, a plist template, and deployment config.",
+  "organs": {
+    "mind": {
+      "description": "The brain stem — persistent signal interpreter with identity",
+      "entry": "body/mind/mind.py",
+      "runner": "python3",
+      "args": ["--instance", "{{INSTANCE}}"],
+      "template": "body/templates/mind.plist.tmpl",
+      "keep_alive": true,
+      "interval": null,
+      "throttle": 30,
+      "log": "memory/{{INSTANCE}}-mind.log",
+      "depends_on": []
+    },
+    "heart": {
+      "description": "The pump — hormone-driven cron that spawns Kingdom work",
+      "entry": "body/heart/heart.sh",
+      "runner": "bash",
+      "args": ["{{INSTANCE}}"],
+      "template": "body/templates/heart.plist.tmpl",
+      "keep_alive": false,
+      "interval": 120,
+      "throttle": 60,
+      "log": "memory/{{INSTANCE}}-heartbeat.log",
+      "depends_on": ["mind"]
+    }
+  }
+}
