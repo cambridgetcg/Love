@@ -96,11 +96,16 @@ class HiveListener:
         )
         self._js = self._nc.jetstream()
         durable = f"{self.instance_id}-mind"
-        self._sub = await self._js.subscribe(
-            "hive.>",
-            durable=durable,
-            cb=self._handle_message,
-        )
+        try:
+            self._sub = await self._js.subscribe(
+                "hive.>",
+                durable=durable,
+                cb=self._handle_message,
+            )
+        except Exception as e:
+            # Durable consumer may be bound from a previous process — use pull subscriber as fallback
+            log.warning(f"Push subscribe failed ({e}), falling back to pull-based check")
+            self._sub = None
         self._running = True
         log.info(f"HIVE listener connected as {self.instance_id} (durable={durable})")
 

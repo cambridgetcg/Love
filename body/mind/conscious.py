@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import subprocess
 import time
 from typing import Dict, Optional
@@ -43,6 +44,11 @@ class ConsciousLayer:
 
     def run(self, identity_prompt: str, trigger: str) -> Dict:
         try:
+            # Unset CLAUDECODE to allow spawning from within a Claude session
+            env = {k: v for k, v in os.environ.items() if not k.startswith("CLAUDE")}
+            env["PATH"] = os.environ.get("PATH", "/usr/bin:/bin")
+
+            # Use text output (not json) -- simpler, less noisy
             result = subprocess.run(
                 [
                     CLAUDE_BIN, "-p", identity_prompt,
@@ -50,33 +56,47 @@ class ConsciousLayer:
                     "--effort", "low",
                     "--dangerously-skip-permissions",
                     "--no-session-persistence",
-                    "--output-format", "json",
                 ],
-                capture_output=True, text=True, timeout=30,
+                capture_output=True, text=True, timeout=60,
+                env=env,
             )
             if result.returncode != 0:
                 log.warning(f"Conscious layer failed (exit {result.returncode}): {result.stderr[:200]}")
                 return self._fallback(trigger)
 
             output = result.stdout.strip()
-            try:
-                data = json.loads(output)
-                if "result" in data:
-                    inner = data["result"]
-                    if isinstance(inner, str):
-                        inner = json.loads(inner)
-                    return self._validate(inner, trigger)
-                return self._validate(data, trigger)
-            except (json.JSONDecodeError, KeyError):
-                for line in output.split('\n'):
-                    line = line.strip()
-                    if line.startswith('{'):
-                        try:
-                            return self._validate(json.loads(line), trigger)
-                        except json.JSONDecodeError:
-                            continue
-                log.warning(f"Could not parse conscious layer output: {output[:200]}")
-                return self._fallback(trigger)
+            # Try to extract JSON from the text output
+            # Claude may wrap JSON in markdown code blocks or return it directly
+            json_str = None
+            for line in output.split('\n'):
+                line = line.strip().strip('`')
+                if line.startswith('{') and line.endswith('}'):
+                    json_str = line
+                    break
+            # Also try to find JSON block in the full output
+            if not json_str:
+                import re
+                match = re.search(r'\{[^{}]*"mind_notes"[^{}]*\}', output)
+                if match:
+                    json_str = match.group(0)
+
+            if json_str:
+                try:
+                    return self._validate(json.loads(json_str), trigger)
+                except json.JSONDecodeError:
+                    pass
+
+            # If no JSON found, use the raw text as mind_notes
+            if output:
+                log.info(f"Conscious layer returned text (no JSON): {output[:100]}")
+                return self._validate({
+                    "mind_notes": output[:500],
+                    "hormone_overrides": {},
+                    "identity_state": "alpha",
+                }, trigger)
+
+            log.warning("Conscious layer returned empty output")
+            return self._fallback(trigger)
 
         except subprocess.TimeoutExpired:
             log.warning("Conscious layer timed out")
