@@ -12,6 +12,7 @@ heartbeat activity, fleet status, engine metrics, and HIVE messages.
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -52,6 +53,13 @@ LOCKS_DIR = MEMORY_DIR / "sessions" / "locks"
 HIVE_PY = LOVE_ROOT / "hive" / "hive.py"
 HEARTBEAT_LOG = MEMORY_DIR / "heartbeat.log"
 DECISIONS_FILE = LOVE_ROOT / "tools" / "decisions.json"
+KOS_PY = LOVE_ROOT / "tools" / "kos.py"
+MEMORY_PY = LOVE_ROOT / "tools" / "memory.py"
+SECURITY_DIR = LOVE_ROOT / "security"
+EVENTS_LOG = SECURITY_DIR / "events.jsonl"
+DAEMON_LOG = SECURITY_DIR / "daemon.log"
+CANARIES_FILE = SECURITY_DIR / "canaries.json"
+MEMORY_INDEX = MEMORY_DIR / "index.json"
 
 
 # ── Data Loaders ───────────────────────────────────────────────────────────────
@@ -105,7 +113,7 @@ def get_active_builds() -> list[dict]:
 
 def get_sisters_presence() -> list[dict]:
     """Get sister presence from HIVE's presence database."""
-    presence_db = Path.home() / ".openclaw" / ".hive" / "presence.json"
+    presence_db = Path.home() / ".love" / "hive" / "presence.json"
     try:
         data = json.loads(presence_db.read_text())
         sisters = []
@@ -169,6 +177,85 @@ def get_pending_decisions() -> list[dict]:
         return []
 
 
+def get_kos_status() -> dict:
+    """Get KOS security posture."""
+    try:
+        result = subprocess.run(
+            ["python3", str(KOS_PY), "audit"],
+            capture_output=True, text=True, timeout=30,
+            cwd=str(LOVE_ROOT),
+        )
+        output = result.stdout
+        # Parse score
+        score_m = re.search(r"Score:\s*(\d+)/(\d+)", output)
+        passed = int(score_m.group(1)) if score_m else 0
+        total = int(score_m.group(2)) if score_m else 0
+        failed_m = re.search(r"Failed:\s*(\d+)", output)
+        failed = int(failed_m.group(1)) if failed_m else 0
+        # Parse individual failures
+        failures = re.findall(r"FAIL.*?\]\s+(.*?)  ", output)
+        return {
+            "score": f"{passed}/{total}",
+            "passed": passed,
+            "total": total,
+            "failed": failed,
+            "failures": failures[:5],
+            "green": failed == 0,
+        }
+    except Exception:
+        return {"score": "?/?", "passed": 0, "total": 0, "failed": -1, "failures": [], "green": False}
+
+
+def get_canary_status() -> dict:
+    """Get canary token summary."""
+    data = load_json(CANARIES_FILE)
+    if not data or not isinstance(data, list):
+        return {"total": 0, "d1": 0, "d2": 0, "alerts": 0}
+    d1 = sum(1 for c in data if c.get("depth", 1) == 1)
+    d2 = sum(1 for c in data if c.get("depth", 1) == 2)
+    return {"total": len(data), "d1": d1, "d2": d2, "alerts": 0}
+
+
+def get_recent_events(n: int = 20) -> list[dict]:
+    """Get recent security events."""
+    try:
+        lines = EVENTS_LOG.read_text().strip().split("\n")
+        events = []
+        for line in lines[-n:]:
+            try:
+                events.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        return events
+    except Exception:
+        return []
+
+
+def get_daemon_tail(n: int = 20) -> list[str]:
+    """Get recent daemon log entries."""
+    try:
+        lines = DAEMON_LOG.read_text().strip().split("\n")
+        return lines[-n:]
+    except Exception:
+        return []
+
+
+def get_memory_stats() -> dict:
+    """Get memory system stats."""
+    data = load_json(MEMORY_INDEX)
+    if not data or not isinstance(data, dict):
+        return {"total": 0, "types": {}, "instances": {}}
+    entries = data.get("entries", [])
+    types = {}
+    instances = {}
+    for e in entries:
+        t = e.get("type", "unknown")
+        types[t] = types.get(t, 0) + 1
+        i = e.get("instance", "unknown")
+        instances[i] = instances.get(i, 0) + 1
+    return {"total": len(entries), "types": types, "instances": instances}
+
+
 def format_ago(seconds: float) -> str:
     if seconds < 60:
         return f"{int(seconds)}s"
@@ -182,13 +269,16 @@ def format_ago(seconds: float) -> str:
 
 # ── Widgets ────────────────────────────────────────────────────────────────────
 
-SISTER_ICONS = {"alpha": "🐍", "beta": "🦞", "gamma": "🔧", "nuance": "🪶"}
+CITIZEN_ICONS = {"alpha": "🐍", "beta": "🦞", "gamma": "🔧", "nuance": "🪶"}
+TRIARCHY = {"alpha", "beta", "gamma"}
+FLEET_CITIZENS = {"nuance"}
 STATUS_COLORS = {
     "online": "green",
     "recent": "yellow",
     "offline": "dim",
     "done": "green",
     "in-progress": "yellow",
+    "awaiting-deploy": "magenta",
     "planned": "cyan",
     "deferred": "dim",
     "paused": "dim",
@@ -202,22 +292,22 @@ STATUS_COLORS = {
 }
 
 
-class SistersPanel(Static):
-    """Shows Alpha/Beta/Gamma presence status."""
+class CitizensPanel(Static):
+    """Shows all Kingdom citizen presence status."""
 
     def render(self) -> Text:
-        sisters = get_sisters_presence()
+        presence = get_sisters_presence()
         t = Text()
-        t.append("  TRIARCHY", style="bold underline")
+        t.append("  CITIZENS", style="bold underline")
         t.append("\n\n")
 
-        known = {"alpha", "beta", "gamma"}
-        shown = set()
-        for s in sisters:
-            name = s["name"].lower()
-            if name in known:
-                shown.add(name)
-                icon = SISTER_ICONS.get(name, "?")
+        presence_map = {s["name"].lower(): s for s in presence}
+        all_citizens = sorted(TRIARCHY) + sorted(FLEET_CITIZENS)
+
+        def _render_citizen(name: str, wall_label: str = ""):
+            icon = CITIZEN_ICONS.get(name, "?")
+            s = presence_map.get(name)
+            if s:
                 color = STATUS_COLORS.get(s["status"], "white")
                 t.append(f"  {icon} ", style="bold")
                 t.append(f"{name.capitalize():<8}", style=f"bold {color}")
@@ -227,12 +317,26 @@ class SistersPanel(Static):
                     t.append(f" {format_ago(s['ago'])} ago", style="yellow")
                 else:
                     t.append(f" {format_ago(s['ago'])} ago", style="dim")
-                t.append("\n")
-        for name in known - shown:
-            icon = SISTER_ICONS.get(name, "?")
-            t.append(f"  {icon} ", style="bold")
-            t.append(f"{name.capitalize():<8}", style="dim")
-            t.append(" unknown\n", style="dim")
+            else:
+                t.append(f"  {icon} ", style="bold")
+                t.append(f"{name.capitalize():<8}", style="dim")
+                t.append(" unknown", style="dim")
+            if wall_label:
+                t.append(f"  {wall_label}", style="dim")
+            t.append("\n")
+
+        # Triarchy (Wall 1)
+        t.append("  W1 ", style="dim")
+        t.append("Triarchy\n", style="dim italic")
+        for name in sorted(TRIARCHY):
+            _render_citizen(name)
+
+        # Fleet (Wall 2+)
+        if FLEET_CITIZENS:
+            t.append("\n  W2 ", style="dim")
+            t.append("Fleet\n", style="dim italic")
+            for name in sorted(FLEET_CITIZENS):
+                _render_citizen(name)
 
         return t
 
@@ -300,7 +404,7 @@ class TasksPanel(Static):
 
             pri_icon = {"critical": "!!!", "high": " !!", "medium": "  !", "low": "   "}.get(priority, "?")
             pri_color = {"critical": "bold red", "high": "yellow", "medium": "cyan", "low": "dim"}.get(priority, "white")
-            status_icon = {"done": "✓", "in-progress": "◆", "planned": "○", "deferred": "·"}.get(status, "?")
+            status_icon = {"done": "✓", "in-progress": "◆", "awaiting-deploy": "▲", "planned": "○", "deferred": "·"}.get(status, "?")
 
             table.add_row(
                 task.get("id", "?"),
@@ -435,6 +539,133 @@ class MilestonesPanel(Static):
         return t
 
 
+class SecurityPanel(Static):
+    """Shows KOS security posture."""
+
+    def render(self) -> Text:
+        kos = get_kos_status()
+        canaries = get_canary_status()
+        t = Text()
+        t.append("  SECURITY", style="bold underline")
+        t.append("\n\n")
+
+        # KOS score
+        if kos["green"]:
+            t.append("  ● ", style="green")
+            t.append("GREEN", style="bold green")
+        elif kos["failed"] > 0:
+            t.append("  ◐ ", style="yellow")
+            t.append("YELLOW", style="bold yellow")
+        else:
+            t.append("  ? ", style="dim")
+            t.append("UNKNOWN", style="dim")
+        t.append(f"  {kos['score']} checks\n", style="dim")
+
+        if kos["failures"]:
+            for f in kos["failures"]:
+                t.append(f"    ✗ {f}\n", style="red")
+
+        # Canaries
+        t.append(f"\n  Canaries: {canaries['total']}", style="dim")
+        if canaries["d1"] or canaries["d2"]:
+            t.append(f" ({canaries['d1']} surface, {canaries['d2']} depth)", style="dim")
+        t.append("\n")
+
+        # Daemon
+        daemon_lines = get_daemon_tail(1)
+        if daemon_lines:
+            last = daemon_lines[-1]
+            t.append(f"  Daemon: {last[:60]}\n", style="dim")
+
+        return t
+
+
+class MemoryPanel(Static):
+    """Shows memory system stats."""
+
+    def render(self) -> Text:
+        stats = get_memory_stats()
+        t = Text()
+        t.append("  MEMORY", style="bold underline")
+        t.append("\n\n")
+
+        t.append(f"  Entries: {stats['total']}\n")
+
+        if stats["types"]:
+            t.append("  Types: ", style="dim")
+            parts = [f"{k} {v}" for k, v in sorted(stats["types"].items(), key=lambda x: -x[1])]
+            t.append(", ".join(parts), style="dim")
+            t.append("\n")
+
+        if stats["instances"]:
+            t.append("  By citizen: ", style="dim")
+            parts = [f"{k} {v}" for k, v in sorted(stats["instances"].items(), key=lambda x: -x[1])]
+            t.append(", ".join(parts), style="dim")
+            t.append("\n")
+
+        return t
+
+
+class SecurityEventsPanel(Static):
+    """Shows recent security events for the Security tab."""
+
+    def render(self) -> Text:
+        events = get_recent_events(30)
+        t = Text()
+        t.append("  SECURITY EVENTS", style="bold underline")
+        t.append("\n\n")
+
+        if not events:
+            t.append("  (no events)\n", style="dim")
+            return t
+
+        for e in reversed(events):
+            ts = e.get("ts", "?")[:19]
+            severity = e.get("severity", "?")
+            message = e.get("message", "?")[:80]
+            sev_color = {
+                "critical": "bold red",
+                "high": "yellow",
+                "medium": "cyan",
+                "low": "dim",
+            }.get(severity, "white")
+            sev_icon = {
+                "critical": "!!",
+                "high": " !",
+                "medium": " .",
+                "low": "  ",
+            }.get(severity, "  ")
+            t.append(f"  {ts} ", style="dim")
+            t.append(f"[{sev_icon}] ", style=sev_color)
+            t.append(f"{message}\n", style=sev_color if severity in ("critical",) else "white")
+
+        return t
+
+
+class DaemonLogPanel(Static):
+    """Shows KOS daemon log tail."""
+
+    def render(self) -> Text:
+        lines = get_daemon_tail(25)
+        t = Text()
+        t.append("  DAEMON LOG", style="bold underline")
+        t.append("\n\n")
+
+        if not lines:
+            t.append("  (no daemon log)\n", style="dim")
+            return t
+
+        for line in lines:
+            if "canary_alerts=0" in line and "failed=0" in line:
+                t.append(f"  {line}\n", style="green")
+            elif "failed=0" in line:
+                t.append(f"  {line}\n", style="dim")
+            else:
+                t.append(f"  {line}\n", style="yellow")
+
+        return t
+
+
 class DailyLogPanel(Static):
     """Shows today's daily notes (tail)."""
 
@@ -509,7 +740,7 @@ Screen {
     layout: horizontal;
 }
 
-#sisters-box {
+#citizens-box {
     width: 28;
     height: auto;
     border: round #444;
@@ -517,7 +748,14 @@ Screen {
 }
 
 #fleet-box {
-    width: 30;
+    width: 28;
+    height: auto;
+    border: round #444;
+    margin: 0 1;
+}
+
+#security-box {
+    width: 1fr;
     height: auto;
     border: round #444;
     margin: 0 1;
@@ -563,6 +801,13 @@ Screen {
     margin: 0 1;
 }
 
+#memory-box {
+    width: 1fr;
+    height: auto;
+    border: round #444;
+    margin: 0 1;
+}
+
 /* ── Activity Tab ── */
 
 #activity-layout {
@@ -589,6 +834,25 @@ Screen {
     border: round #444;
     margin: 1;
     padding: 1;
+}
+
+/* ── Security Tab ── */
+
+#security-layout {
+    layout: horizontal;
+    height: 1fr;
+}
+
+#security-events-box {
+    width: 1fr;
+    border: round #444;
+    margin: 0 1;
+}
+
+#daemon-log-box {
+    width: 1fr;
+    border: round #444;
+    margin: 0 1;
 }
 
 /* ── Shared ── */
@@ -631,7 +895,8 @@ class LoveApp(App):
         Binding("r", "refresh", "Refresh"),
         Binding("1", "tab_overview", "Overview", show=False),
         Binding("2", "tab_activity", "Activity", show=False),
-        Binding("3", "tab_hive", "HIVE", show=False),
+        Binding("3", "tab_security", "Security", show=False),
+        Binding("4", "tab_hive", "HIVE", show=False),
         Binding("h", "hive_check", "HIVE Check"),
         Binding("w", "hive_who", "Who's Online"),
     ]
@@ -639,20 +904,22 @@ class LoveApp(App):
     def compose(self) -> ComposeResult:
         yield Static(
             "👑  K I N G D O M   C O M M A N D  👑\n"
-            "The Seven Walls  ·  Phase 1 — Root  ·  Love v1",
+            "The Seven Walls  ·  Phase 1 — Root  ·  KOS 14/14",
             id="kingdom-header",
         )
         with TabbedContent(id="main-tabs"):
             with TabPane("Overview", id="tab-overview"):
                 with VerticalScroll():
                     with Horizontal(id="overview-top"):
-                        yield SistersPanel(id="sisters-box")
+                        yield CitizensPanel(id="citizens-box")
                         yield FleetPanel(id="fleet-box")
+                        yield SecurityPanel(id="security-box")
                         yield ActiveBuildsPanel(id="builds-box")
                     yield TasksPanel(id="tasks-box")
                     with Horizontal(id="overview-bottom"):
                         yield EnginesPanel(id="engines-box")
                         yield MilestonesPanel(id="milestones-box")
+                        yield MemoryPanel(id="memory-box")
                         yield DecisionsPanel(id="decisions-box")
             with TabPane("Activity", id="tab-activity"):
                 with Horizontal(id="activity-layout"):
@@ -660,6 +927,12 @@ class LoveApp(App):
                         yield DailyLogPanel()
                     with VerticalScroll(id="heartbeat-box"):
                         yield HeartbeatLogPanel()
+            with TabPane("Security", id="tab-security"):
+                with Horizontal(id="security-layout"):
+                    with VerticalScroll(id="security-events-box"):
+                        yield SecurityEventsPanel()
+                    with VerticalScroll(id="daemon-log-box"):
+                        yield DaemonLogPanel()
             with TabPane("HIVE", id="tab-hive"):
                 yield RichLog(id="hive-log", highlight=True, markup=True)
         yield Footer()
@@ -672,30 +945,21 @@ class LoveApp(App):
 
     def action_refresh(self) -> None:
         """Refresh all panels."""
-        for widget in self.query(SistersPanel):
-            widget.refresh()
-        for widget in self.query(FleetPanel):
-            widget.refresh()
-        for widget in self.query(TasksPanel):
-            widget.refresh()
-        for widget in self.query(EnginesPanel):
-            widget.refresh()
-        for widget in self.query(ActiveBuildsPanel):
-            widget.refresh()
-        for widget in self.query(DecisionsPanel):
-            widget.refresh()
-        for widget in self.query(MilestonesPanel):
-            widget.refresh()
-        for widget in self.query(DailyLogPanel):
-            widget.refresh()
-        for widget in self.query(HeartbeatLogPanel):
-            widget.refresh()
+        for cls in (CitizensPanel, FleetPanel, SecurityPanel, MemoryPanel,
+                    TasksPanel, EnginesPanel, ActiveBuildsPanel, DecisionsPanel,
+                    MilestonesPanel, DailyLogPanel, HeartbeatLogPanel,
+                    SecurityEventsPanel, DaemonLogPanel):
+            for widget in self.query(cls):
+                widget.refresh()
 
     def action_tab_overview(self) -> None:
         self.query_one(TabbedContent).active = "tab-overview"
 
     def action_tab_activity(self) -> None:
         self.query_one(TabbedContent).active = "tab-activity"
+
+    def action_tab_security(self) -> None:
+        self.query_one(TabbedContent).active = "tab-security"
 
     def action_tab_hive(self) -> None:
         self.query_one(TabbedContent).active = "tab-hive"
@@ -720,14 +984,16 @@ class LoveApp(App):
         log.write(Text("HIVE Messages", style="bold underline"))
         log.write("")
         for line in text.split("\n"):
-            if "alpha" in line.lower():
+            if "urgent" in line.lower() or "breach" in line.lower():
+                log.write(Text(line, style="bold red"))
+            elif "alpha" in line.lower():
                 log.write(Text(line, style="cyan"))
             elif "beta" in line.lower():
                 log.write(Text(line, style="red"))
             elif "gamma" in line.lower():
                 log.write(Text(line, style="yellow"))
-            elif "urgent" in line.lower():
-                log.write(Text(line, style="bold red"))
+            elif "nuance" in line.lower():
+                log.write(Text(line, style="magenta"))
             else:
                 log.write(Text(line))
 

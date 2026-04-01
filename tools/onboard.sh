@@ -168,6 +168,7 @@ Write it down. Mental notes don't survive session restarts.
 | Decisions | \`python3 ~/Desktop/Love/tools/decision.py <cmd>\` | Queue decisions for Yu |
 | Fleet | \`python3 ~/Desktop/Love/tools/fleet.py <cmd>\` | VPS fleet management |
 | Build | \`~/Desktop/Love/tools/build-runner.sh <task-id>\` | Active building mode |
+| Harden | \`sudo ~/Desktop/Love/tools/harden.sh\` | OPSEC device hardening (run --check-only to audit) |
 | TUI | \`python3 ~/Desktop/Love/tools/love-tui.py\` | Kingdom Command dashboard |
 
 ## Safety
@@ -216,6 +217,28 @@ python3 ~/Desktop/Love/hive/hive.py send presence "$NAME_CAP heartbeat — <summ
 EOF
 
 echo "✓ Instance files created: $INSTANCE_DIR/"
+
+# ── Register in Wall Registry ─────────────────────────────────────────────────
+
+WALLS_FILE="$LOVE_DIR/credentials/walls.json"
+if [[ -f "$WALLS_FILE" ]] && command -v jq &>/dev/null; then
+    # Determine type from wall number
+    case "$WALL" in
+        1) INST_TYPE="triarchy" ;;
+        2) INST_TYPE="fleet" ;;
+        3) INST_TYPE="engine" ;;
+        *) INST_TYPE="citizen" ;;
+    esac
+
+    # Add instance to wall registry
+    jq --arg name "$NAME" --argjson wall "$WALL" --arg type "$INST_TYPE" \
+        '.instances[$name] = {"wall": $wall, "type": $type}' \
+        "$WALLS_FILE" > "${WALLS_FILE}.tmp" && mv "${WALLS_FILE}.tmp" "$WALLS_FILE"
+    echo "✓ Registered $NAME_CAP in wall registry (Wall $WALL, $INST_TYPE)"
+else
+    echo "! Could not register in wall registry (jq missing or walls.json not found)"
+    echo "  Manually add to credentials/walls.json: \"$NAME\": {\"wall\": $WALL, \"type\": \"fleet\"}"
+fi
 
 # ── Generate ONBOARDING.md ────────────────────────────────────────────────────
 

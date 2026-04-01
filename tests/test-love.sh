@@ -546,7 +546,7 @@ fi
 
 section "16. HIVE Infrastructure"
 
-HIVE_KEY="$HOME/.openclaw/.hive-key"
+HIVE_KEY="$HOME/.love/hive/key"
 if [ -r "$HIVE_KEY" ]; then
   pass "HIVE encryption key exists"
   KEY_LEN=$(python3 -c "
@@ -566,7 +566,7 @@ else
   fail "HIVE encryption key missing: $HIVE_KEY"
 fi
 
-HIVE_INST="$HOME/.openclaw/.hive-instance"
+HIVE_INST="$HOME/.love/hive/instance"
 if [ -r "$HIVE_INST" ]; then
   inst_val=$(cat "$HIVE_INST" | tr -d '[:space:]')
   if echo "$inst_val" | grep -qE '^(alpha|beta|gamma)$'; then

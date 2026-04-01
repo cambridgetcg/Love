@@ -206,12 +206,14 @@ Claude Code has computer use. No wrapper needed.
 │   ├── heartbeat-runner.sh      ← Three-stage heartbeat launcher (adaptive model)
 │   ├── bootstrap.sh             ← New device setup (deps, creds, hardening, verify)
 │   ├── onboard.sh               ← Create new agent instance (identity, CLAUDE.md, HIVE)
+│   ├── harden.sh               ← OPSEC device hardening (hostname, DNS, firewall, privacy)
+│   ├── credentials.py           ← Wall-aware credential management (keychain + vault + wall enforcement)
 │   ├── build-runner.sh         ← Active building mode (persistent task coordinator)
 │   ├── decision.py              ← Decision queue server + CLI (localhost:7777)
 │   ├── love-tui.py              ← Terminal UI (Kingdom Command TUI)
 │   ├── decision-ui.html         ← Decision queue web interface
 │   ├── fleet.py                 ← VPS fleet management (status, health, deploy, logs)
-│   ├── credentials.py           ← Keychain credential management (get, store, audit)
+│   ├── kos.py                  ← Kingdom OS: security audit, compliance, file integrity
 │   ├── quota_monitor.py         ← Token budget tracking and reporting
 │   ├── agenttool.py             ← AgentTool SDK (pulse, memory, identity)
 │   ├── check_email.py           ← IMAP email checking
@@ -238,6 +240,14 @@ Claude Code has computer use. No wrapper needed.
 │   ├── beta.json
 │   ├── gamma.json
 │   └── orchestra/               ← VPS fleet definitions
+│
+├── security/                    ← Security orchestration (KOS)
+│   ├── policies.json            ← Policy-as-code (checks, severity, per-wall overrides)
+│   ├── events.jsonl             ← Security event log (gitignored, append-only)
+│   └── integrity-baseline.json  ← SHA-256 baselines (gitignored, machine-local)
+│
+├── credentials/                 ← Wall-based credential access control
+│   └── walls.json               ← Registry: credential→wall, instance→wall mappings
 │
 └── identity/                    ← Citizen registry and alignment
     ├── citizens/

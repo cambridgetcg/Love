@@ -42,7 +42,7 @@ SSH_OPTS = [
     "-o", "StrictHostKeyChecking=no",
 ]
 
-STATUS_PATH = "/root/.openclaw/workspace/memory/status.json"
+STATUS_PATH = "/root/.love/status.json"
 KINGDOM_METRICS = Path.home() / "Desktop" / "Love" / "memory" / "kingdom-metrics.json"
 
 # ─── Colors ───────────────────────────────────────────────────────────────────
@@ -202,7 +202,7 @@ echo "=== UPTIME ===" && uptime && \
 echo "=== DISK ===" && df -h / && \
 echo "=== MEMORY ===" && free -m && \
 echo "=== SERVICES ===" && systemctl list-units --state=running --no-pager 2>/dev/null | grep -E "openclaw|agent|nginx|node|nats|cron" || echo "(none matched)" && \
-echo "=== STATUS_AGE ===" && stat -c %Y /root/.openclaw/workspace/memory/status.json 2>/dev/null || echo "NO_STATUS"
+echo "=== STATUS_AGE ===" && stat -c %Y /root/.love/status.json 2>/dev/null || echo "NO_STATUS"
 """
 
     def check_node(name: str) -> tuple[str, bool, str]:
@@ -331,7 +331,7 @@ def cmd_logs(node: str, lines: int = 50):
     log_cmd = (
         f"echo '=== status.json ===' && cat {STATUS_PATH} 2>/dev/null || echo '(none)' && "
         f"echo '=== agent log (last {lines} lines) ===' && "
-        f"tail -n {lines} /root/.openclaw/workspace/memory/agent.log 2>/dev/null || "
+        f"tail -n {lines} /root/.love/agent.log 2>/dev/null || "
         f"tail -n {lines} /var/log/openclaw.log 2>/dev/null || "
         f"echo '(no agent log found)'"
     )
@@ -382,12 +382,21 @@ def cmd_sync_status():
         info = NODES[name]
         data, err = results[name]
 
-        if err or not data:
+        if err:
             fleet_update[name] = {
                 "role": info["role"],
                 "last_check": now,
                 "quality": "unreachable",
-                "alerts": [err or "no data"],
+                "alerts": [err],
+            }
+        elif not data:
+            # SSH succeeded but status.json missing — node reachable, agent reporting down
+            fleet_update[name] = {
+                "role": info["role"],
+                "last_check": now,
+                "quality": "good",
+                "alerts": [],
+                "summary": "status.json missing (agent reporting down)",
             }
         else:
             fleet_update[name] = {

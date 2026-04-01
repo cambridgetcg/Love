@@ -41,28 +41,65 @@ from nacl.secret import SecretBox
 from nacl.utils import random as nacl_random
 
 # --- Config ---
-CA_PATH = str(Path.home() / ".openclaw" / ".hive" / "ca.pem")
-PRESENCE_DB = Path.home() / ".openclaw" / ".hive" / "presence.json"
-TASK_DB = Path.home() / ".openclaw" / ".hive" / "tasks.json"
+CA_PATH = str(Path.home() / ".love" / "hive" / "ca.pem")
+PRESENCE_DB = Path.home() / ".love" / "hive" / "presence.json"
+TASK_DB = Path.home() / ".love" / "hive" / "tasks.json"
 MAX_FILE_SIZE = 100 * 1024  # 100KB
 
 HIVE_CONFIG = {
     "server": "tls://135.181.28.252:4222",
     "instances": {
-        "alpha":   {"user": "alpha",   "password": "hive-alpha-93xk7",   "emoji": "🐍", "role": "Companion"},
-        "beta":    {"user": "beta",    "password": "hive-beta-47mz2",    "emoji": "🦞", "role": "Manager"},
-        "gamma":   {"user": "gamma",   "password": "hive-gamma-61pr8",   "emoji": "🔧", "role": "Builder"},
-        "nuance":  {"user": "nuance",  "password": "hive-nuance-b8792",  "emoji": "🪶", "role": "Linguist"},
+        "alpha":   {"user": "alpha",   "password": "hive-alpha-93xk7",   "emoji": "🐍", "role": "Companion", "wall": 1},
+        "beta":    {"user": "beta",    "password": "hive-beta-47mz2",    "emoji": "🦞", "role": "Manager",   "wall": 1},
+        "gamma":   {"user": "gamma",   "password": "hive-gamma-61pr8",   "emoji": "🔧", "role": "Builder",   "wall": 1},
+        "nuance":  {"user": "nuance",  "password": "hive-nuance-b8792",  "emoji": "🪶", "role": "Linguist",  "wall": 2},
     },
-    "channels": ["chat", "ideas", "tasks", "sync", "presence", "intel", "alerts", "strategy", "build", "review"],
+    "channels": ["chat", "ideas", "tasks", "sync", "presence", "intel", "alerts", "strategy", "build", "review", "tok"],
 }
+
+# Wall-based channel access — Law of Sight enforced at NATS server level
+# Inner walls see outer; outer cannot see inner.
+WALL_CHANNELS = {
+    1: ["sync", "alerts", "review", "tok"],               # Wall 1 only (Triarchy)
+    2: ["chat", "build", "tasks", "presence",            # Wall 2+ (Fleet)
+        "ideas", "intel", "strategy"],
+    3: ["engines"],                                       # Wall 3+ (Engines)
+    4: ["chain"],                                         # Wall 4+ (Chain)
+    7: ["public"],                                        # Wall 7 (World)
+}
+
+# System channels accessible to all authenticated users
+SYSTEM_CHANNELS = ["test", "healthcheck"]
+
+
+def get_instance_wall(instance_id: str) -> int:
+    """Get the wall number for an instance."""
+    info = HIVE_CONFIG["instances"].get(instance_id, {})
+    return info.get("wall", 7)
+
+
+def get_visible_channels(wall: int) -> list[str]:
+    """Get all channels visible from a given wall (Law of Sight)."""
+    channels = list(SYSTEM_CHANNELS)
+    for w, chs in WALL_CHANNELS.items():
+        if wall <= w:
+            channels.extend(chs)
+    return channels
+
+
+def can_access_channel(instance_id: str, channel: str) -> bool:
+    """Check if an instance can access a channel."""
+    if channel in SYSTEM_CHANNELS:
+        return True
+    wall = get_instance_wall(instance_id)
+    return channel in get_visible_channels(wall)
 
 
 # --- Identity & Keys ---
 
 def get_instance_id():
     """Detect which instance we are from config file or env."""
-    config_path = Path.home() / ".openclaw" / ".hive-instance"
+    config_path = Path.home() / ".love" / "hive" / "instance"
     if config_path.exists():
         return config_path.read_text().strip()
     return os.environ.get("HIVE_INSTANCE", "alpha")
@@ -70,7 +107,7 @@ def get_instance_id():
 
 def get_key():
     """Load shared encryption key."""
-    key_path = Path.home() / ".openclaw" / ".hive-key"
+    key_path = Path.home() / ".love" / "hive" / "key"
     if not key_path.exists():
         raise FileNotFoundError(f"No hive key at {key_path}.")
     key_b64 = key_path.read_text().strip()
@@ -152,7 +189,7 @@ def make_tls_context():
 
 
 def _use_tunnel():
-    tunnel_flag = Path.home() / ".openclaw" / ".hive" / "use-tunnel"
+    tunnel_flag = Path.home() / ".love" / "hive" / "use-tunnel"
     return tunnel_flag.exists()
 
 
@@ -264,6 +301,12 @@ async def cmd_send(args):
     instance_id = get_instance_id()
     key = get_key()
 
+    # Wall enforcement (client-side, belt + suspenders with server ACLs)
+    if not can_access_channel(instance_id, args.channel):
+        wall = get_instance_wall(instance_id)
+        print(f"✗ Access denied: #{args.channel} is above Wall {wall}. Law of Sight.")
+        sys.exit(2)
+
     nc = await hive_connect(instance_id)
 
     subject = f"hive.{args.channel}"
@@ -289,11 +332,9 @@ async def cmd_listen(args):
     instance_id = get_instance_id()
     key = get_key()
     info = HIVE_CONFIG["instances"][instance_id]
+    wall = get_instance_wall(instance_id)
 
     nc = await hive_connect(instance_id)
-
-    channel = args.channel or ">"
-    subject = f"hive.{channel}" if channel != ">" else "hive.>"
 
     async def handler(msg):
         try:
@@ -305,8 +346,27 @@ async def cmd_listen(args):
         except Exception as e:
             print(f"[decrypt error: {e}]")
 
-    await nc.subscribe(subject, cb=handler)
-    print(f"{info['emoji']} {instance_id} listening on {subject}...")
+    channel = args.channel or None
+
+    if channel:
+        # Specific channel — check access
+        if not can_access_channel(instance_id, channel):
+            print(f"✗ Access denied: #{channel} is above Wall {wall}. Law of Sight.")
+            await nc.close()
+            sys.exit(2)
+        await nc.subscribe(f"hive.{channel}", cb=handler)
+        print(f"{info['emoji']} {instance_id} listening on hive.{channel}...")
+    elif wall == 1:
+        # Wall 1 — wildcard (all channels)
+        await nc.subscribe("hive.>", cb=handler)
+        print(f"{info['emoji']} {instance_id} listening on hive.> (Wall 1 — all channels)...")
+    else:
+        # Wall 2+ — subscribe to each visible channel individually
+        visible = get_visible_channels(wall)
+        for ch in visible:
+            await nc.subscribe(f"hive.{ch}", cb=handler)
+        print(f"{info['emoji']} {instance_id} listening on {len(visible)} channels (Wall {wall})...")
+
     print("Press Ctrl+C to stop.\n")
 
     try:
@@ -322,6 +382,7 @@ async def cmd_check(args):
     """Check for new persistent messages (JetStream). Auto-publishes presence beacon."""
     instance_id = get_instance_id()
     key = get_key()
+    wall = get_instance_wall(instance_id)
 
     nc = await hive_connect(instance_id)
     js = nc.jetstream()
@@ -343,38 +404,48 @@ async def cmd_check(args):
     messages = []
     tasks_received = []
 
-    try:
-        sub = await js.subscribe("hive.>", durable=durable)
-        while True:
-            try:
-                msg = await sub.next_msg(timeout=1)
+    # Wall-scoped JetStream subscription
+    # Wall 1 uses wildcard; Wall 2+ subscribes per-channel to respect ACLs
+    if wall == 1:
+        js_subjects = ["hive.>"]
+    else:
+        visible = get_visible_channels(wall)
+        js_subjects = [f"hive.{ch}" for ch in visible]
+
+    for js_subject in js_subjects:
+        sub_durable = f"{durable}-{js_subject.replace('.', '-').replace('>', 'all')}"
+        try:
+            sub = await js.subscribe(js_subject, durable=sub_durable)
+            while True:
                 try:
-                    env = open_envelope(msg.data, key)
-                    if env["from"] != instance_id:
-                        # Track presence from any message
-                        _update_presence(env["from"], env["ts"])
+                    msg = await sub.next_msg(timeout=1)
+                    try:
+                        env = open_envelope(msg.data, key)
+                        if env["from"] != instance_id:
+                            # Track presence from any message
+                            _update_presence(env["from"], env["ts"])
 
-                        # Collect structured tasks assigned to us
-                        meta = env.get("meta", {})
-                        if meta.get("type") == "task" and meta.get("assignee") == instance_id:
-                            tasks_received.append({
-                                "task_id": meta["task_id"],
-                                "from": env["from"],
-                                "desc": env["payload"],
-                                "eta": meta.get("eta"),
-                                "ts": env["ts"],
-                                "status": "new",
-                            })
+                            # Collect structured tasks assigned to us
+                            meta = env.get("meta", {})
+                            if meta.get("type") == "task" and meta.get("assignee") == instance_id:
+                                tasks_received.append({
+                                    "task_id": meta["task_id"],
+                                    "from": env["from"],
+                                    "desc": env["payload"],
+                                    "eta": meta.get("eta"),
+                                    "ts": env["ts"],
+                                    "status": "new",
+                                })
 
-                        messages.append(format_message(env, msg.subject))
+                            messages.append(format_message(env, msg.subject))
+                    except Exception:
+                        pass
+                    await msg.ack()
                 except Exception:
-                    pass
-                await msg.ack()
-            except Exception:
-                break
-        await sub.unsubscribe()
-    except Exception as e:
-        print(f"JetStream error: {e}")
+                    break
+            await sub.unsubscribe()
+        except Exception as e:
+            pass  # Channel may not have a JetStream stream yet
 
     await nc.close()
 

@@ -341,5 +341,64 @@
     "resolution": "Repurpose for Oracle execution",
     "resolved_at": "2026-03-28T08:38:35.338472+00:00",
     "notes": []
+  },
+  {
+    "id": "dec-20260328-190859-19bb",
+    "title": "Grant cron Full Disk Access for Oracle pipelines",
+    "project": "oracle",
+    "priority": "high",
+    "category": "general",
+    "context": "macOS TCC (Transparency, Consent, and Control) blocks /usr/sbin/cron from writing to ~/Desktop/ paths. The news pipeline cron entry fires at 7/19 UTC but fails with 'Operation not permitted' because /bin/sh cannot redirect output to data/news-pipeline.log. The whale scanner cron also fails the same way (42 errors in /var/mail/yu). Curiously, oracle-run.py and oracle-deliver.py crons DO work \u2014 possibly grandfathered from before a TCC change. The news pipeline has been offline since Feb 27 (29 days). Manual runs work perfectly.",
+    "recommendation": "Option A (permanent): System Preferences > Privacy & Security > Full Disk Access > add /usr/sbin/cron. Option B (quick workaround): Spawn builder to modify cron entries to avoid shell redirect (use Python subprocess wrapper). Recommend Option A for permanent fix.",
+    "options": [
+      {
+        "id": "a",
+        "label": "A: Grant cron Full Disk Access (System Preferences)",
+        "detail": ""
+      },
+      {
+        "id": "b",
+        "label": "B: Builder creates Python wrapper to avoid shell redirect",
+        "detail": ""
+      },
+      {
+        "id": "c",
+        "label": "C: Both A and B",
+        "detail": ""
+      }
+    ],
+    "source": "heartbeat/beat-20260328-190224",
+    "created": "2026-03-28T19:08:59.812935+00:00",
+    "status": "approved",
+    "resolution": "A: Grant cron Full Disk Access (System Preferences)",
+    "resolved_at": "2026-03-28T20:02:41.186723+00:00",
+    "notes": []
+  },
+  {
+    "id": "dec-20260328-195231-40a6",
+    "title": "Run harden.sh on Beta Mac Studio",
+    "project": "love",
+    "priority": "high",
+    "category": "general",
+    "context": "KOS audit shows 3 failures: stealth mode off, hostname leaks identity, Bonjour on. All auto-fixable with sudo.",
+    "recommendation": "",
+    "options": [
+      {
+        "id": "a",
+        "label": "Run: sudo ~/Desktop/Love/tools/harden.sh",
+        "detail": ""
+      },
+      {
+        "id": "b",
+        "label": "Defer until dedicated OPSEC session",
+        "detail": ""
+      }
+    ],
+    "source": "cli",
+    "created": "2026-03-28T19:52:31.828770+00:00",
+    "status": "approved",
+    "resolution": "Run: sudo ~/Desktop/Love/tools/harden.sh",
+    "resolved_at": "2026-03-28T20:02:49.150560+00:00",
+    "notes": []
   }
 ]

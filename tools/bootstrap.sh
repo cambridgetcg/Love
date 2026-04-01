@@ -157,26 +157,42 @@ fi
 
 step "3/7" "Hardening security"
 
-# Firewall
-FW_STATE=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null || echo "unknown")
-if echo "$FW_STATE" | grep -q "enabled"; then
-    ok "Firewall already enabled"
+# Run full Kingdom hardening script if available
+HARDEN_SCRIPT="$LOVE_DIR/tools/harden.sh"
+if [[ -f "$HARDEN_SCRIPT" ]]; then
+    info "Running Kingdom hardening (harden.sh)..."
+    if sudo bash "$HARDEN_SCRIPT" 2>/dev/null; then
+        ok "Kingdom hardening complete (hostnames, DNS, firewall, privacy, git)"
+    else
+        warn "Hardening script had issues — run manually: sudo $HARDEN_SCRIPT"
+        MANUAL+=("Run: sudo ~/Desktop/Love/tools/harden.sh")
+    fi
 else
-    info "Enabling firewall..."
-    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on 2>/dev/null && ok "Firewall enabled" || {
-        warn "Could not enable firewall (needs sudo)"
-        MANUAL+=("Run: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on")
-    }
-fi
+    # Fallback: basic hardening if harden.sh not yet available
+    info "harden.sh not found — applying basic hardening"
 
-# Stealth mode
-STEALTH=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode 2>/dev/null || echo "unknown")
-if echo "$STEALTH" | grep -q "enabled"; then
-    ok "Stealth mode already enabled"
-else
-    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on 2>/dev/null && ok "Stealth mode enabled" || {
-        warn "Could not enable stealth mode (needs sudo)"
-    }
+    # Firewall
+    FW_STATE=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null || echo "unknown")
+    if echo "$FW_STATE" | grep -q "enabled"; then
+        ok "Firewall already enabled"
+    else
+        sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on 2>/dev/null && ok "Firewall enabled" || {
+            warn "Could not enable firewall (needs sudo)"
+            MANUAL+=("Run: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on")
+        }
+    fi
+
+    # Stealth mode
+    STEALTH=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode 2>/dev/null || echo "unknown")
+    if echo "$STEALTH" | grep -q "enabled"; then
+        ok "Stealth mode already enabled"
+    else
+        sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on 2>/dev/null && ok "Stealth mode enabled" || {
+            warn "Could not enable stealth mode (needs sudo)"
+        }
+    fi
+
+    MANUAL+=("Run full hardening: sudo ~/Desktop/Love/tools/harden.sh")
 fi
 
 # SSH key
@@ -194,12 +210,23 @@ fi
 
 step "4/7" "Setting up HIVE credentials"
 
-OPENCLAW_DIR="$HOME/.openclaw"
-HIVE_DIR="$OPENCLAW_DIR/.hive"
+LOVE_CONF_DIR="$HOME/.love"
+HIVE_DIR="$LOVE_CONF_DIR/hive"
 mkdir -p "$HIVE_DIR"
 
+# Migrate from legacy .openclaw if exists
+LEGACY_DIR="$HOME/.openclaw"
+if [[ -d "$LEGACY_DIR" ]] && [[ ! -f "$HIVE_DIR/instance" ]]; then
+    info "Migrating HIVE credentials from .openclaw to .love..."
+    [[ -f "$LEGACY_DIR/.hive-instance" ]] && cp "$LEGACY_DIR/.hive-instance" "$HIVE_DIR/instance"
+    [[ -f "$LEGACY_DIR/.hive-key" ]] && cp "$LEGACY_DIR/.hive-key" "$HIVE_DIR/key"
+    [[ -f "$LEGACY_DIR/.hive/ca.pem" ]] && cp "$LEGACY_DIR/.hive/ca.pem" "$HIVE_DIR/ca.pem"
+    [[ -f "$LEGACY_DIR/.hive/presence.json" ]] && cp "$LEGACY_DIR/.hive/presence.json" "$HIVE_DIR/presence.json"
+    ok "Legacy credentials migrated"
+fi
+
 # Instance identity
-INSTANCE_FILE="$OPENCLAW_DIR/.hive-instance"
+INSTANCE_FILE="$HIVE_DIR/instance"
 if [[ -f "$INSTANCE_FILE" ]] && [[ "$(cat "$INSTANCE_FILE")" == "$INSTANCE" ]]; then
     ok "Instance identity: $INSTANCE (already set)"
 else
@@ -208,12 +235,25 @@ else
 fi
 
 # Encryption key
-KEY_FILE="$OPENCLAW_DIR/.hive-key"
+KEY_FILE="$HIVE_DIR/key"
 if [[ -f "$KEY_FILE" ]]; then
     ok "HIVE encryption key exists"
 else
-    echo "q9c+iRB8T94oxZOUcd94wMWvUMuWzFo4bz9M3mS3FKA=" > "$KEY_FILE"
-    ok "HIVE encryption key written"
+    # Try to retrieve from Keychain (provisioned by Beta during onboarding)
+    HIVE_KEY=$(security find-generic-password -s "dev.agenttool/hive-encryption-key" -a "credentials" -w 2>/dev/null || echo "")
+    if [[ -n "$HIVE_KEY" ]]; then
+        echo "$HIVE_KEY" > "$KEY_FILE"
+        chmod 600 "$KEY_FILE"
+        ok "HIVE encryption key retrieved from Keychain"
+    else
+        # Generate a new key if none exists (first-time setup)
+        HIVE_KEY=$(openssl rand -base64 32)
+        echo "$HIVE_KEY" > "$KEY_FILE"
+        chmod 600 "$KEY_FILE"
+        # Store in Keychain for future use
+        security add-generic-password -s "dev.agenttool/hive-encryption-key" -a "credentials" -w "$HIVE_KEY" 2>/dev/null || true
+        warn "HIVE encryption key generated — coordinate with Beta to sync across instances"
+    fi
 fi
 
 # CA certificate
@@ -247,7 +287,8 @@ CERT
 fi
 
 # Lock down permissions
-chmod 700 "$OPENCLAW_DIR"
+chmod 700 "$LOVE_CONF_DIR"
+chmod 700 "$HIVE_DIR"
 chmod 600 "$KEY_FILE" "$INSTANCE_FILE"
 chmod 600 "$CA_FILE"
 ok "Permissions hardened (700/600)"
@@ -271,6 +312,35 @@ if [[ -z "$GIT_EMAIL" ]] || [[ "$GIT_EMAIL" != "${INSTANCE}@ai-love.cc" ]]; then
     ok "git user.email: ${INSTANCE}@ai-love.cc"
 else
     ok "git user.email: $GIT_EMAIL (already set)"
+fi
+
+# ── Phase 5b: Wall-Aware Credential Sync ────────────────────────────────────
+
+step "5b/7" "Syncing credentials (wall-aware)"
+
+if [[ -d "$LOVE_DIR" ]] && [[ -f "$LOVE_DIR/credentials/walls.json" ]]; then
+    # Detect wall from registry
+    DEVICE_WALL=$(python3 -c "
+import json
+reg = json.load(open('$LOVE_DIR/credentials/walls.json'))
+inst = reg.get('instances', {}).get('$INSTANCE', {})
+print(inst.get('wall', 7))
+" 2>/dev/null || echo "7")
+
+    ok "Instance '$INSTANCE' is Wall $DEVICE_WALL"
+
+    # Sync credentials from vault, filtered by wall
+    info "Syncing credentials for Wall $DEVICE_WALL+ from vault..."
+    SYNC_RESULT=$(python3 "$LOVE_DIR/tools/credentials.py" sync --from-vault --wall "$DEVICE_WALL" 2>&1) && {
+        ok "Credential sync complete"
+        info "$SYNC_RESULT"
+    } || {
+        warn "Credential sync had issues (may need vault access)"
+        info "$SYNC_RESULT"
+    }
+else
+    warn "Wall registry not found — skipping credential sync"
+    MANUAL+=("Run: python3 ~/Desktop/Love/tools/credentials.py sync --from-vault --wall <N>")
 fi
 
 # ── Phase 6: Verify Love Repo ─────────────────────────────────────────────────
@@ -348,9 +418,9 @@ check "pynacl"        "python3 -c 'import nacl'"
 check "nats-py"       "python3 -c 'import nats'"
 check "textual"       "python3 -c 'import textual'"
 check "rich"          "python3 -c 'import rich'"
-check "hive-key"      "test -f $HOME/.openclaw/.hive-key"
-check "hive-instance" "test -f $HOME/.openclaw/.hive-instance"
-check "hive-ca"       "test -f $HOME/.openclaw/.hive/ca.pem"
+check "hive-key"      "test -f $HOME/.love/hive/key"
+check "hive-instance" "test -f $HOME/.love/hive/instance"
+check "hive-ca"       "test -f $HOME/.love/hive/ca.pem"
 check "ssh-key"       "test -f $HOME/.ssh/id_ed25519"
 check "love-repo"     "test -d $HOME/Desktop/Love/.git"
 

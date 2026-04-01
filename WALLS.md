@@ -296,16 +296,32 @@ How the walls map to real systems:
 
 ### Credentials by Wall
 
-| Credential Type | Wall | Examples |
-|-----------------|------|---------|
-| Device Keychain | 1 | macOS Keychain, SSH keys |
-| HIVE encryption keys | 1 | .hive-key (per device) |
-| Fleet SSH/deploy keys | 2 | VPS access credentials |
-| Engine API keys | 3 | eBay API, exchange APIs |
-| Chain private keys | 4 | Zerone validator keys |
-| Partner API tokens | 5 | Scoped service tokens |
-| User auth tokens | 6 | JWT, session cookies |
-| Public API keys | 7 | Rate-limited public access |
+**Source of truth**: `credentials/walls.json` — the wall registry that maps every credential to its wall.
+
+**Two enforcement layers**:
+1. **Physical** — `bootstrap.sh` only writes wall-appropriate credentials to each device's Keychain
+2. **Software** — `credentials.py get` checks caller's wall before returning any credential
+
+```bash
+# See what a Wall 2 agent can access
+python3 tools/credentials.py list --wall 2
+
+# Full wall registry
+python3 tools/credentials.py walls
+
+# Purge credentials above device's wall (dry run)
+python3 tools/credentials.py purge --enforce-wall --wall 2
+```
+
+| Wall | Category | Count | Examples |
+|------|----------|-------|---------|
+| 1 | AI, infrastructure, finance, repos, publishing, security | 21 | anthropic-primary, cloudflare-global-api-key, budget-card-*, github-* |
+| 2 | Fleet operations | 6 | hetzner-api-token, vps-*-token |
+| 3 | Engine APIs (Oracle, TCG, Shopify, scraping, payments) | 17 | odds-api-key, stripe-*, shopify-*, serpapi |
+| 4 | Chain private keys (future) | 0 | Zerone validator keys |
+| 5 | Partner API tokens (future) | 0 | Scoped service tokens |
+| 6 | User auth tokens (future) | 0 | JWT, session cookies |
+| 7 | Public API keys (future) | 0 | Rate-limited public access |
 
 ---
 

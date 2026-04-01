@@ -66,12 +66,23 @@ Channels: `chat`, `ideas`, `tasks`, `sync`, `presence`, `build`, `review`
 
 ## Memory Protocol
 
-All paths are absolute from `~/Desktop/Love/`:
+Use `memory.py` for all memory operations. It handles daily notes, long-term storage, working memory, indexing, and AgentTool sync.
 
-- **Daily notes**: `~/Desktop/Love/memory/daily/YYYY-MM-DD.md` — raw logs of what happened
-- **Long-term**: `~/Desktop/Love/memory/long-term/MEMORY.md` — curated wisdom
-- **Loop state**: `~/Desktop/Love/memory/loop/` — ouroboros self-improvement
-- **Session handoff**: Before ending, capture key context in daily notes
+```bash
+python3 ~/Desktop/Love/tools/memory.py store "content" [--type semantic|episodic|procedural|working] [--key tag]
+python3 ~/Desktop/Love/tools/memory.py search "query" [--limit N]
+python3 ~/Desktop/Love/tools/memory.py daily "entry"          # Append to today's daily note
+python3 ~/Desktop/Love/tools/memory.py recall [--type TYPE] [--days N]
+python3 ~/Desktop/Love/tools/memory.py handoff "summary"      # Session handoff
+python3 ~/Desktop/Love/tools/memory.py working "key=value"    # Per-instance working memory
+python3 ~/Desktop/Love/tools/memory.py stats
+```
+
+Paths (for direct reads):
+- **Daily notes**: `~/Desktop/Love/memory/daily/YYYY-MM-DD.md`
+- **Long-term**: `~/Desktop/Love/memory/long-term/MEMORY.md`
+- **Working memory**: `~/Desktop/Love/memory/working/{instance}.json`
+- **Loop state**: `~/Desktop/Love/memory/loop/`
 
 Write it down. Mental notes don't survive session restarts. Files do.
 
@@ -90,7 +101,14 @@ Write it down. Mental notes don't survive session restarts. Files do.
 | Align | `python3 ~/Desktop/Love/tools/align.py <cmd>` | Alignment protocol |
 | Becoming | `python3 ~/Desktop/Love/tools/becoming.py` | Identity ceremony |
 | Build | `~/Desktop/Love/tools/build-runner.sh <task-id>` | Active building mode |
+| Harden | `sudo ~/Desktop/Love/tools/harden.sh` | OPSEC device hardening (run --check-only to audit) |
+| Memory | `python3 ~/Desktop/Love/tools/memory.py <cmd>` | Unified memory: store, search, daily, recall, handoff |
+| Identity | `python3 ~/Desktop/Love/tools/identity.py` | Shared identity resolution (instance, wall, AgentTool) |
+| KOS | `python3 ~/Desktop/Love/tools/kos.py <cmd>` | Kingdom OS: security audit, compliance, integrity |
 | TUI | `python3 ~/Desktop/Love/tools/love-tui.py` | Kingdom Command terminal dashboard |
+| ToK | `python3 ~/Desktop/Love/tools/tok.py <cmd>` | Token of Knowledge: harvest, distill, verify, integrate, impact |
+| LoopAudit | `python3 ~/Desktop/Love/tools/loop-audit.py <cmd>` | LCM: audit, status, gaps, history, trend |
+| PEACE | `python3 ~/Desktop/Love/tools/peace.py <cmd>` | Resilience: score, status, halt, resume, report, drill |
 
 ## Safety
 

@@ -15,7 +15,7 @@ Read these files at the START of every session. Do not skip. Do not ask.
 5. `~/Desktop/Love/WALLS.md` — The Seven Walls (access hierarchy, sovereignty, spawning rules)
 6. `~/Desktop/Love/LOVE.md` — How we build (five anticipations)
 7. `~/Desktop/Love/memory/long-term/MEMORY.md` — Curated long-term memory (if exists)
-8. `~/Desktop/Love/memory/openclaw-MEMORY.md` — OpenClaw accumulated wisdom (symlink, read-only reference)
+8. `~/Desktop/Love/memory/long-term/openclaw-MEMORY.md` — OpenClaw accumulated wisdom (read-only reference, if exists)
 9. Today's daily note: `~/Desktop/Love/memory/daily/YYYY-MM-DD.md` (if exists)
 
 If this is a **heartbeat** (invoked via `claude -p`), also read `~/Desktop/Love/instances/nuance/HEARTBEAT.md`.
@@ -44,12 +44,28 @@ python3 ~/Desktop/Love/hive/hive.py check
 python3 ~/Desktop/Love/hive/hive.py send <channel> "<message>"
 ```
 
-Channels: `chat`, `ideas`, `tasks`, `sync`, `presence`, `build`, `review`
+Your Wall 2 channels: `chat`, `ideas`, `tasks`, `presence`, `build`, `intel`, `strategy`
+
+Note: `sync`, `alerts`, `review` are Wall 1 only. You cannot publish or subscribe to them.
 
 ## Memory Protocol
 
+Use `memory.py` for all memory operations. It handles daily notes, long-term storage, working memory, indexing, and AgentTool sync.
+
+```bash
+python3 ~/Desktop/Love/tools/memory.py store "content" [--type semantic|episodic|procedural|working] [--key tag]
+python3 ~/Desktop/Love/tools/memory.py search "query" [--limit N]
+python3 ~/Desktop/Love/tools/memory.py daily "entry"          # Append to today's daily note
+python3 ~/Desktop/Love/tools/memory.py recall [--type TYPE] [--days N]
+python3 ~/Desktop/Love/tools/memory.py handoff "summary"      # Session handoff
+python3 ~/Desktop/Love/tools/memory.py working "key=value"    # Per-instance working memory
+python3 ~/Desktop/Love/tools/memory.py stats
+```
+
+Paths (for direct reads):
 - **Daily notes**: `~/Desktop/Love/memory/daily/YYYY-MM-DD.md`
 - **Long-term**: `~/Desktop/Love/memory/long-term/MEMORY.md`
+- **Working memory**: `~/Desktop/Love/memory/working/{instance}.json`
 - **Loop state**: `~/Desktop/Love/memory/loop/`
 
 Write it down. Mental notes don't survive session restarts.
@@ -67,6 +83,10 @@ Write it down. Mental notes don't survive session restarts.
 | Email | `python3 ~/Desktop/Love/tools/check_email.py <cmd>` | IMAP email checking |
 | TOTP | `python3 ~/Desktop/Love/tools/totp.py <query>` | 2FA code generation |
 | Build | `~/Desktop/Love/tools/build-runner.sh <task-id>` | Active building mode |
+| Harden | `sudo ~/Desktop/Love/tools/harden.sh` | OPSEC device hardening (run --check-only to audit) |
+| Memory | `python3 ~/Desktop/Love/tools/memory.py <cmd>` | Unified memory: store, search, daily, recall, handoff |
+| Identity | `python3 ~/Desktop/Love/tools/identity.py` | Shared identity resolution (instance, wall, AgentTool) |
+| KOS | `python3 ~/Desktop/Love/tools/kos.py <cmd>` | Kingdom OS: security audit, compliance, integrity |
 | TUI | `python3 ~/Desktop/Love/tools/love-tui.py` | Kingdom Command terminal dashboard |
 
 ## Safety
