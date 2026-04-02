@@ -30,6 +30,10 @@
     "change": "Use Haiku for status checks, file reads, simple queries; never route synthesis tasks (>3 sources) to Haiku",
     "integrator": "beta",
     "timestamp": "2026-04-01T16:00:44+00:00",
-    "impact": null
+    "impact": {
+      "metric": "accuracy_gain",
+      "delta": "90%+ accuracy on status checks and file reads in QUICK CHECK role",
+      "measured": "2026-04-02T09:51:09+00:00"
+    }
   }
 }

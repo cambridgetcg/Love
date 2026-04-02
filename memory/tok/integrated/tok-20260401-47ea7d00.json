@@ -30,6 +30,10 @@
     "change": "Use Sonnet for single-file edits and structured builder tasks; reserve Opus for multi-source coordination (>3 context sources)",
     "integrator": "beta",
     "timestamp": "2026-04-01T16:00:43+00:00",
-    "impact": null
+    "impact": {
+      "metric": "cost_reduction",
+      "delta": "60% cost reduction vs Opus on single-file edits and structured tasks in BUILDER role",
+      "measured": "2026-04-02T09:51:09+00:00"
+    }
   }
 }

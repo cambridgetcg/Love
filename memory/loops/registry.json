@@ -5,8 +5,8 @@
     "methodology": "Loop Closure Methodology (LCM)",
     "principle": "Every gap is an open loop. Every open loop has 5 components: sensor, signal, controller, actuator, measure. Close the loop, close the gap.",
     "audit_interval_beats": 12,
-    "last_audit": "2026-04-01T15:59:33+00:00",
-    "audit_count": 8
+    "last_audit": "2026-04-02T10:15:28+00:00",
+    "audit_count": 40
   },
   "loops": [
     {
@@ -20,7 +20,7 @@
           "check": "func_exists:tools/tok.py:cmd_harvest",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Function cmd_harvest exists",
           "closure_detected": "2026-04-01T10:14:50+00:00"
         },
@@ -29,7 +29,7 @@
           "check": "dir_has_recent:memory/tok/harvests:7",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "3 entries in last 7d",
           "closure_detected": "2026-04-01T10:15:45+00:00"
         },
@@ -38,7 +38,7 @@
           "check": "hive_channel_active:strategy:30",
           "status": "yellow",
           "health": 0.5,
-          "last_verified": "2026-04-01T15:59:33+00:00",
+          "last_verified": "2026-04-02T10:15:28+00:00",
           "notes": "HIVE exists but can't verify #strategy activity"
         },
         "actuator": {
@@ -46,7 +46,7 @@
           "check": "dir_has_entries:memory/tok/baselines",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "2 entries in memory/tok/baselines",
           "closure_detected": "2026-04-01T10:16:58+00:00"
         },
@@ -55,13 +55,13 @@
           "check": "file_exists:memory/tok/baselines/baseline.json",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "File exists: baseline.json",
           "closure_detected": "2026-04-01T10:16:58+00:00"
         }
       },
       "health": 0.9,
-      "last_audit": "2026-04-01T15:59:33+00:00"
+      "last_audit": "2026-04-02T10:15:28+00:00"
     },
     {
       "id": "tok-verify",
@@ -74,7 +74,7 @@
           "check": "dir_has_entries:memory/tok/leaves",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "3 entries in memory/tok/leaves",
           "closure_detected": "2026-04-01T10:15:45+00:00"
         },
@@ -83,7 +83,7 @@
           "check": "func_exists:tools/tok.py:cmd_verify",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Function cmd_verify exists",
           "closure_detected": "2026-04-01T10:14:50+00:00"
         },
@@ -92,7 +92,7 @@
           "check": "code_exists:legible_money/x/knowledge/evaluation/engine.go",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Code exists: engine.go"
         },
         "actuator": {
@@ -100,7 +100,7 @@
           "check": "code_exists:legible_money/x/knowledge/keeper/rounds.go",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Code exists: rounds.go"
         },
         "measure": {
@@ -108,13 +108,13 @@
           "check": "dir_has_recent:memory/tok/verified:30",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
-          "notes": "1 entries in last 30d",
+          "last_verified": "2026-04-02T08:30:11+00:00",
+          "notes": "3 entries in last 30d",
           "closure_detected": "2026-04-01T10:15:45+00:00"
         }
       },
       "health": 1.0,
-      "last_audit": "2026-04-01T15:59:33+00:00"
+      "last_audit": "2026-04-02T10:15:28+00:00"
     },
     {
       "id": "tok-integrate",
@@ -127,8 +127,8 @@
           "check": "dir_has_entries:memory/tok/verified",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
-          "notes": "1 entries in memory/tok/verified",
+          "last_verified": "2026-04-02T08:30:11+00:00",
+          "notes": "3 entries in memory/tok/verified",
           "closure_detected": "2026-04-01T10:15:45+00:00"
         },
         "signal": {
@@ -136,7 +136,7 @@
           "check": "func_exists:tools/tok.py:cmd_integrate",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Function cmd_integrate exists",
           "closure_detected": "2026-04-01T10:14:50+00:00"
         },
@@ -145,7 +145,7 @@
           "check": "manual",
           "status": "yellow",
           "health": 0.5,
-          "last_verified": "2026-04-01T15:59:33+00:00",
+          "last_verified": "2026-04-02T10:15:28+00:00",
           "notes": "Requires manual verification"
         },
         "actuator": {
@@ -153,7 +153,7 @@
           "check": "func_exists:tools/tok.py:apply_integration",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Function apply_integration exists",
           "closure_detected": "2026-04-01T10:16:58+00:00"
         },
@@ -162,13 +162,13 @@
           "check": "dir_has_recent:memory/tok/impact:30",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "1 entries in last 30d",
           "closure_detected": "2026-04-01T10:15:45+00:00"
         }
       },
       "health": 0.9,
-      "last_audit": "2026-04-01T15:59:33+00:00"
+      "last_audit": "2026-04-02T10:15:28+00:00"
     },
     {
       "id": "tok-incentive",
@@ -181,7 +181,7 @@
           "check": "code_exists:legible_money/x/knowledge/keeper/msg_server.go",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Code exists: msg_server.go"
         },
         "signal": {
@@ -189,7 +189,7 @@
           "check": "code_exists:legible_money/x/vesting_rewards/keeper/vesting.go",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Code exists: vesting.go"
         },
         "controller": {
@@ -197,7 +197,7 @@
           "check": "code_exists:legible_money/x/vesting_rewards/types/types.go",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Code exists: types.go"
         },
         "actuator": {
@@ -205,7 +205,7 @@
           "check": "devnet_active",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Devnet marked as live in kingdom-metrics"
         },
         "measure": {
@@ -213,13 +213,13 @@
           "check": "manual",
           "status": "yellow",
           "health": 0.5,
-          "last_verified": "2026-04-01T15:59:33+00:00",
+          "last_verified": "2026-04-02T10:15:28+00:00",
           "notes": "Requires manual verification",
           "closure_detected": "2026-04-01T10:14:50+00:00"
         }
       },
       "health": 0.9,
-      "last_audit": "2026-04-01T15:59:33+00:00"
+      "last_audit": "2026-04-02T10:15:28+00:00"
     },
     {
       "id": "tok-routing",
@@ -232,32 +232,33 @@
           "check": "dir_has_recent:memory/sessions:1",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T15:38:35+00:00",
-          "notes": "1 entries in last 1d"
+          "last_verified": "2026-04-02T08:30:11+00:00",
+          "notes": "12 entries in last 1d"
         },
         "signal": {
           "description": "Aggregated model performance profiles",
           "check": "file_exists:memory/tok/baselines/model-profiles.json",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "File exists: model-profiles.json",
           "closure_detected": "2026-04-01T10:16:58+00:00"
         },
         "controller": {
           "description": "Routing policy engine (data-driven model selection)",
-          "check": "config_dynamic:tools/heartbeat-runner.sh",
-          "status": "red",
-          "health": 0.0,
-          "last_verified": "2026-04-01T15:59:33+00:00",
-          "notes": "Model selection is hardcoded, not data-driven"
+          "check": "func_exists:tools/routing-policy.py:cmd_recommend",
+          "status": "green",
+          "health": 1.0,
+          "last_verified": "2026-04-02T08:30:11+00:00",
+          "notes": "Function cmd_recommend exists",
+          "closure_detected": "2026-04-01T17:45:00+00:00"
         },
         "actuator": {
           "description": "Dynamic model selection based on task type and ToK data",
           "check": "func_exists:tools/tok.py:get_routing_recommendation",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "Function get_routing_recommendation exists",
           "closure_detected": "2026-04-01T10:16:58+00:00"
         },
@@ -266,13 +267,13 @@
           "check": "dir_has_entries:memory/tok/impact",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "1 entries in memory/tok/impact",
           "closure_detected": "2026-04-01T10:15:45+00:00"
         }
       },
-      "health": 0.8,
-      "last_audit": "2026-04-01T15:59:33+00:00"
+      "health": 1.0,
+      "last_audit": "2026-04-02T10:15:28+00:00"
     },
     {
       "id": "lead-coupling",
@@ -285,7 +286,7 @@
           "check": "file_exists:memory/leads/current.json",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "File exists: current.json",
           "closure_detected": "2026-04-01T11:48:26+00:00"
         },
@@ -294,7 +295,7 @@
           "check": "file_exists:tools/heartbeat-runner.sh",
           "status": "green",
           "health": 1.0,
-          "last_verified": "2026-04-01T11:48:59+00:00",
+          "last_verified": "2026-04-02T08:30:11+00:00",
           "notes": "File exists: heartbeat-runner.sh"
         },
         "controller": {
@@ -302,28 +303,30 @@
           "check": "manual",
           "status": "yellow",
           "health": 0.5,
-          "last_verified": "2026-04-01T15:59:33+00:00",
-          "notes": "Requires manual verification"
+          "last_verified": "2026-04-02T10:15:28+00:00",
+          "notes": "Requires manual verification",
+          "closure_detected": "2026-04-01T17:35:25+00:00"
         },
         "actuator": {
           "description": "Spawn sessions aligned with lead, update progress",
           "check": "manual",
           "status": "yellow",
           "health": 0.5,
-          "last_verified": "2026-04-01T15:59:33+00:00",
-          "notes": "Requires manual verification"
+          "last_verified": "2026-04-02T10:15:28+00:00",
+          "notes": "Requires manual verification",
+          "closure_detected": "2026-04-01T17:35:25+00:00"
         },
         "measure": {
           "description": "Progress entries tracked in lead file, lead completion detected",
           "check": "manual",
           "status": "yellow",
           "health": 0.5,
-          "last_verified": "2026-04-01T15:59:33+00:00",
+          "last_verified": "2026-04-02T10:15:28+00:00",
           "notes": "Requires manual verification"
         }
       },
       "health": 0.7,
-      "last_audit": "2026-04-01T15:59:33+00:00"
+      "last_audit": "2026-04-02T10:15:28+00:00"
     }
   ]
 }
