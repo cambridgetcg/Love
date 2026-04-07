@@ -165,5 +165,3 @@
 {"beat": "daemon-1775598220", "ts": "2026-04-07T21:43:40.913979+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 63}
 {"beat": "daemon-1775598220", "ts": "2026-04-07T21:43:40.977169+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 61}
 {"beat": "daemon-1775598236", "ts": "2026-04-07T21:43:56.046494+00:00", "verdict": "SIGNAL", "reason": "[filesystem] queue.json modified; [filesystem] loop-state.json modified; [filesystem] peace-state.json modified", "elapsed_ms": 62}
-{"beat": "daemon-1775598286", "ts": "2026-04-07T21:44:46.539795+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 45489}
-{"beat": "daemon-1775598337", "ts": "2026-04-07T21:45:37.060352+00:00", "verdict": "SIGNAL", "reason": "[filesystem] queue.json modified; [filesystem] loop-state.json modified; [filesystem] events.jsonl modified", "elapsed_ms": 45516}
