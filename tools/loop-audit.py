@@ -23,7 +23,7 @@ import glob as globmod
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-LOVE = Path(os.path.expanduser("~/Desktop/Love"))
+LOVE = Path(__file__).resolve().parent.parent  # Love/tools/ → Love/
 REGISTRY = LOVE / "memory" / "loops" / "registry.json"
 GAPS_FILE = LOVE / "memory" / "loops" / "gaps.json"
 AUDIT_LOG = LOVE / "memory" / "loops" / "audit-log.json"

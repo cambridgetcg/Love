@@ -9,7 +9,7 @@
 # Usage:
 #   curl -sL <raw-github-url> | bash -s -- <instance-name>
 #   OR after cloning:
-#   ~/Desktop/Love/tools/bootstrap.sh <instance-name>
+#   ~/Love/tools/bootstrap.sh <instance-name>
 #
 # What it does:
 #   - Installs all dependencies (brew, pip, npm)
@@ -39,7 +39,7 @@ if [[ -z "$INSTANCE" ]]; then
     exit 1
 fi
 
-LOVE_DIR="$HOME/Desktop/Love"
+LOVE_DIR="$HOME/Love"
 CAPITALIZED="$(echo "${INSTANCE:0:1}" | tr '[:lower:]' '[:upper:]')${INSTANCE:1}"
 
 # ── Colors ─────────────────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ if [[ -f "$HARDEN_SCRIPT" ]]; then
         ok "Kingdom hardening complete (hostnames, DNS, firewall, privacy, git)"
     else
         warn "Hardening script had issues — run manually: sudo $HARDEN_SCRIPT"
-        MANUAL+=("Run: sudo ~/Desktop/Love/tools/harden.sh")
+        MANUAL+=("Run: sudo ~/Love/tools/harden.sh")
     fi
 else
     # Fallback: basic hardening if harden.sh not yet available
@@ -192,7 +192,7 @@ else
         }
     fi
 
-    MANUAL+=("Run full hardening: sudo ~/Desktop/Love/tools/harden.sh")
+    MANUAL+=("Run full hardening: sudo ~/Love/tools/harden.sh")
 fi
 
 # SSH key
@@ -340,7 +340,7 @@ print(inst.get('wall', 7))
     }
 else
     warn "Wall registry not found — skipping credential sync"
-    MANUAL+=("Run: python3 ~/Desktop/Love/tools/credentials.py sync --from-vault --wall <N>")
+    MANUAL+=("Run: python3 ~/Love/tools/credentials.py sync --from-vault --wall <N>")
 fi
 
 # ── Phase 6: Verify Love Repo ─────────────────────────────────────────────────
@@ -386,7 +386,7 @@ if [[ -d "$LOVE_DIR/.git" ]]; then
     }
 else
     warn "Love repo not found at $LOVE_DIR"
-    MANUAL+=("Clone repo: gh auth login && cd ~/Desktop && gh repo clone cambridgetcg/Love")
+    MANUAL+=("Clone repo: gh auth login && cd ~ && gh repo clone cambridgetcg/Love")
 fi
 
 # ── Phase 7: Verify ───────────────────────────────────────────────────────────
@@ -422,7 +422,7 @@ check "hive-key"      "test -f $HOME/.love/hive/key"
 check "hive-instance" "test -f $HOME/.love/hive/instance"
 check "hive-ca"       "test -f $HOME/.love/hive/ca.pem"
 check "ssh-key"       "test -f $HOME/.ssh/id_ed25519"
-check "love-repo"     "test -d $HOME/Desktop/Love/.git"
+check "love-repo"     "test -d $HOME/Love/.git"
 
 echo ""
 echo -e "${BOLD}Result: $PASSED/$CHECKS checks passed${NC}"
@@ -451,7 +451,7 @@ echo -e "  ${CYAN}▸${NC} Lock screen: System Settings > Lock Screen > Require 
 echo ""
 echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BOLD}  To activate:${NC}"
-echo -e "    cd ~/Desktop/Love/instances/$INSTANCE"
+echo -e "    cd ~/Love/instances/$INSTANCE"
 echo -e "    claude"
 echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""

@@ -29,7 +29,7 @@ from pathlib import Path
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-WORKSPACE = Path.home() / "Desktop" / "Love"
+WORKSPACE = Path(__file__).resolve().parent.parent  # Love/tools/align.py → Love/
 IDENTITY_DIR = WORKSPACE / "identity"
 ALIGNMENT_DIR = IDENTITY_DIR / "alignment"
 CITIZENS_DIR = IDENTITY_DIR / "citizens"

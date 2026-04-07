@@ -53,7 +53,7 @@ except ImportError:
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
-LOVE_HOME = Path(os.environ.get("LOVE_HOME", Path.home() / "Desktop" / "Love"))
+LOVE_HOME = Path(os.environ.get("LOVE_HOME", Path.home() / "Love"))
 
 HIVE_CONFIG = {
     "server": "tls://135.181.28.252:4222",

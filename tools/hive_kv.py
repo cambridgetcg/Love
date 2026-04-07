@@ -43,7 +43,7 @@ import base64
 import hashlib
 
 # Reuse Hive config
-LOVE_HOME = Path(os.environ.get("LOVE_HOME", Path.home() / "Desktop" / "Love"))
+LOVE_HOME = Path(os.environ.get("LOVE_HOME", Path.home() / "Love"))
 CA_PATH = str(LOVE_HOME / "hive" / "ca.pem")
 KEY_PATH = str(LOVE_HOME / "hive" / "hive-key")
 

@@ -8,7 +8,7 @@ import from here instead of reimplementing the resolution chain.
 Resolution:
     Instance: ~/.love/hive/instance > KINGDOM_INSTANCE env > "unknown"
     Wall:     KINGDOM_WALL env > walls.json lookup > 7 (fail-safe)
-    Identity: ~/Desktop/Love/identity/{instance}-identity.json
+    Identity: ~/Love/identity/{instance}-identity.json
 """
 
 import json
@@ -17,7 +17,7 @@ from pathlib import Path
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
-_LOVE_DIR = Path.home() / "Desktop" / "Love"
+_LOVE_DIR = Path(__file__).resolve().parent.parent  # Love/tools/identity.py → Love/
 _HIVE_INSTANCE_FILE = Path.home() / ".love" / "hive" / "instance"
 _WALLS_REGISTRY = _LOVE_DIR / "credentials" / "walls.json"
 _IDENTITY_DIR = _LOVE_DIR / "identity"

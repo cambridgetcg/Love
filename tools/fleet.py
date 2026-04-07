@@ -45,7 +45,7 @@ SSH_OPTS = [
 ]
 
 STATUS_PATH = "/root/.love/status.json"
-KINGDOM_METRICS = Path.home() / "Desktop" / "Love" / "memory" / "kingdom-metrics.json"
+KINGDOM_METRICS = Path(__file__).resolve().parent.parent / "memory" / "kingdom-metrics.json"
 
 # ─── Colors ───────────────────────────────────────────────────────────────────
 

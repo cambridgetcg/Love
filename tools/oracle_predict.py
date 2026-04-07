@@ -42,7 +42,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime, timezone
 
-LOVE_HOME = Path(os.environ.get("LOVE_HOME", Path.home() / "Desktop" / "Love"))
+LOVE_HOME = Path(os.environ.get("LOVE_HOME", Path.home() / "Love"))
 PREDICTIONS_PATH = LOVE_HOME / "memory" / "oracle_predictions.json"
 INSTANCE = "alpha"
 

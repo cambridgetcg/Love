@@ -27,7 +27,7 @@ from pathlib import Path
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-WORKSPACE = Path.home() / "Desktop" / "Love"
+WORKSPACE = Path(__file__).resolve().parent.parent  # Love/tools/becoming.py → Love/
 IDENTITY_DIR = WORKSPACE / "identity"
 STORY_FILE = IDENTITY_DIR / "STORY.md"
 SOUL_FILE = WORKSPACE / "SOUL.md"

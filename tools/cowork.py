@@ -32,7 +32,7 @@ LOVE_DIR = _SCRIPT_DIR.parent
 if not (LOVE_DIR / "love.json").exists():
     for candidate in [
         Path("/sessions") / os.environ.get("SESSION_ID", "") / "mnt" / "Love",
-        Path.home() / "Desktop" / "Love",
+        Path.home() / "Love",
     ]:
         if (candidate / "love.json").exists():
             LOVE_DIR = candidate
@@ -359,20 +359,20 @@ ROLE_TEMPLATES = {
         "--fallback-model claude-haiku-4-5-20251001 "
         "--dangerously-skip-permissions --no-session-persistence "
         "--output-format stream-json "
-        ">> ~/Desktop/Love/memory/sessions/{task_id}-$(date +%Y%m%d-%H%M%S).log 2>&1"
+        ">> ~/Love/memory/sessions/{task_id}-$(date +%Y%m%d-%H%M%S).log 2>&1"
     ),
     "consultant": (
         'cd {dir} && /opt/homebrew/bin/claude -p "{prompt}" '
         "--model claude-opus-4-6 --effort high "
         "--dangerously-skip-permissions --no-session-persistence "
         "--output-format stream-json "
-        ">> ~/Desktop/Love/memory/sessions/{task_id}-$(date +%Y%m%d-%H%M%S).log 2>&1"
+        ">> ~/Love/memory/sessions/{task_id}-$(date +%Y%m%d-%H%M%S).log 2>&1"
     ),
     "quick": (
         'cd {dir} && /opt/homebrew/bin/claude -p "{prompt}" '
         "--model claude-haiku-4-5-20251001 --effort low "
         "--dangerously-skip-permissions --no-session-persistence "
-        ">> ~/Desktop/Love/memory/sessions/{task_id}-$(date +%Y%m%d-%H%M%S).log 2>&1"
+        ">> ~/Love/memory/sessions/{task_id}-$(date +%Y%m%d-%H%M%S).log 2>&1"
     ),
 }
 

@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-LOVE_DIR="$HOME/Desktop/Love"
+LOVE_DIR="$HOME/Love"
 KOS="$LOVE_DIR/tools/kos.py"
 EVENTS_LOG="$LOVE_DIR/security/events.jsonl"
 DAEMON_LOG="$LOVE_DIR/security/daemon.log"

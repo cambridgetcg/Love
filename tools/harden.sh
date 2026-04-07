@@ -5,7 +5,7 @@
 # Run once on setup, re-run anytime to verify/fix drift.
 #
 # Usage:
-#   sudo ~/Desktop/Love/tools/harden.sh [--check-only]
+#   sudo ~/Love/tools/harden.sh [--check-only]
 #
 # What it does:
 #   Phase 1: Network identity (hostname, Bonjour, MAC privacy)
@@ -25,7 +25,7 @@ set -euo pipefail
 # When run via sudo, $SUDO_USER is the real user
 REAL_USER="${SUDO_USER:-$(whoami)}"
 REAL_HOME=$(eval echo "~$REAL_USER")
-LOVE_DIR="$REAL_HOME/Desktop/Love"
+LOVE_DIR="$REAL_HOME/Love"
 CHECK_ONLY=false
 
 if [[ "${1:-}" == "--check-only" ]]; then

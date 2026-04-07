@@ -27,7 +27,7 @@ from pathlib import Path
 
 # ── Identity ──────────────────────────────────────────────────────────────────
 
-_IDENTITY_FILE = Path(os.environ.get("LOVE_HOME", Path.home() / "Desktop" / "Love")) / "memory" / "beta-identity" / "identity.json"
+_IDENTITY_FILE = Path(os.environ.get("LOVE_HOME", Path.home() / "Love")) / "memory" / "beta-identity" / "identity.json"
 
 def _identity() -> dict:
     if _IDENTITY_FILE.exists():

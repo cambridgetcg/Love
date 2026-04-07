@@ -25,7 +25,7 @@ import stat
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-LOVE = Path(os.path.expanduser("~/Desktop/Love"))
+LOVE = Path(__file__).resolve().parent.parent  # Love/tools/ → Love/
 SECURITY = LOVE / "security"
 EVENTS_FILE = SECURITY / "events.jsonl"
 CANARIES_FILE = SECURITY / "canaries.json"

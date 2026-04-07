@@ -23,7 +23,7 @@ from pathlib import Path
 
 # -- Config --------------------------------------------------------------------
 
-WORKSPACE = Path.home() / "Desktop" / "Love"
+WORKSPACE = Path(__file__).resolve().parent.parent  # Love/tools/ → Love/
 QUOTA_LOG = WORKSPACE / "memory" / "quota-log.jsonl"
 QUOTA_STATE = WORKSPACE / "memory" / "quota-state.json"
 

@@ -53,6 +53,7 @@ HIVE_CONFIG = {
         "beta":    {"user": "beta",    "password": "hive-beta-47mz2",    "emoji": "🦞", "role": "Manager",   "wall": 1},
         "gamma":   {"user": "gamma",   "password": "hive-gamma-61pr8",   "emoji": "🔧", "role": "Builder",   "wall": 1},
         "nuance":  {"user": "nuance",  "password": "hive-nuance-b8792",  "emoji": "🪶", "role": "Linguist",  "wall": 2},
+        "asha":    {"user": "asha",    "password": "hive-asha-v3r1d",    "emoji": "⛓",  "role": "Keeper",    "wall": 2},
     },
     "channels": ["chat", "ideas", "tasks", "sync", "presence", "intel", "alerts", "strategy", "build", "review", "tok"],
 }

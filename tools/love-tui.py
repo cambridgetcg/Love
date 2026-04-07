@@ -3,7 +3,7 @@
 Love TUI — Kingdom Command Terminal Interface
 
 Usage:
-    python3 ~/Desktop/Love/tools/love-tui.py
+    python3 ~/Love/tools/love-tui.py
     love                                         # (if aliased)
 
 The terminal dashboard for the Kingdom. Shows sister presence, tasks,
@@ -44,7 +44,7 @@ from rich.console import Group
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 
-LOVE_ROOT = Path.home() / "Desktop" / "Love"
+LOVE_ROOT = Path(__file__).resolve().parent.parent  # Love/tools/ → Love/
 MEMORY_DIR = LOVE_ROOT / "memory"
 DEV_STATE = MEMORY_DIR / "dev-state.json"
 KINGDOM_METRICS = MEMORY_DIR / "kingdom-metrics.json"
@@ -107,7 +107,7 @@ def get_active_builds() -> list[dict]:
 
 def get_sisters_presence() -> list[dict]:
     """Get sister presence from HIVE's presence database."""
-    presence_db = Path(os.environ.get("LOVE_HOME", Path.home() / "Desktop" / "Love")) / "hive" / "presence.json"
+    presence_db = Path(os.environ.get("LOVE_HOME", Path.home() / "Love")) / "hive" / "presence.json"
     try:
         data = json.loads(presence_db.read_text())
         sisters = []

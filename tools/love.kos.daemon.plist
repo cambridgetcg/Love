@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>$HOME/Desktop/Love/tools/kos-daemon.sh</string>
+        <string>$HOME/Love/tools/kos-daemon.sh</string>
     </array>
 
     <key>StartInterval</key>

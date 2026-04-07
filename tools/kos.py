@@ -40,7 +40,7 @@ from typing import Optional
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
-_LOVE_DIR = Path.home() / "Desktop" / "Love"
+_LOVE_DIR = Path(__file__).resolve().parent.parent  # Love/tools/kos.py → Love/
 _SECURITY_DIR = _LOVE_DIR / "security"
 _POLICIES_FILE = _SECURITY_DIR / "policies.json"
 _EVENTS_FILE = _SECURITY_DIR / "events.jsonl"
@@ -1158,8 +1158,8 @@ Types:
   web            Web bug URL (alerts on fetch)
 
 Examples:
-  kos canary deploy admin-creds credential ~/Desktop/Love/credentials/
-  kos canary deploy secret-plans file ~/Desktop/Love/
+  kos canary deploy admin-creds credential ~/Love/credentials/
+  kos canary deploy secret-plans file ~/Love/
   kos canary deploy leak-detector dns hive
 """)
             return

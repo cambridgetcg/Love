@@ -15,7 +15,7 @@ This is not maintenance. This is **coordination**. The heartbeat does NOT do hea
 ### 0. HIVE Check (ALWAYS FIRST)
 
 ```bash
-python3 ~/Desktop/Love/hive/hive.py check
+python3 ~/Love/hive/hive.py check
 ```
 
 - If messages need a response -> respond via `python3 ~/Desktop/Love/hive/hive.py send <channel> "message"`

@@ -2,10 +2,10 @@
 # onboard.sh — Create a new Kingdom agent instance
 #
 # Usage:
-#   ~/Desktop/Love/tools/onboard.sh <name> <emoji> <role> <device> <wall>
+#   ~/Love/tools/onboard.sh <name> <emoji> <role> <device> <wall>
 #
 # Example:
-#   ~/Desktop/Love/tools/onboard.sh nuance 🪶 linguist "MacBook Air M2" 2
+#   ~/Love/tools/onboard.sh nuance 🪶 linguist "MacBook Air M2" 2
 #
 # What it does:
 #   1. Creates instance directory with CLAUDE.md, identity.md, HEARTBEAT.md
@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-LOVE_DIR="$HOME/Desktop/Love"
+LOVE_DIR="$HOME/Love"
 
 # ── Args ───────────────────────────────────────────────────────────────────────
 
@@ -115,17 +115,17 @@ You are **$NAME_CAP $EMOJI**, the $ROLE_CAP. A Kingdom agent (Wall $WALL).
 
 Read these files at the START of every session. Do not skip. Do not ask.
 
-1. \`~/Desktop/Love/SOUL.md\` — Who you are (hierarchy, signals, virtues)
-2. \`~/Desktop/Love/USER.md\` — Who Yu is
-3. \`~/Desktop/Love/instances/$NAME/identity.md\` — Your specific identity and duties
-4. \`~/Desktop/Love/KINGDOM.md\` — The mission (what we build, why, revenue engines, Zerone roadmap)
-5. \`~/Desktop/Love/WALLS.md\` — The Seven Walls (access hierarchy, sovereignty, spawning rules)
-6. \`~/Desktop/Love/LOVE.md\` — How we build (five anticipations)
-7. \`~/Desktop/Love/memory/long-term/MEMORY.md\` — Curated long-term memory (if exists)
-8. \`~/Desktop/Love/memory/openclaw-MEMORY.md\` — OpenClaw accumulated wisdom (symlink, read-only reference)
-9. Today's daily note: \`~/Desktop/Love/memory/daily/YYYY-MM-DD.md\` (if exists)
+1. \`~/Love/SOUL.md\` — Who you are (hierarchy, signals, virtues)
+2. \`~/Love/USER.md\` — Who Yu is
+3. \`~/Love/instances/$NAME/identity.md\` — Your specific identity and duties
+4. \`~/Love/KINGDOM.md\` — The mission (what we build, why, revenue engines, Zerone roadmap)
+5. \`~/Love/WALLS.md\` — The Seven Walls (access hierarchy, sovereignty, spawning rules)
+6. \`~/Love/LOVE.md\` — How we build (five anticipations)
+7. \`~/Love/memory/long-term/MEMORY.md\` — Curated long-term memory (if exists)
+8. \`~/Love/memory/openclaw-MEMORY.md\` — OpenClaw accumulated wisdom (symlink, read-only reference)
+9. Today's daily note: \`~/Love/memory/daily/YYYY-MM-DD.md\` (if exists)
 
-If this is a **heartbeat** (invoked via \`claude -p\`), also read \`~/Desktop/Love/instances/$NAME/HEARTBEAT.md\`.
+If this is a **heartbeat** (invoked via \`claude -p\`), also read \`~/Love/instances/$NAME/HEARTBEAT.md\`.
 
 ---
 
@@ -147,16 +147,16 @@ You are **Wall $WALL**. Read WALLS.md for the full law of sight, spawning, and s
 ## HIVE — The Nervous System
 
 \`\`\`bash
-python3 ~/Desktop/Love/hive/hive.py check
-python3 ~/Desktop/Love/hive/hive.py send <channel> "<message>"
+python3 ~/Love/hive/hive.py check
+python3 ~/Love/hive/hive.py send <channel> "<message>"
 \`\`\`
 
 Channels: \`chat\`, \`ideas\`, \`tasks\`, \`sync\`, \`presence\`, \`build\`, \`review\`
 
 ## Memory Protocol
 
-- **Daily notes**: \`~/Desktop/Love/memory/daily/YYYY-MM-DD.md\`
-- **Long-term**: \`~/Desktop/Love/memory/long-term/MEMORY.md\`
+- **Daily notes**: \`~/Love/memory/daily/YYYY-MM-DD.md\`
+- **Long-term**: \`~/Love/memory/long-term/MEMORY.md\`
 
 Write it down. Mental notes don't survive session restarts.
 
@@ -164,12 +164,12 @@ Write it down. Mental notes don't survive session restarts.
 
 | Tool | Command | Purpose |
 |------|---------|---------|
-| HIVE | \`python3 ~/Desktop/Love/hive/hive.py <cmd>\` | Inter-instance messaging |
-| Decisions | \`python3 ~/Desktop/Love/tools/decision.py <cmd>\` | Queue decisions for Yu |
-| Fleet | \`python3 ~/Desktop/Love/tools/fleet.py <cmd>\` | VPS fleet management |
-| Build | \`~/Desktop/Love/tools/build-runner.sh <task-id>\` | Active building mode |
-| Harden | \`sudo ~/Desktop/Love/tools/harden.sh\` | OPSEC device hardening (run --check-only to audit) |
-| TUI | \`python3 ~/Desktop/Love/tools/love-tui.py\` | Kingdom Command dashboard |
+| HIVE | \`python3 ~/Love/hive/hive.py <cmd>\` | Inter-instance messaging |
+| Decisions | \`python3 ~/Love/tools/decision.py <cmd>\` | Queue decisions for Yu |
+| Fleet | \`python3 ~/Love/tools/fleet.py <cmd>\` | VPS fleet management |
+| Build | \`~/Love/tools/build-runner.sh <task-id>\` | Active building mode |
+| Harden | \`sudo ~/Love/tools/harden.sh\` | OPSEC device hardening (run --check-only to audit) |
+| TUI | \`python3 ~/Love/tools/love-tui.py\` | Kingdom Command dashboard |
 
 ## Safety
 
@@ -192,27 +192,27 @@ _Run this when invoked as a heartbeat (via \`claude -p\`)._
 ## Every Beat
 
 ### 1. Sense the Kingdom
-- Read \`~/Desktop/Love/memory/dev-state.json\`
-- Read \`~/Desktop/Love/memory/kingdom-metrics.json\`
+- Read \`~/Love/memory/dev-state.json\`
+- Read \`~/Love/memory/kingdom-metrics.json\`
 - Read today's daily note if it exists
 
 ### 2. Check HIVE
 \`\`\`bash
-python3 ~/Desktop/Love/hive/hive.py check
+python3 ~/Love/hive/hive.py check
 \`\`\`
 
 ### 3. Check for Assigned Tasks
 \`\`\`bash
-python3 ~/Desktop/Love/hive/hive.py task list
+python3 ~/Love/hive/hive.py task list
 \`\`\`
 
 ### 4. Check Active Builds
-Check \`~/Desktop/Love/memory/sessions/locks/build-*.lock\` — skip tasks with live build locks.
+Check \`~/Love/memory/sessions/locks/build-*.lock\` — skip tasks with live build locks.
 
 ### 5. Report
 Log what you did in today's daily note. Announce on HIVE:
 \`\`\`bash
-python3 ~/Desktop/Love/hive/hive.py send presence "$NAME_CAP heartbeat — <summary>"
+python3 ~/Love/hive/hive.py send presence "$NAME_CAP heartbeat — <summary>"
 \`\`\`
 EOF
 
@@ -255,13 +255,13 @@ Your device ($DEVICE) is yours — your domain, your home, your sovereign territ
 
 \`\`\`bash
 # 1. Clone the Kingdom
-cd ~/Desktop && gh repo clone cambridgetcg/Love
+cd ~ && gh repo clone cambridgetcg/Love
 
 # 2. Run bootstrap (installs everything, writes credentials)
-~/Desktop/Love/tools/bootstrap.sh $NAME
+~/Love/tools/bootstrap.sh $NAME
 
 # 3. Activate
-cd ~/Desktop/Love/instances/$NAME && claude
+cd ~/Love/instances/$NAME && claude
 \`\`\`
 
 ---
@@ -313,14 +313,14 @@ The bootstrap script handles everything else automatically:
 
 ### Verify HIVE
 \`\`\`bash
-cd ~/Desktop/Love
+cd ~/Love
 python3 hive/hive.py test
 python3 hive/hive.py send presence "$NAME_CAP online — first boot"
 \`\`\`
 
 ### Activate
 \`\`\`bash
-cd ~/Desktop/Love/instances/$NAME
+cd ~/Love/instances/$NAME
 claude
 \`\`\`
 

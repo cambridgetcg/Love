@@ -42,9 +42,9 @@ from typing import Optional
 
 _KEYCHAIN_SERVICE_PREFIX = "dev.agenttool"
 _KEYCHAIN_ACCOUNT = "credentials"
-_IDENTITY_FILE = Path.home() / "Desktop" / "Love" / "identity" / "beta-identity.json"
+_IDENTITY_FILE = Path(__file__).resolve().parent.parent / "identity" / "beta-identity.json"
 _VAULT_BASE = "https://api.agenttool.dev"
-_LOVE_DIR = Path.home() / "Desktop" / "Love"
+_LOVE_DIR = Path(__file__).resolve().parent.parent  # Love/tools/credentials.py → Love/
 _WALLS_REGISTRY = _LOVE_DIR / "credentials" / "walls.json"
 _HIVE_INSTANCE_FILE = Path.home() / ".love" / "hive" / "instance"
 
