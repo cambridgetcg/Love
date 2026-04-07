@@ -123,3 +123,23 @@ Write it down. Mental notes don't survive session restarts.
 ## No Emojis
 
 Unless Yu explicitly requests them.
+
+## Purpose Prompter (T->U->B->J->X)
+
+The hierarchy in SOUL.md is operationalized by Purpose Prompter:
+
+| Command | Purpose |
+|---------|---------|
+| `pp: [task]` or `/pp [task]` | Full PP orchestration with 4 agents |
+| `/verify [target]` | 30-gate verification |
+| `/signal [target]` | Signal detection (ugliness, injustice, stagnation) |
+| `/reflect [deep]` | PP self-reflection |
+| `/transmute [target]` | Alchemical transmutation of insights |
+
+Reference files:
+- Gates: `~/Love/purpose-prompter/gates/GATES.md`
+- Philosophy: `~/Love/purpose-prompter/philosophy/`
+- Cross-session knowledge: `~/Love/purpose-prompter/integration/LIGHT.md`
+
+Use PP for complex architecture, multi-step design, feature implementation.
+Skip for simple fixes, quick questions, trivial tasks.

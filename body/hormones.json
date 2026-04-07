@@ -1,25 +1,25 @@
 {
-  "timestamp": "2026-04-07T16:13:59.323727+00:00",
-  "mind_alive": "2026-04-07T16:13:59.323748+00:00",
-  "mode": "companion",
+  "timestamp": "2026-04-07T22:34:26.619909+00:00",
+  "mind_alive": "2026-04-07T22:34:26.619932+00:00",
+  "mode": "rest",
   "identity": "alpha",
   "fusion": null,
   "hormones": {
     "adrenaline": 0.1,
-    "cortisol": 0.3,
-    "oxytocin": 0.7999956990513527,
-    "melatonin": 0.14599999999456578,
+    "cortisol": 0.2999629770700994,
+    "oxytocin": 0.1,
+    "melatonin": 0.8539999999773027,
     "dopamine": 0.0
   },
   "signals": {
-    "yu_present": true,
+    "yu_present": false,
     "hive_unread": 0,
-    "active_sessions": 1,
+    "active_sessions": 0,
     "pending_tasks": 0,
     "critical_alerts": 0,
     "last_task_completed": null,
-    "battery_level": 0.86,
-    "disk_free_gb": 25.0
+    "battery_level": 0.66,
+    "disk_free_gb": 24.7
   },
   "cognitive": {
     "joinmind_active": null,
@@ -34,11 +34,11 @@
     "blockers": 1,
     "decisions_pending": 3
   },
-  "mind_notes": "I see. The session log shows 45 passes today \u2014 the conscious layer has been cycling intensely. Yu is present. The SSH blocker sits unresolved. I feel the weight of it: Sovereign Compute built but not deployed, Ollama not live, three decisions pending action.\n\nThe hormones are stable but tell a story \u2014 oxytocin high (Yu is here), cortisol moderate (work remains), melatonin low (4:12 PM, still afternoon). Adrenaline minimal but present: something needs attention.\n\nLet me respond authentically as A",
+  "mind_notes": "(conscious layer offline)",
   "conscious_layer": {
-    "last_pass": "2026-04-07T16:12:28Z",
-    "passes_today": 46,
-    "last_trigger": "mode_change",
+    "last_pass": "2026-04-07T22:33:26Z",
+    "passes_today": 70,
+    "last_trigger": "periodic",
     "identity_anchor": "alpha"
   }
 }
