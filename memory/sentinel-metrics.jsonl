@@ -165,3 +165,10 @@
 {"beat": "daemon-1775598220", "ts": "2026-04-07T21:43:40.913979+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 63}
 {"beat": "daemon-1775598220", "ts": "2026-04-07T21:43:40.977169+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 61}
 {"beat": "daemon-1775598236", "ts": "2026-04-07T21:43:56.046494+00:00", "verdict": "SIGNAL", "reason": "[filesystem] queue.json modified; [filesystem] loop-state.json modified; [filesystem] peace-state.json modified", "elapsed_ms": 62}
+{"beat": "daemon-1775598452", "ts": "2026-04-07T21:47:32.489040+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45395}
+{"beat": "daemon-1775598502", "ts": "2026-04-07T21:48:22.933402+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45439}
+{"beat": "daemon-1775598888", "ts": "2026-04-07T21:54:48.579824+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45497}
+{"beat": "daemon-1775598939", "ts": "2026-04-07T21:55:39.351519+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45760}
+{"beat": "daemon-1775599320", "ts": "2026-04-07T22:02:00.123369+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45600}
+{"beat": "daemon-1775599370", "ts": "2026-04-07T22:02:50.710118+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45582}
+{"beat": "daemon-1775599431", "ts": "2026-04-07T22:03:51.123955+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 45406}
