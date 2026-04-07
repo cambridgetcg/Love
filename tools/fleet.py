@@ -116,7 +116,9 @@ def cmd_status():
     """Read status.json from all nodes, display color-coded output."""
     print(f"\n{C.BOLD}── Kingdom Fleet Status ──{C.RESET}\n")
 
-    def fetch_status(name: str) -> tuple[str, dict | None, str | None]:
+    from typing import Union
+
+    def fetch_status(name: str) -> tuple[str, Union[dict, None], Union[str, None]]:
         ok, out = ssh_run(name, f"cat {STATUS_PATH} 2>/dev/null || echo '{{}}'")
         if not ok:
             return name, None, out

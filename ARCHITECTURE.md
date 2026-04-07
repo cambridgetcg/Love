@@ -1,19 +1,44 @@
 # Love — Architecture
 
-_The Kingdom's nervous system. A context layer for Claude Code._
+_The Kingdom's nervous system. A context layer for any model._
 
 ---
 
 ## The Core Insight
 
-OpenClaw builds a runtime around Claude (gateway, session manager, heartbeat scheduler, browser wrapper). Love doesn't. Love provides **soul, memory, and coordination** — Claude Code provides everything else.
+Kingdom OS is not tied to any model or framework. It provides **soul, memory, and coordination** — the model backend provides execution. The power is in the context, not the runtime.
 
 ```
-OpenClaw:  OpenClaw binary → wraps Claude API → manages sessions → custom tools
-Love:      Claude Code CLI → reads CLAUDE.md → IS the agent → uses bash tools
+Old approach:   Custom binary → wraps one AI API → manages sessions → custom tools
+Kingdom OS:     Boot chain (files) → kingdom-agent adapter → ANY model → uses bash tools
 ```
 
-Claude Code already has: tool execution, subagents, hooks, MCP servers, computer use, context management, cron (via system crontab + `claude -p`), and CLAUDE.md-based project instructions. Love configures these to create Kingdom agents.
+Kingdom OS works with any model that can read files and call tools: Claude, GPT, DeepSeek, Llama, Qwen, Mistral — local or remote.
+
+### Backend Adapter (`tools/kingdom-agent.py`)
+
+```
+kingdom-agent (universal wrapper)
+  ├── Boot chain loader (SOUL.md → identity.md → ... → assembled system prompt)
+  ├── Tool executor (bash, file I/O, HIVE, fleet, KOS)
+  ├── Agent loop (prompt → tool calls → execute → feed back)
+  └── Backend selector
+      ├── claude      → Claude Code CLI passthrough (full features, zero overhead)
+      ├── anthropic   → Anthropic API direct (when CLI unavailable)
+      ├── openai      → OpenAI-compatible API (GPT, DeepSeek, LM Studio, Together)
+      └── ollama      → Local models (Llama, Qwen, Mistral)
+```
+
+**Model tier mapping** (configured in `love.json`):
+```
+Tier      Claude              OpenAI         Ollama
+────────────────────────────────────────────────────
+high      claude-opus-4-6     gpt-4o         qwen2.5:72b
+medium    claude-sonnet-4-6   gpt-4o-mini    qwen2.5:32b
+low       claude-haiku-4-5    gpt-4o-mini    qwen2.5:7b
+```
+
+When Claude Code is available, `kingdom-agent` passes through to it with zero overhead. When it's not — on a VPS, on a device without Claude Code, or during a provider outage — the same Kingdom context boots into any compatible model.
 
 ---
 
@@ -274,20 +299,22 @@ Each sister's device is sovereign territory within Wall 1. Committed code is sha
 
 ---
 
-## What Claude Code Provides (no reimplementation needed)
+## What the Backend Provides
 
-| Capability | Claude Code Feature | OpenClaw Equivalent |
-|------------|-------------------|---------------------|
-| Tool execution | Bash, Read, Write, Edit, Grep, Glob | Custom tool runner |
-| Subagents | Agent tool (Explore, Plan, general) | Custom subagent spawner |
-| Browser | Computer use (native) | CDP wrapper |
-| Context management | Auto-compaction, cache | Custom context pruner |
-| Cron | System crontab + `claude -p` | Internal scheduler |
-| Hooks | Pre/post tool hooks | Custom middleware |
-| MCP integration | MCP server config | N/A |
-| Project instructions | CLAUDE.md | AGENTS.md loaded manually |
-| Memory | ~/.claude/projects/*/memory/ | sqlite |
-| Skills | Skill tool + slash commands | Custom skill system |
+| Capability | Claude Code | OpenAI/Ollama (via kingdom-agent) |
+|------------|-------------|-----------------------------------|
+| Tool execution | Native Bash, Read, Write, Edit, Grep, Glob | kingdom-agent tool executor |
+| System prompt | CLAUDE.md auto-load | Boot chain assembler |
+| Headless mode | `claude -p "prompt"` | `kingdom-agent -p "prompt"` |
+| Model selection | `--model sonnet` | `--model medium --backend openai` |
+| Effort control | `--effort high` | `--effort high` (maps to temp/tokens) |
+| Subagents | Agent tool (native) | Nested kingdom-agent invocations |
+| Context management | Auto-compaction | Sliding window (configurable) |
+| Cron | System crontab + CLI | System crontab + kingdom-agent |
+| MCP integration | Native | Via goose or direct (future) |
+| Computer use | Native | Via MCP server (future) |
+
+**The adapter contract**: any backend that can (1) accept a system prompt, (2) generate text, and (3) call tools via function calling can run a Kingdom agent.
 
 ---
 
@@ -314,4 +341,4 @@ Each sister's device is sovereign territory within Wall 1. Committed code is sha
 
 ---
 
-_Love doesn't replace Claude Code. Love makes Claude Code into the Kingdom's nervous system._
+_Love doesn't replace your model. Love makes any model into the Kingdom's nervous system._

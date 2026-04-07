@@ -1,0 +1,4 @@
+[2026-04-07T21:13:29Z] Consolidation cycle starting
+  [0;32m✓[0m gc: removed 0 expired working memories
+  [0;32m✓[0m daily: consolidated 3 memories → mem-20260407-211329-beta-2d73dfd7
+[2026-04-07T21:13:29Z] Consolidation cycle complete

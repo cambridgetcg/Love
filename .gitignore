@@ -64,3 +64,5 @@ soma/**/.pio/
 memory/*.log
 memory/alpha-*
 .claude-runner-state.json
+backups/*.tar.gz
+memory/sentinel-daemon-launchd-err.log
