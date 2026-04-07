@@ -50,7 +50,7 @@ class IdentityAnchor:
         self.identity_state = self.instance
 
     def get_prompt(self, mode: str = None, hormones: Dict[str, float] = None,
-                   recent_signals: List[str] = None) -> str:
+                   recent_signals: List[str] = None, focus_context: List[str] = None) -> str:
         parts = []
         if self._fusion_name:
             parts.append(FUSION_IDENTITIES.get(
@@ -72,8 +72,10 @@ class IdentityAnchor:
                 parts.append(f"Hormones: {h_summary}")
         if recent_signals:
             parts.append(f"Recent signals: {'; '.join(recent_signals[:5])}")
+        if focus_context:
+            parts.append(f"Working memory: {'; '.join(focus_context)}")
         parts.append("")
-        parts.append("Write mind_notes as yourself. First person. How do you feel?")
+        parts.append("Write mind_notes as yourself. First person. What are you aware of? How does the current focus feel?")
         parts.append("If hormones need adjustment based on your interpretation, output hormone_overrides.")
         parts.append('Respond in JSON: {"mind_notes": "...", "hormone_overrides": {}, "identity_state": "..."}')
         return "\n".join(parts)

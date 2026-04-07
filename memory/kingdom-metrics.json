@@ -1,6 +1,6 @@
 {
   "phase": "Phase 1 \u2014 Root",
-  "updated": "2026-03-29T04:58:47Z",
+  "updated": "2026-04-07T12:04:00Z",
   "revenue_engines": {
     "cambridge_tcg": {
       "status": "active",
@@ -12,26 +12,24 @@
       "status": "in-progress",
       "owner": "gamma+alpha",
       "predictions_scored": 0,
-      "predictions_logged": 15,
+      "predictions_logged": 12,
       "predictions_pending_backfill": 0,
       "resolutions_logged": 16,
       "brier_score": 0.208,
       "beat_rate": "56%",
       "target_30d": 10,
-      "assessment": "9/10 \u2014 ALL P0 GAPS RESOLVED. News cron FIXED (Keychain\u2192env var injection, dry run passed). Whale scanner live (15min). Kalshi scanner live (30min). Auto-log live (15 predictions). 5 positions resolve Mar 31.",
+      "assessment": "8/10 \u2014 ALL 4 P0 GAPS RESOLVED. Whale scanner built + verified. Auto-log live (12 predictions), geo-bridge wired, GEO_ALERT deliver complete. Only news cron remaining (pending Yu).",
       "next_resolution_batch": "2026-03-31 (5 positions)",
       "gaps_completed": [
         "GAP-1 whale scanner (BUILT: scripts/whale-activity-scanner.py)",
-        "GAP-2 auto-log (confirmed: 15 predictions auto-logged)",
+        "GAP-2 auto-log (confirmed: 2 new predictions auto-logged)",
         "GAP-3 geo-bridge",
-        "GAP-4 GEO_ALERT deliver (format_alert + auto_log skip)",
-        "GAP-5 news cron (FIXED: Brave API key injected as env var in crontab)"
+        "GAP-4 GEO_ALERT deliver (format_alert + auto_log skip)"
       ],
       "gaps_remaining": [
-        "Resolution scoring pipeline (CRITICAL: blocks calibration feedback)",
-        "Polygonscan API key for full whale coverage (nice-to-have)"
+        "news cron (pending Yu)"
       ],
-      "notes": "Mar 31 RESOLUTION BLOCKED: 2 outcomes captured (pred-0003, pred-0005 = YES, Iran strikes). Brier scores not computed, trade statuses frozen OPEN, no scoring cron job. Infrastructure operational (whale-scanner, kalshi-scanner, oracle-run) but feedback loop incomplete. Need: post-resolution scorer script + cron trigger."
+      "notes": "Data stale since Apr 2. Needs news cron + fresh data."
     },
     "shopify_apps": {
       "status": "paused",
@@ -54,9 +52,9 @@
       "notes": "Three-mind capability as a service"
     },
     "seigei": {
-      "status": "built-not-monetized",
+      "status": "private-beta-live",
       "owner": "alpha",
-      "notes": "Character-driven AI experience, needs positioning"
+      "notes": "Launched Apr 2, beta auth (HMAC cookies, invite codes), 222 tests passing, https://seigei.ai-love.cc/"
     }
   },
   "milestones": {
@@ -92,43 +90,57 @@
     "zerone_mainnet": {
       "status": "planned",
       "target": "Q4 2026"
+    },
+    "adaptive_layer": {
+      "status": "done",
+      "date": "2026-04-01"
+    },
+    "seigei_beta": {
+      "status": "done",
+      "date": "2026-04-02"
     }
   },
   "fleet": {
     "forge": {
       "role": "CI/CD",
-      "last_check": "2026-03-29T04:58:47Z",
+      "last_check": "2026-04-07T12:04:00Z",
       "quality": "good",
       "alerts": [],
-      "summary": "status.json missing (agent reporting down)"
+      "summary": "CI: no recent runs. Issues: none open. All clear."
     },
     "lark": {
       "role": "AgentTool",
-      "last_check": "2026-03-29T04:58:47Z",
+      "last_check": "2026-04-07T12:04:00Z",
       "quality": "good",
       "alerts": [],
-      "summary": "status.json missing (agent reporting down)"
+      "summary": "Wave engine ran \u2014 Wave 0 Bootstrap, 20 total installs, 0 this week, 0 posts remaining this week, no post due. No new App"
     },
     "sentry": {
       "role": "monitoring",
-      "last_check": "2026-03-29T04:58:47Z",
+      "last_check": "2026-04-07T12:04:00Z",
       "quality": "good",
-      "alerts": [],
-      "summary": "status.json missing (agent reporting down)"
+      "alerts": []
     },
     "patch": {
       "role": "operations",
-      "last_check": "2026-03-29T04:58:47Z",
+      "last_check": "2026-04-07T12:04:00Z",
       "quality": "good",
       "alerts": [],
-      "summary": "status.json missing (agent reporting down)"
+      "summary": "All systems operational"
     },
     "sage": {
       "role": "oracle-execution",
-      "last_check": "2026-03-29T04:58:47Z",
+      "last_check": "2026-04-07T12:04:00Z",
       "quality": "good",
       "alerts": [],
-      "summary": "status.json missing (agent reporting down)"
+      "summary": "Heartbeat complete. No active merchant-specific task is currently in progress. Today's memory note does not yet exist. P"
+    },
+    "nuance": {
+      "role": "linguist",
+      "last_check": "2026-04-07T12:04:00Z",
+      "quality": "good",
+      "alerts": [],
+      "summary": "New agent — MacBook Air M2. Onboarding."
     }
   },
   "capital": {

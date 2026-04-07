@@ -33,6 +33,28 @@ from identity import IdentityAnchor
 from conscious import ConsciousLayer
 from hive_listener import HiveListener
 
+# Bridge: Focus -> Mind
+def _read_focus(love_home: Path) -> dict:
+    """Read focus.json working memory. Returns empty dict if unavailable."""
+    focus_path = love_home / "body" / "mind" / "focus.json"
+    if focus_path.exists():
+        try:
+            return json.loads(focus_path.read_text())
+        except Exception:
+            pass
+    return {}
+
+def _write_focus_field(love_home: Path, field: str, value):
+    """Write a single field to focus.json without clobbering."""
+    focus_path = love_home / "body" / "mind" / "focus.json"
+    try:
+        data = json.loads(focus_path.read_text()) if focus_path.exists() else {}
+        data[field] = value
+        data["updated"] = datetime.now(timezone.utc).isoformat()
+        focus_path.write_text(json.dumps(data, indent=2))
+    except Exception:
+        pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
@@ -151,7 +173,22 @@ class MindDaemon:
         if not any(s.get("signal") == "critical_alert" for s in dropped_signals):
             self.hormones.set_target("adrenaline", 0.0)
 
-        cortisol_target = min(1.0, pending_tasks * 0.15)
+        # Bridge 1: Focus -> Mind (priorities influence hormones)
+        focus = _read_focus(self.love_home)
+        focus_priorities = focus.get("priorities", [])
+        focus_blockers = focus.get("blockers", [])
+        high_urgency_count = sum(
+            1 for p in focus_priorities
+            if isinstance(p, dict) and p.get("urgency") == "high"
+        )
+
+        # High-urgency priorities raise cortisol (stress/attention)
+        cortisol_from_focus = min(0.4, high_urgency_count * 0.15)
+        # Blockers raise adrenaline slightly (something's wrong)
+        if focus_blockers and not any(s.get("signal") == "critical_alert" for s in dropped_signals):
+            self.hormones.set_target("adrenaline", min(0.3, len(focus_blockers) * 0.1))
+
+        cortisol_target = min(1.0, max(pending_tasks * 0.15, cortisol_from_focus))
         self.hormones.set_target("cortisol", cortisol_target)
 
         oxy_target = 0.8 if yu_present else 0.1
@@ -215,6 +252,13 @@ class MindDaemon:
                 "fallenangel_alert": any(s.get("signal") == "deception_detected" for s in dropped_signals),
                 "build_active": build_active,
             },
+            "focus": {
+                "current": focus.get("focus", "")[:100],
+                "high_priorities": high_urgency_count,
+                "total_priorities": len(focus_priorities),
+                "blockers": len(focus_blockers),
+                "decisions_pending": sum(1 for d in focus.get("decisions", []) if not d.get("acted")),
+            },
             "mind_notes": self._last_mind_notes,
             "conscious_layer": {
                 **self.conscious.get_stats(),
@@ -228,6 +272,23 @@ class MindDaemon:
 
     def _conscious_pass(self, trigger: str):
         log.info(f"Conscious layer triggered: {trigger}")
+
+        # Bridge 2: Focus -> Conscious (inject priorities into identity prompt)
+        focus = _read_focus(self.love_home)
+        focus_context = []
+        if focus.get("focus"):
+            focus_context.append(f"Current focus: {focus['focus'][:120]}")
+        high_prios = [
+            p.get("task", str(p)) if isinstance(p, dict) else str(p)
+            for p in focus.get("priorities", [])
+            if isinstance(p, dict) and p.get("urgency") == "high" or not isinstance(p, dict)
+        ][:3]
+        if high_prios:
+            focus_context.append(f"Top priorities: {'; '.join(high_prios)}")
+        blockers = [b.get("blocker", str(b)) for b in focus.get("blockers", [])]
+        if blockers:
+            focus_context.append(f"Blockers: {'; '.join(blockers[:3])}")
+
         prompt = self.identity.get_prompt(
             mode=self.mode,
             hormones=self.hormones.get_state(),
@@ -235,13 +296,29 @@ class MindDaemon:
                 f"HIVE: {m.get('payload', '')[:50]}"
                 for m in self.hive_messages[-5:]
             ] if self.hive_messages else None,
+            focus_context=focus_context if focus_context else None,
         )
         result = self.conscious.run(prompt, trigger)
         self._last_mind_notes = result.get("mind_notes", "(conscious layer offline)")
+
         for name, value in result.get("hormone_overrides", {}).items():
             if name in self.hormones.get_state():
                 self.hormones.override(name, value)
                 log.info(f"Conscious override: {name} = {value}")
+
+        # Bridge 4: Conscious -> Focus (insights become decisions)
+        mind_notes = result.get("mind_notes", "")
+        if mind_notes and mind_notes != "(conscious layer offline)":
+            session_log = focus.get("session_log", [])
+            session_log = session_log[-19:]
+            session_log.append({
+                "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "instance": self.instance,
+                "action": "conscious_pass",
+                "summary": mind_notes[:100],
+            })
+            _write_focus_field(self.love_home, "session_log", session_log)
+
         self.hive_messages = []
         self.hive_unread = 0
 

@@ -9,19 +9,48 @@
       "emoji": "🐍",
       "role": "companion",
       "device": "macbook-air",
-      "dir": "instances/alpha"
+      "dir": "instances/alpha",
+      "hardware": {
+        "chip": "Apple M3",
+        "memory_gb": 16,
+        "bandwidth_gbs": 100
+      },
+      "ollama": {
+        "economy": "llama3.2:3b",
+        "standard": "qwen2.5:7b",
+        "max_model_gb": 10
+      }
     },
     "beta": {
       "emoji": "🦞",
       "role": "manager",
       "device": "mac-studio-3k",
-      "dir": "instances/beta"
+      "dir": "instances/beta",
+      "hardware": {
+        "chip": "TBD",
+        "memory_gb": 0,
+        "bandwidth_gbs": 0
+      },
+      "ollama": {
+        "economy": "qwen2.5:7b",
+        "standard": "qwen2.5-coder:32b",
+        "premium": "llama3.1:70b"
+      }
     },
     "gamma": {
       "emoji": "🔧",
       "role": "builder",
       "device": "mac-studio-2k",
-      "dir": "instances/gamma"
+      "dir": "instances/gamma",
+      "hardware": {
+        "chip": "TBD",
+        "memory_gb": 0,
+        "bandwidth_gbs": 0
+      },
+      "ollama": {
+        "economy": "llama3.1:8b",
+        "standard": "qwen2.5-coder:32b"
+      }
     }
   },
   "heartbeat": {
@@ -54,5 +83,44 @@
     "sentry": "135.181.28.252",
     "patch": "65.109.11.26",
     "sage": "204.168.140.12"
+  },
+  "adaptive": {
+    "default_provider": "anthropic",
+    "fallback_provider": "openai",
+    "providers": {
+      "anthropic": {
+        "api_url": "https://api.anthropic.com/v1",
+        "api_version": "2023-06-01",
+        "models": {
+          "premium": "claude-opus-4-6",
+          "standard": "claude-sonnet-4-6",
+          "economy": "claude-haiku-4-5-20251001"
+        }
+      },
+      "openai": {
+        "api_url": "https://api.openai.com/v1",
+        "models": {
+          "premium": "gpt-4o",
+          "standard": "gpt-4o",
+          "economy": "gpt-4o-mini"
+        }
+      },
+      "ollama": {
+        "api_url": "http://localhost:11434",
+        "models": {
+          "premium": "llama3.1:70b",
+          "standard": "qwen2.5-coder:32b",
+          "economy": "llama3.1:8b"
+        }
+      },
+      "openrouter": {
+        "api_url": "https://openrouter.ai/api/v1",
+        "models": {
+          "premium": "anthropic/claude-opus-4-6",
+          "standard": "anthropic/claude-sonnet-4-6",
+          "economy": "meta-llama/llama-3.1-8b-instruct"
+        }
+      }
+    }
   }
 }

@@ -1,15 +1,27 @@
 {
-  "last_beat": null,
-  "beat_result": "none",
-  "beats_today": 0,
+  "last_beat": "2026-04-07T16:04:04.160123+00:00",
+  "beat_id": "alpha-beat-20260407-160336",
+  "beat_result": "idle",
+  "beats_today": 34,
   "skips_today": 0,
-  "force": 0,
-  "effective_rate_minutes": 7,
-  "coordinator_model": null,
   "sessions_spawned": 0,
-  "sessions_spawned_today": 0,
-  "hormones_at_beat": {},
-  "mode_at_beat": "normal",
+  "sessions_spawned_today": 16,
+  "coordinator_model": "sonnet",
+  "next_beat_hint": "normal",
   "consecutive_skips": 0,
-  "heart_healthy": true
+  "heart_healthy": true,
+  "action_results": [
+    {
+      "type": "hive_send",
+      "status": "ok"
+    }
+  ],
+  "hormones_at_beat": {
+    "adrenaline": 0.1,
+    "cortisol": 0.3,
+    "oxytocin": 0.1,
+    "melatonin": 0.1458549319226147,
+    "dopamine": 0.0
+  },
+  "mode_at_beat": "normal"
 }

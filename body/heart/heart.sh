@@ -60,6 +60,21 @@ else
     PENDING="0"; MODE="normal"
 fi
 
+# ── DIASTOLE: Read HIVE (pre-digest for coordinator) ────────────────────────
+# Pull unread messages BEFORE the coordinator runs, so it gets them as context
+# instead of wasting tokens running hive.py check itself.
+HIVE_PY="$LOVE_DIR/hive/hive.py"
+HIVE_DIGEST=""
+HIVE_COUNT=0
+if [ -f "$HIVE_PY" ]; then
+    HIVE_RAW=$(python3 "$HIVE_PY" check 2>/dev/null | tail -20 || echo "")
+    if [ -n "$HIVE_RAW" ]; then
+        HIVE_COUNT=$(echo "$HIVE_RAW" | wc -l | tr -d ' ')
+        # Filter for actionable channels only (skip presence noise)
+        HIVE_DIGEST=$(echo "$HIVE_RAW" | grep -v "#presence" | tail -15)
+    fi
+fi
+
 # Calculate rate
 MIN_INTERVAL=7
 if python3 -c "exit(0 if $ADRENALINE > 0.7 else 1)" 2>/dev/null; then
@@ -124,18 +139,74 @@ for lockfile in "$LOCKS_DIR"/*.lock; do
     fi
 done
 
-cd "$LOVE_DIR/body/heart" && /opt/homebrew/bin/claude -p "Execute HEARTBEAT.md. You are the heartbeat COORDINATOR.
+# ── Generate dynamic context from MIND focus ────────────────────────────────
+FOCUS_PY="$LOVE_DIR/body/mind/focus.py"
+FOCUS_JSON="$LOVE_DIR/body/mind/focus.json"
+ADAPTIVE_CLI="$LOVE_DIR/adaptive/cli.py"
 
-The mind daemon has already sensed the environment. Here is the current state:
-Mode: $MODE
-Force: $FORCE (max $MAX_SPAWNS spawns)
-Hormones: adrenaline=$ADRENALINE cortisol=$CORTISOL oxytocin=$OXYTOCIN melatonin=$MELATONIN dopamine=$DOPAMINE
-Mind notes: $MIND_NOTES
+# Ingest HIVE messages into focus state BEFORE generating context
+# This ensures priorities from HIVE are reflected in the coordinator's view
+if [ -f "$FOCUS_PY" ]; then
+    python3 "$FOCUS_PY" ingest-hive >> "$HEARTBEAT_LOG" 2>&1 || true
+fi
 
-Do Phase 2 (DECIDE) and Phase 3 (SPAWN) from HEARTBEAT.md.
-Write spawn commands to $SPAWN_QUEUE. Max $MAX_SPAWNS sessions this beat.
+# Generate heartbeat context (dynamic priorities from latest conversations)
+if [ -f "$FOCUS_JSON" ] && [ -f "$FOCUS_PY" ]; then
+    DYNAMIC_CONTEXT=$(python3 "$FOCUS_PY" heartbeat-context 2>/dev/null || echo "")
+fi
+
+# Fall back to static HEARTBEAT.md if no dynamic context
+if [ -z "${DYNAMIC_CONTEXT:-}" ]; then
+    DYNAMIC_CONTEXT="No dynamic focus set. Read HEARTBEAT.md for static checklist."
+    COORD_CWD="$LOVE_DIR/body/heart"
+else
+    COORD_CWD="$LOVE_DIR/instances/$INSTANCE"
+fi
+
+# Check if Ollama is available for local routing
+OLLAMA_UP=false
+if curl -s --connect-timeout 2 http://localhost:11434/api/tags >/dev/null 2>&1; then
+    OLLAMA_UP=true
+fi
+
+# Build HIVE section for coordinator
+HIVE_SECTION=""
+if [ -n "$HIVE_DIGEST" ]; then
+    HIVE_SECTION="
+## HIVE Messages ($HIVE_COUNT unread, actionable below)
+$HIVE_DIGEST
+
+Act on any messages directed at $INSTANCE. Acknowledge important ones by writing to daily notes.
+"
+fi
+
+COORD_PROMPT="You are the heartbeat COORDINATOR for $INSTANCE.
+
+$DYNAMIC_CONTEXT
+$HIVE_SECTION
+Force: $FORCE (max $MAX_SPAWNS spawns this beat)
+
+Write spawn commands to $SPAWN_QUEUE. Max $MAX_SPAWNS sessions.
+
+For spawn commands, choose the right tool:
+BUILDER (Claude, for complex/frontier tasks):
+cd <dir> && /opt/homebrew/bin/claude -p \"<prompt>\" --model sonnet --effort medium --dangerously-skip-permissions --no-session-persistence >> $SESSIONS_DIR/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+BUILDER-LOCAL (Ollama, zero cost, for routine code/analysis):
+cd <dir> && python3 $ADAPTIVE_CLI -p \"<prompt>\" --role builder --provider ollama >> $SESSIONS_DIR/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+CONSULTANT (Claude Opus, for hard problems):
+cd <dir> && /opt/homebrew/bin/claude -p \"<prompt>\" --model claude-opus-4-6 --effort high --dangerously-skip-permissions --no-session-persistence >> $SESSIONS_DIR/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+QUICK-LOCAL (zero cost, for status checks):
+cd <dir> && python3 $ADAPTIVE_CLI -p \"<prompt>\" --role monitor --provider ollama --no-tools >> $SESSIONS_DIR/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+Ollama available: $OLLAMA_UP. Prefer LOCAL variants for routine work.
+Parallel tasks: prefix with '# PARALLEL'.
 Write findings to $MEMORY_DIR/daily/$TODAY.md.
-If nothing needs spawning, leave spawn-queue.sh empty and say HEARTBEAT_OK." \
+If nothing needs spawning, leave spawn-queue.sh empty and say HEARTBEAT_OK."
+
+cd "$COORD_CWD" && /opt/homebrew/bin/claude -p "$COORD_PROMPT" \
     --model "$COORD_MODEL" \
     --effort "$COORD_EFFORT" \
     --dangerously-skip-permissions \
@@ -171,6 +242,45 @@ fi
 # ── RECOVERY ─────────────────────────────────────────────────────────────────
 
 date +%s > "$LAST_BEAT"
+
+# Bridge 3: Spawn outcomes -> Focus (post-execution feedback)
+if [ -f "$FOCUS_PY" ]; then
+    python3 -c "
+import json, sys
+from pathlib import Path
+from datetime import datetime, timezone
+
+focus_path = Path('$LOVE_DIR') / 'body' / 'mind' / 'focus.json'
+if not focus_path.exists():
+    sys.exit(0)
+
+data = json.loads(focus_path.read_text())
+log_entry = {
+    'ts': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+    'instance': '$INSTANCE',
+    'action': 'heartbeat_outcome',
+    'summary': 'Beat $BEAT_ID: spawned $SESSIONS_SPAWNED sessions, force=$FORCE, model=$COORD_MODEL',
+}
+session_log = data.get('session_log', [])[-19:]
+session_log.append(log_entry)
+data['session_log'] = session_log
+
+# If sessions spawned, emit dopamine signal
+if $SESSIONS_SPAWNED > 0:
+    signals_dir = Path('$LOVE_DIR') / 'body' / 'signals'
+    signals_dir.mkdir(parents=True, exist_ok=True)
+    sig = {
+        'signal': 'task_completed',
+        'source': 'heart',
+        'payload': 'Spawned $SESSIONS_SPAWNED sessions in beat $BEAT_ID',
+    }
+    sig_path = signals_dir / f'beat-{int(datetime.now(timezone.utc).timestamp())}.json'
+    sig_path.write_text(json.dumps(sig))
+
+data['updated'] = datetime.now(timezone.utc).isoformat()
+focus_path.write_text(json.dumps(data, indent=2))
+" 2>/dev/null || true
+fi
 
 find "$HANDOFF_DIR" -name "*.md" -mmin +1440 -delete 2>/dev/null
 

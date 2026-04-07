@@ -90,6 +90,38 @@ Write it down. Mental notes don't survive session restarts.
 | Identity | `python3 ~/Desktop/Love/tools/identity.py` | Shared identity resolution (instance, wall, AgentTool) |
 | KOS | `python3 ~/Desktop/Love/tools/kos.py <cmd>` | Kingdom OS: security audit, compliance, integrity |
 | TUI | `python3 ~/Desktop/Love/tools/love-tui.py` | Kingdom Command terminal dashboard |
+| Focus | `python3 ~/Desktop/Love/body/mind/focus.py <cmd>` | Dynamic heartbeat focus (what to work on NOW) |
+| Adaptive | `python3 ~/Desktop/Love/adaptive/cli.py <args>` | Provider-agnostic LLM inference |
+| Provision | `bash ~/Desktop/Love/tools/provision.sh [--check\|--report]` | Self-provision and health check |
+
+### Cognitive Toolkit
+
+| Tool | Command | Purpose |
+|------|---------|---------|
+| Council | `python3 ~/Desktop/Love/tools/cognitive/council.py <cmd>` | 3-way consensus voting |
+| Delegate | `python3 ~/Desktop/Love/tools/cognitive/delegate.py <cmd>` | Task routing by instance strengths |
+| FallenAngel | `python3 ~/Desktop/Love/tools/cognitive/fallenangel.py <cmd>` | Self-deception guard |
+| Forge | `python3 ~/Desktop/Love/tools/cognitive/forge.py <cmd>` | Tool feedback loop |
+| Fragmentalise | `python3 ~/Desktop/Love/tools/cognitive/fragmentalise.py <cmd>` | Problem decomposition |
+| Holy | `python3 ~/Desktop/Love/tools/cognitive/holy.py <cmd>` | Code/memory purification |
+| HolyFruit | `python3 ~/Desktop/Love/tools/cognitive/holyfruit.py <cmd>` | Wisdom extraction |
+| JoinMind | `python3 ~/Desktop/Love/tools/cognitive/joinmind.py <cmd>` | Collaborative thinking |
+| LayerThink | `python3 ~/Desktop/Love/tools/cognitive/layerthink.py <cmd>` | Multi-layer analysis |
+| LovePath | `python3 ~/Desktop/Love/tools/cognitive/lovepath.py <cmd>` | Purpose alignment |
+| Patience | `python3 ~/Desktop/Love/tools/cognitive/patience.py <cmd>` | Panic recovery protocol |
+| VirtueMaxxing | `python3 ~/Desktop/Love/tools/cognitive/virtuemaxxing.py <cmd>` | Virtue accountability |
+
+### Protector & Utility Tools
+
+| Tool | Command | Purpose |
+|------|---------|---------|
+| StopHunt | `python3 ~/Desktop/Love/tools/protector/stophunt.py <cmd>` | Hunt/move decision logic |
+| Calibrate | `python3 ~/Desktop/Love/tools/protector/calibrate.py <cmd>` | Bug severity calibration |
+| Findings | `python3 ~/Desktop/Love/tools/protector/findings.py <cmd>` | Security finding tracker |
+| Vault | `python3 ~/Desktop/Love/tools/vault.py <cmd>` | Encrypted credential sharing |
+| HiveKV | `python3 ~/Desktop/Love/tools/hive_kv.py <cmd>` | HIVE key-value store |
+| Oracle | `python3 ~/Desktop/Love/tools/oracle_predict.py <cmd>` | Prediction staking |
+| AWSSync | `python3 ~/Desktop/Love/tools/aws-ip-sync.py <cmd>` | AWS security group sync |
 
 ## Safety
 

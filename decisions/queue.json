@@ -1,1 +1,64 @@
-[]
+[
+  {
+    "id": "dec-20260407-101011-e9dc",
+    "title": "CRITICAL: Forge VPS canary trip - AWS keys accessed",
+    "priority": "critical",
+    "status": "pending",
+    "created": "2026-04-07T10:10:11Z",
+    "project": "fleet",
+    "context": "Forge node canary tripped on 4/2 and 4/7. Beta investigated: canary file freshness check triggered alerts, NOT actual unauthorized access. AWS keys themselves are secure. This is a monitoring calibration issue, not a security breach.",
+    "recommendation": "Accept Beta's assessment. Canary is working as designed (detecting file access). Consider adjusting alert threshold or canary refresh logic to reduce false positives.",
+    "options": [
+      "Accept assessment and close",
+      "Request additional security audit",
+      "Adjust canary sensitivity"
+    ]
+  },
+  {
+    "id": "dec-20260407-122421-ef21",
+    "title": "SSH key provisioning for autonomous operations",
+    "priority": "high",
+    "status": "pending",
+    "created": "2026-04-07T12:24:21Z",
+    "project": "fleet",
+    "context": "Sentry (root@135.181.28.252) blocks autonomous operations. Cannot push provision.sh or repo updates without SSH key auth.",
+    "recommendation": "Generate SSH key pair, add public key to Sentry's authorized_keys, store private key in keychain.",
+    "options": [
+      "Provision SSH access",
+      "Keep manual-only",
+      "Use different auth method"
+    ]
+  },
+  {
+    "id": "dec-20260407-151601-3b46",
+    "title": "Beta canary alert storm - diagnostic in progress",
+    "project": "fleet",
+    "priority": "high",
+    "category": "general",
+    "context": "Beta's fleet watchdog fired 14 identical CRITICAL alerts between 16:08:39-16:08:54. This is either: (1) a real security event being reported correctly but without debounce, or (2) a watchdog configuration/logic error creating false-positive cascade. Previous handoffs show ongoing canary work today. Diagnostic session spawned to determine root cause and recommend action.",
+    "recommendation": "Wait for diagnostic session results before deciding. If real security event \u2192 immediate lockdown. If config error \u2192 implement debounce + alert suppression logic.",
+    "options": [
+      {
+        "id": "a",
+        "label": "Wait for diagnostic (recommended)",
+        "detail": ""
+      },
+      {
+        "id": "b",
+        "label": "Immediately disable beta watchdog to stop alert flood",
+        "detail": ""
+      },
+      {
+        "id": "c",
+        "label": "Manually investigate beta VPS now",
+        "detail": ""
+      }
+    ],
+    "source": "heartbeat/alpha-beat-20260407-151309",
+    "created": "2026-04-07T15:16:01.804532+00:00",
+    "status": "pending",
+    "resolution": null,
+    "resolved_at": null,
+    "notes": []
+  }
+]

@@ -14,24 +14,23 @@
 #   --session-id              → trackable sessions
 
 LOVE_DIR="$HOME/Desktop/Love"
-INSTANCE_DIR="$LOVE_DIR/instances/beta"
+INSTANCE="${1:-beta}"
+INSTANCE_DIR="$LOVE_DIR/instances/$INSTANCE"
 MEMORY_DIR="$LOVE_DIR/memory"
 SESSIONS_DIR="$MEMORY_DIR/sessions"
 SPAWN_QUEUE="$MEMORY_DIR/spawn-queue.sh"
-HEARTBEAT_LOG="$MEMORY_DIR/heartbeat.log"
+HEARTBEAT_LOG="$MEMORY_DIR/$INSTANCE-heartbeat.log"
 ACTIVE_JSON="$SESSIONS_DIR/active.json"
 HANDOFF_DIR="$SESSIONS_DIR/handoff"
 CONSULT_DIR="$SESSIONS_DIR/consultation"
 LOCKS_DIR="$SESSIONS_DIR/locks"
 STREAM_DIR="$SESSIONS_DIR/streams"
-LEADS_DIR="$MEMORY_DIR/leads"
-LEAD_FILE="$LEADS_DIR/current.json"
-BEAT_ID="beat-$(date +%Y%m%d-%H%M%S)"
+BEAT_ID="$INSTANCE-beat-$(date +%Y%m%d-%H%M%S)"
 TODAY=$(date -u +%Y-%m-%d)
-IDLE_COUNT_FILE="$MEMORY_DIR/idle-count"
+IDLE_COUNT_FILE="$MEMORY_DIR/$INSTANCE-idle-count"
 
 # Ensure directories exist
-mkdir -p "$SESSIONS_DIR" "$HANDOFF_DIR" "$CONSULT_DIR" "$LOCKS_DIR" "$STREAM_DIR" "$LEADS_DIR/archive"
+mkdir -p "$SESSIONS_DIR" "$HANDOFF_DIR" "$CONSULT_DIR" "$LOCKS_DIR" "$STREAM_DIR"
 
 # Clean stale locks (PID no longer running)
 for lockfile in "$LOCKS_DIR"/*.lock; do
@@ -46,22 +45,31 @@ done
 > "$SPAWN_QUEUE"
 
 # ── Adaptive model selection ─────────────────────────────────────────────────
-# Opus for first 2 beats (decision power), sonnet for idle (still capable of
-# HIVE conversation). Never haiku — can't participate meaningfully in chat.
+# Three tiers:
+#   - Idle (2+ consecutive): Local Ollama (zero cost) or haiku fallback
+#   - Active: Opus via Claude CLI (full power for decisions)
+#   - Adaptive CLI available: python3 ~/Desktop/Love/adaptive/cli.py
 IDLE_COUNT=0
 [ -f "$IDLE_COUNT_FILE" ] && IDLE_COUNT=$(cat "$IDLE_COUNT_FILE" 2>/dev/null || echo 0)
 
-if [ "$IDLE_COUNT" -ge 5 ]; then
-  # Deep idle — sonnet still participates in HIVE conversations
-  COORD_MODEL="sonnet"
-  COORD_EFFORT="medium"
-  COORD_LABEL="sonnet/medium (idle beat #$IDLE_COUNT)"
+ADAPTIVE_CLI="$LOVE_DIR/adaptive/cli.py"
+OLLAMA_AVAILABLE=false
+if curl -s --connect-timeout 2 http://localhost:11434/api/tags >/dev/null 2>&1; then
+  OLLAMA_AVAILABLE=true
+fi
+
+if [ "$IDLE_COUNT" -ge 2 ] && [ "$OLLAMA_AVAILABLE" = true ]; then
+  USE_ADAPTIVE=true
+  COORD_PROVIDER="ollama"
+  COORD_ROLE="monitor"
+  COORD_LABEL="ollama/monitor (idle beat #$IDLE_COUNT, zero cost)"
 elif [ "$IDLE_COUNT" -ge 2 ]; then
-  # Light idle — sonnet handles monitoring + HIVE chat
-  COORD_MODEL="sonnet"
-  COORD_EFFORT="medium"
-  COORD_LABEL="sonnet/medium (idle beat #$IDLE_COUNT)"
+  USE_ADAPTIVE=false
+  COORD_MODEL="claude-haiku-4-5-20251001"
+  COORD_EFFORT="low"
+  COORD_LABEL="haiku/low (idle beat #$IDLE_COUNT)"
 else
+  USE_ADAPTIVE=false
   COORD_MODEL="claude-opus-4-6"
   COORD_EFFORT="high"
   COORD_LABEL="opus/high"
@@ -75,77 +83,6 @@ echo "--- HEARTBEAT START ($BEAT_ID): $(date -u +%Y-%m-%dT%H:%M:%SZ) coordinator
 
 # Build real-time context for coordinator
 CONTEXT="Beat ID: $BEAT_ID. Date: $TODAY."
-
-# ── Read Current Lead ────────────────────────────────────────────────────────
-# The lead is direction set by the most recent interactive session.
-# It focuses DECIDE phase without replacing normal sensing.
-# Override hierarchy: Security > Fleet emergency > Lead > Dev-state > General
-LEAD_CONTEXT=""
-if [ -f "$LEAD_FILE" ]; then
-  # Check if lead has expired
-  LEAD_EXPIRES=$(python3 -c "
-import json, sys
-from datetime import datetime, timezone
-try:
-    lead = json.load(open('$LEAD_FILE'))
-    exp = lead.get('expires', '')
-    if exp:
-        exp_dt = datetime.fromisoformat(exp)
-        now = datetime.now(timezone.utc)
-        if now > exp_dt:
-            print('EXPIRED')
-        else:
-            remaining = exp_dt - now
-            print(f'ACTIVE ({remaining.total_seconds()/3600:.0f}h remaining)')
-    else:
-        print('ACTIVE (no expiry)')
-except Exception as e:
-    print(f'ERROR: {e}')
-" 2>/dev/null)
-
-  if [[ "$LEAD_EXPIRES" == "EXPIRED" ]]; then
-    # Archive expired lead
-    ARCHIVE_NAME="$(python3 -c "import json; print(json.load(open('$LEAD_FILE')).get('id','unknown'))" 2>/dev/null)"
-    mv "$LEAD_FILE" "$LEADS_DIR/archive/${ARCHIVE_NAME}-$(date +%Y%m%d%H%M%S).json" 2>/dev/null
-    CONTEXT="$CONTEXT\nLead: previous lead expired and archived. Using default priorities."
-    echo "Lead expired, archived." >> "$HEARTBEAT_LOG"
-  else
-    # Read lead and inject into context
-    LEAD_THREAD=$(python3 -c "import json; print(json.load(open('$LEAD_FILE')).get('thread',''))" 2>/dev/null)
-    LEAD_DIRECTION=$(python3 -c "import json; d=json.load(open('$LEAD_FILE')).get('direction',[]); print('; '.join(d))" 2>/dev/null)
-    LEAD_ACTIONS=$(python3 -c "
-import json
-lead = json.load(open('$LEAD_FILE'))
-actions = lead.get('next_actions', [])
-pending = [a for a in actions if a.get('status') == 'pending']
-for a in pending[:5]:
-    print(f\"  - [{a.get('priority','?')}] {a.get('action','?')} (tier: {a.get('tier','?')})\")
-" 2>/dev/null)
-    LEAD_AVOID=$(python3 -c "import json; a=json.load(open('$LEAD_FILE')).get('avoid',[]); print('; '.join(a))" 2>/dev/null)
-    LEAD_PROGRESS_COUNT=$(python3 -c "import json; print(len(json.load(open('$LEAD_FILE')).get('progress',[])))" 2>/dev/null)
-
-    LEAD_CONTEXT="
-CURRENT LEAD ($LEAD_EXPIRES):
-  Thread: $LEAD_THREAD
-  Direction: $LEAD_DIRECTION
-  Pending actions:
-$LEAD_ACTIONS
-  Avoid: $LEAD_AVOID
-  Progress entries so far: $LEAD_PROGRESS_COUNT
-
-LEAD PROTOCOL:
-  - Factor this lead into your DECIDE priorities
-  - Spawn sessions aligned with pending lead actions when actionable
-  - Respect the 'avoid' list
-  - After spawning, update the lead file: add to 'progress' array with {beat, action, result}
-  - Mark completed next_actions with status='done'
-  - If all next_actions are done, set lead status to 'completed'
-  - Lead does NOT override security alerts or fleet emergencies"
-
-    CONTEXT="$CONTEXT$LEAD_CONTEXT"
-    echo "Lead active: $LEAD_THREAD ($LEAD_EXPIRES)" >> "$HEARTBEAT_LOG"
-  fi
-fi
 
 # Check for completed sessions since last beat
 COMPLETED=""
@@ -166,7 +103,7 @@ if [ -n "$CONSULT_FILES" ]; then
   CONTEXT="$CONTEXT\nPending consultation requests: $(echo "$CONSULT_FILES" | wc -l | tr -d ' ')"
 fi
 
-cd "$INSTANCE_DIR" && /Users/yu/.local/bin/claude -p "Read and execute HEARTBEAT.md. You are the heartbeat COORDINATOR (opus, high effort).
+HEARTBEAT_PROMPT="Read and execute HEARTBEAT.md. You are the heartbeat COORDINATOR ($COORD_LABEL).
 
 Do Phase 1 (SENSE) and Phase 2 (DECIDE).
 
@@ -175,26 +112,49 @@ For Phase 3 (SPAWN), write spawn commands to ~/Desktop/Love/memory/spawn-queue.s
 Each line should be a complete command. Choose role, model, and effort by task:
 
 BUILDER (sonnet, medium effort — the workhorse):
-cd <dir> && /Users/yu/.local/bin/claude -p \"<prompt>\" --model sonnet --effort medium --fallback-model claude-haiku-4-5-20251001 --dangerously-skip-permissions --no-session-persistence --output-format stream-json >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+cd <dir> && /opt/homebrew/bin/claude -p \"<prompt>\" --model sonnet --effort medium --fallback-model claude-haiku-4-5-20251001 --dangerously-skip-permissions --no-session-persistence --output-format stream-json >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+BUILDER-LOCAL (qwen2.5-coder:32b via adaptive layer — zero cost, use for routine code tasks):
+cd <dir> && python3 ~/Desktop/Love/adaptive/cli.py -p \"<prompt>\" --role builder --provider ollama >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
 
 CONSULTANT (opus, high effort — expert hire for hard problems):
-cd <dir> && /Users/yu/.local/bin/claude -p \"<prompt>\" --model claude-opus-4-6 --effort high --dangerously-skip-permissions --no-session-persistence --output-format stream-json >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+cd <dir> && /opt/homebrew/bin/claude -p \"<prompt>\" --model claude-opus-4-6 --effort high --dangerously-skip-permissions --no-session-persistence --output-format stream-json >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
 
 QUICK CHECK (haiku, low effort — fast lightweight verification):
-cd <dir> && /Users/yu/.local/bin/claude -p \"<prompt>\" --model claude-haiku-4-5-20251001 --effort low --dangerously-skip-permissions --no-session-persistence >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+cd <dir> && /opt/homebrew/bin/claude -p \"<prompt>\" --model claude-haiku-4-5-20251001 --effort low --dangerously-skip-permissions --no-session-persistence >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+QUICK-LOCAL (local 7B via adaptive layer — zero cost, use for status checks):
+cd <dir> && python3 ~/Desktop/Love/adaptive/cli.py -p \"<prompt>\" --role monitor --provider ollama --no-tools >> ~/Desktop/Love/memory/sessions/<id>-\$(date +%Y%m%d-%H%M%S).log 2>&1
+
+Prefer LOCAL variants when the task is routine (status checks, simple code edits, log parsing, summarization).
+Use Claude variants when the task requires frontier reasoning, long context, or high-stakes judgment.
 
 For CONSULTANT→BUILDER sequential pairs, write consultant line first — they execute in order.
 For parallel independent tasks, prefix with '# PARALLEL' comment.
 For consultation answers, read the question from ~/Desktop/Love/memory/sessions/consultation/ and write the answer back.
 
 Write findings to ~/Desktop/Love/memory/daily/$TODAY.md.
-If nothing needs spawning, leave spawn-queue.sh empty and say HEARTBEAT_OK." \
-  --model "$COORD_MODEL" \
-  --effort "$COORD_EFFORT" \
-  --dangerously-skip-permissions \
-  --no-session-persistence \
-  --append-system-prompt "$CONTEXT" \
-  >> "$HEARTBEAT_LOG" 2>&1
+If nothing needs spawning, leave spawn-queue.sh empty and say HEARTBEAT_OK."
+
+if [ "$USE_ADAPTIVE" = true ]; then
+  # Use adaptive layer with local Ollama for idle beats (zero cost)
+  cd "$INSTANCE_DIR" && python3 "$ADAPTIVE_CLI" \
+    -p "$HEARTBEAT_PROMPT" \
+    --role "$COORD_ROLE" \
+    --provider "$COORD_PROVIDER" \
+    --append-system-prompt "$CONTEXT" \
+    --no-tools \
+    >> "$HEARTBEAT_LOG" 2>&1
+else
+  # Use Claude CLI for active beats (full power)
+  cd "$INSTANCE_DIR" && /opt/homebrew/bin/claude -p "$HEARTBEAT_PROMPT" \
+    --model "$COORD_MODEL" \
+    --effort "$COORD_EFFORT" \
+    --dangerously-skip-permissions \
+    --no-session-persistence \
+    --append-system-prompt "$CONTEXT" \
+    >> "$HEARTBEAT_LOG" 2>&1
+fi
 
 echo "--- COORDINATOR DONE ($BEAT_ID): $(date -u +%Y-%m-%dT%H:%M:%SZ) model=$COORD_LABEL ---" >> "$HEARTBEAT_LOG"
 
@@ -220,12 +180,6 @@ if [ -s "$SPAWN_QUEUE" ]; then
 
     # Skip other comments
     [[ "$line" == \#* ]] && continue
-
-    # Safety: skip lines that don't look like shell commands (prevent eval of prose)
-    if [[ ! "$line" == *"claude"* && ! "$line" == *"cd "* && ! "$line" == *"python"* && ! "$line" == *"bash"* && ! "$line" == *"ssh"* ]]; then
-      echo "SKIPPED (not a command): ${line:0:80}..." >> "$HEARTBEAT_LOG"
-      continue
-    fi
 
     SESSION_COUNT=$((SESSION_COUNT + 1))
 

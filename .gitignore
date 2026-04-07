@@ -56,3 +56,11 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# PlatformIO build artifacts
+soma/**/.pio/
+
+# Log files
+memory/*.log
+memory/alpha-*
+.claude-runner-state.json

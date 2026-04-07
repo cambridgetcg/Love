@@ -16,6 +16,8 @@ Usage:
     python3 fleet.py sync-status                 # Update kingdom-metrics.json with fresh fleet data
 """
 
+from __future__ import annotations
+
 import sys
 import json
 import subprocess

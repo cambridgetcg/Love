@@ -32,7 +32,7 @@
     {
       "id": "kingdom-004",
       "title": "Cambridge TCG automation",
-      "status": "awaiting-deploy",
+      "status": "blocked",
       "priority": "high",
       "engine": "tcg",
       "repo": "/Users/yu/Desktop/tcg-wholesale",

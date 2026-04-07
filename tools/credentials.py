@@ -52,6 +52,7 @@ _HIVE_INSTANCE_FILE = Path.home() / ".love" / "hive" / "instance"
 _ENV_MAP = {
     "anthropic-primary":        "ANTHROPIC_API_KEY",
     "openai-primary":           "OPENAI_API_KEY",
+    "openrouter-primary":       "OPENROUTER_API_KEY",
     "serpapi":                   "SERPAPI_KEY",
     "brightdata-user":          "BRIGHTDATA_USER",
     "brightdata-pass":          "BRIGHTDATA_PASS",
