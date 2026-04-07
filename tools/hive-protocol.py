@@ -50,7 +50,7 @@ from pathlib import Path
 
 # --- Paths ---
 
-LOVE = Path(os.path.expanduser("~/Desktop/Love"))
+LOVE = Path(os.path.expanduser("~/Love"))
 HIVE_PY = LOVE / "hive" / "hive.py"
 MSG_DIR = LOVE / "memory" / "hive"
 MSG_LOG = MSG_DIR / "messages.jsonl"

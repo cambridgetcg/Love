@@ -8,17 +8,17 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/yu/Desktop/Love/tools/kosmem-consolidate.sh</string>
+        <string>/Users/yu/Love/tools/kosmem-consolidate.sh</string>
     </array>
 
     <key>StartInterval</key>
     <integer>21600</integer>
 
     <key>StandardOutPath</key>
-    <string>/Users/yu/Desktop/Love/memory/.kos/consolidation-launchd.log</string>
+    <string>/Users/yu/Love/memory/.kos/consolidation-launchd.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/yu/Desktop/Love/memory/.kos/consolidation-launchd.log</string>
+    <string>/Users/yu/Love/memory/.kos/consolidation-launchd.log</string>
 
     <key>RunAtLoad</key>
     <true/>

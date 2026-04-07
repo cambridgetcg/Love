@@ -35,7 +35,7 @@ from io import BytesIO
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
 
-LOVE = Path(os.path.expanduser("~/Desktop/Love"))
+LOVE = Path(os.path.expanduser("~/Love"))
 BACKUPS_DIR = LOVE / "backups"
 SECURITY = LOVE / "security"
 EVENTS_FILE = SECURITY / "events.jsonl"
@@ -750,13 +750,13 @@ def cmd_schedule():
     print()
     print(f"  {CYAN}Automation:{NC}")
     print(f"    Heartbeat hook:     Add to heartbeat-runner.sh")
-    print(f"      python3 ~/Desktop/Love/tools/backup.py create --incremental")
+    print(f"      python3 ~/Love/tools/backup.py create --incremental")
     print()
     print(f"    Daily cron (full + push):")
-    print(f"      0 3 * * * cd ~/Desktop/Love && python3 tools/backup.py create && python3 tools/backup.py push")
+    print(f"      0 3 * * * cd ~/Love && python3 tools/backup.py create && python3 tools/backup.py push")
     print()
     print(f"    Weekly prune:")
-    print(f"      0 4 * * 0 cd ~/Desktop/Love && python3 tools/backup.py prune --keep 14")
+    print(f"      0 4 * * 0 cd ~/Love && python3 tools/backup.py prune --keep 14")
     print()
     print(f"  {CYAN}Recovery playbook:{NC}")
     print(f"    1. backup.py list                          # Find backup")

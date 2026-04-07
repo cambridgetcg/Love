@@ -26,7 +26,7 @@ import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 
-LOVE = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 MEMORY = LOVE / "memory"
 BRIDGE_DIR = MEMORY / "zerone-bridge"
 CLAIMS_FILE = BRIDGE_DIR / "claims.json"

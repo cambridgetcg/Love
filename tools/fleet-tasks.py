@@ -39,7 +39,7 @@ from typing import Optional
 
 # ─── Paths ───────────────────────────────────────────────────────────────────
 
-LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 DATA_DIR = LOVE_DIR / "memory" / "fleet-tasks"
 QUEUE_FILE = DATA_DIR / "queue.json"
 ACTIVE_FILE = DATA_DIR / "active.json"

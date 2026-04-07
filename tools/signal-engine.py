@@ -33,7 +33,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-LOVE = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 MEMORY = LOVE / "memory"
 SECURITY = LOVE / "security"
 SIGNAL_DIR = MEMORY / "signals"

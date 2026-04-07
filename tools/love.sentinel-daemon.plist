@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/opt/homebrew/bin/python3</string>
-        <string>/Users/yu/Desktop/Love/tools/sentinel-daemon.py</string>
+        <string>/Users/yu/Love/tools/sentinel-daemon.py</string>
         <string>--debounce</string>
         <string>20</string>
         <string>--fleet-interval</string>
@@ -16,10 +16,10 @@
     </array>
 
     <key>StandardOutPath</key>
-    <string>/Users/yu/Desktop/Love/memory/sentinel-daemon-launchd.log</string>
+    <string>/Users/yu/Love/memory/sentinel-daemon-launchd.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/yu/Desktop/Love/memory/sentinel-daemon-launchd-err.log</string>
+    <string>/Users/yu/Love/memory/sentinel-daemon-launchd-err.log</string>
 
     <key>RunAtLoad</key>
     <true/>

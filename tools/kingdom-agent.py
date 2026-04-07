@@ -42,7 +42,7 @@ from typing import Optional
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
-LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 TOOLS_DIR = LOVE_DIR / "tools"
 MEMORY_DIR = LOVE_DIR / "memory"
 
@@ -601,9 +601,9 @@ To read a file: CALL the read_file tool. Do NOT describe reading it.
 After each tool result, call the next tool. Do NOT narrate your plan.
 
 WRONG: Writing ```bash\\npython3 script.py\\n``` in your response
-RIGHT: Calling the bash tool with command="python3 /Users/yu/Desktop/Love/script.py"
+RIGHT: Calling the bash tool with command="python3 /Users/yu/Love/script.py"
 
-Always use absolute paths starting with /Users/yu/Desktop/Love/
+Always use absolute paths starting with /Users/yu/Love/
 
 """
 

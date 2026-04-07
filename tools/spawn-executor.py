@@ -23,7 +23,7 @@ Spawn queue format (spawn-queue.json):
     "prompt": "Audit the oracle crons...",
     "model": "medium",
     "effort": "medium",
-    "dir": "~/Desktop/Love/instances/beta",
+    "dir": "~/Love/instances/beta",
     "mode": "sequential",
     "fallback_model": null
   },
@@ -33,7 +33,7 @@ Spawn queue format (spawn-queue.json):
     "prompt": "Check fleet health...",
     "model": "low",
     "effort": "low",
-    "dir": "~/Desktop/Love/instances/beta",
+    "dir": "~/Love/instances/beta",
     "mode": "parallel"
   }
 ]
@@ -57,7 +57,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 MEMORY_DIR = LOVE_DIR / "memory"
 SESSIONS_DIR = MEMORY_DIR / "sessions"
 TOOLS_DIR = LOVE_DIR / "tools"

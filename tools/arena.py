@@ -52,7 +52,7 @@ from pathlib import Path
 
 # -- Paths ---------------------------------------------------------------
 
-LOVE = Path(os.path.expanduser("~/Desktop/Love"))
+LOVE = Path(os.path.expanduser("~/Love"))
 ARENA_DIR = LOVE / "memory" / "arena"
 CTF_DIR = ARENA_DIR / "ctf"
 

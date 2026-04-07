@@ -25,7 +25,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
-LOVE = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 TOOLS = LOVE / "tools"
 MEMORY = LOVE / "memory"
 SECURITY = LOVE / "security"

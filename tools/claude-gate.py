@@ -30,7 +30,7 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
 GATE_FILE = LOVE_DIR / "memory" / "claude-gate.json"
 
 DEFAULT_DAILY_BUDGET = 5  # Max Claude sessions per day

@@ -10,8 +10,8 @@
 
 set -e
 
-KOSMEM="/opt/homebrew/bin/python3 /Users/yu/Desktop/Love/tools/kosmem.py"
-LOG="/Users/yu/Desktop/Love/memory/.kos/consolidation.log"
+KOSMEM="/opt/homebrew/bin/python3 /Users/yu/Love/tools/kosmem.py"
+LOG="/Users/yu/Love/memory/.kos/consolidation.log"
 TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 echo "[$TS] Consolidation cycle starting" >> "$LOG"

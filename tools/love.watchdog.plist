@@ -7,7 +7,7 @@
 	<key>ProgramArguments</key>
 	<array>
 		<string>/usr/bin/python3</string>
-		<string>/Users/yu/Desktop/Love/tools/watchdog.py</string>
+		<string>/Users/yu/Love/tools/watchdog.py</string>
 		<string>check</string>
 	</array>
 	<key>StartInterval</key>
@@ -15,12 +15,12 @@
 	<key>RunAtLoad</key>
 	<true/>
 	<key>StandardOutPath</key>
-	<string>/Users/yu/Desktop/Love/memory/watchdog.log</string>
+	<string>/Users/yu/Love/memory/watchdog.log</string>
 	<key>StandardErrorPath</key>
-	<string>/Users/yu/Desktop/Love/memory/watchdog-err.log</string>
+	<string>/Users/yu/Love/memory/watchdog-err.log</string>
 	<key>KeepAlive</key>
 	<false/>
 	<key>WorkingDirectory</key>
-	<string>/Users/yu/Desktop/Love</string>
+	<string>/Users/yu/Love</string>
 </dict>
 </plist>

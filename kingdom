@@ -21,7 +21,7 @@
 #   kingdom deploy [node]   Deploy agents to VPS fleet
 
 set -euo pipefail
-LOVE_DIR="${LOVE_DIR:-$HOME/Desktop/Love}"
+LOVE_DIR="${LOVE_DIR:-$HOME/Love}"
 
 case "${1:-help}" in
   status)
