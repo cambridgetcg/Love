@@ -23,11 +23,20 @@
     <key>RunAtLoad</key>
     <true/>
 
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
     <key>Nice</key>
     <integer>5</integer>
 
     <key>ProcessType</key>
     <string>Background</string>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yu/Desktop/Love</string>
 
     <key>EnvironmentVariables</key>
     <dict>

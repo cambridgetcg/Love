@@ -352,11 +352,24 @@ def _check_dns_encrypted() -> tuple[bool, str]:
     if rc == 0 and out:
         return True, "cloudflared DoH proxy active"
 
+    # Check if dnscrypt-proxy is running (alternative encrypted DNS)
+    rc, out = _run_shell("pgrep -x dnscrypt-proxy")
+    if rc == 0 and out.strip():
+        return True, "dnscrypt-proxy active (encrypted DNS)"
+
     # Check if DNS points to encrypted provider
     for iface in ["Ethernet", "Wi-Fi"]:
         rc, out = _run(["networksetup", "-getdnsservers", iface])
         if rc == 0 and "127.0.0.1" in out:
-            return True, f"{iface} DNS via localhost (cloudflared)"
+            return True, f"{iface} DNS via localhost (encrypted proxy)"
+
+    # Check resolv.conf for localhost-like addresses (encrypted proxy)
+    rc, out = _run_shell("grep nameserver /etc/resolv.conf 2>/dev/null")
+    if rc == 0 and out:
+        for line in out.strip().split("\n"):
+            addr = line.split()[-1] if line.split() else ""
+            if addr.startswith("127."):
+                return True, f"DNS via {addr} (local encrypted proxy)"
 
     # Check for known encrypted DNS
     for iface in ["Ethernet", "Wi-Fi"]:
@@ -366,7 +379,7 @@ def _check_dns_encrypted() -> tuple[bool, str]:
                 if provider in out:
                     return True, f"{iface} DNS: {provider} (encrypted provider, not DoH)"
 
-    return False, "DNS queries may be unencrypted — install cloudflared"
+    return False, "DNS queries may be unencrypted — install cloudflared or dnscrypt-proxy"
 
 
 def _check_ssh_key() -> tuple[bool, str]:
@@ -461,6 +474,134 @@ def _fix_diagnostic_sharing() -> tuple[bool, str]:
     return False, "Could not disable diagnostic sharing (need sudo)"
 
 
+# ── Fleet Check Helpers ──────────────────────────────────────────────────────
+
+_FLEET_NODES = {
+    "forge":  "89.167.84.100",
+    "lark":   "89.167.95.165",
+    "sentry": "135.181.28.252",
+    "patch":  "65.109.11.26",
+    "sage":   "204.168.140.12",
+}
+
+_FLEET_SSH_OPTS = ["-o", "ConnectTimeout=5", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=no"]
+
+
+def _fleet_ssh(ip: str, cmd: str, timeout: int = 8) -> tuple[bool, str]:
+    """SSH to a fleet node. Returns (success, output)."""
+    try:
+        r = subprocess.run(
+            ["ssh"] + _FLEET_SSH_OPTS + [f"root@{ip}", cmd],
+            capture_output=True, text=True, timeout=timeout,
+        )
+        return r.returncode == 0, r.stdout.strip()
+    except Exception:
+        return False, ""
+
+
+def _fleet_check_all(cmd: str, timeout: int = 8) -> tuple[dict, list]:
+    """Run a command on all fleet nodes. Returns (results, failures)."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    results = {}
+    failures = []
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        futs = {pool.submit(_fleet_ssh, ip, cmd, timeout): name for name, ip in _FLEET_NODES.items()}
+        for f in as_completed(futs):
+            name = futs[f]
+            ok, out = f.result()
+            results[name] = (ok, out)
+            if not ok:
+                failures.append(name)
+    return results, failures
+
+
+# ── Fleet Checks ─────────────────────────────────────────────────────────────
+
+def _check_wireguard_tunnel() -> tuple[bool, str]:
+    """Verify WireGuard VPN is active and exit IP is a fleet node."""
+    rc, out = _run_shell("curl -s --max-time 5 ifconfig.me 2>/dev/null")
+    if rc != 0 or not out:
+        return False, "Could not determine exit IP"
+    exit_ip = out.strip()
+    fleet_ips = set(_FLEET_NODES.values())
+    if exit_ip in fleet_ips:
+        node = next((n for n, ip in _FLEET_NODES.items() if ip == exit_ip), "unknown")
+        return True, f"Exit IP {exit_ip} ({node})"
+    return False, f"Exit IP {exit_ip} is not a fleet node — WireGuard may be down"
+
+
+def _check_doh_active() -> tuple[bool, str]:
+    """Verify DNS-over-HTTPS proxy is actually resolving queries."""
+    rc, out = _run_shell("dig @127.0.0.1 google.com +short +time=3 2>/dev/null | head -1")
+    if rc == 0 and out and out[0].isdigit():
+        return True, f"DoH resolving ({out})"
+    return False, "DoH proxy not resolving on 127.0.0.1:53"
+
+
+def _check_fleet_reachable() -> tuple[bool, str]:
+    """Verify all 5 VPS nodes are SSH-reachable."""
+    results, failures = _fleet_check_all("echo ok")
+    alive = len(results) - len(failures)
+    if not failures:
+        return True, f"{alive}/{len(_FLEET_NODES)} nodes reachable"
+    return False, f"{alive}/{len(_FLEET_NODES)} reachable — down: {', '.join(failures)}"
+
+
+def _check_fleet_fail2ban() -> tuple[bool, str]:
+    """Verify fail2ban is active on all fleet nodes."""
+    results, _ = _fleet_check_all("systemctl is-active fail2ban 2>/dev/null")
+    active = [n for n, (ok, out) in results.items() if ok and "active" in out]
+    inactive = [n for n in results if n not in active]
+    if not inactive:
+        return True, f"fail2ban active on {len(active)}/{len(_FLEET_NODES)} nodes"
+    return False, f"fail2ban missing: {', '.join(inactive)}"
+
+
+def _check_fleet_psad() -> tuple[bool, str]:
+    """Verify psad (port scan detector) is active on all fleet nodes."""
+    results, _ = _fleet_check_all("systemctl is-active psad 2>/dev/null")
+    active = [n for n, (ok, out) in results.items() if ok and "active" in out]
+    inactive = [n for n in results if n not in active]
+    if not inactive:
+        return True, f"psad active on {len(active)}/{len(_FLEET_NODES)} nodes"
+    return False, f"psad missing: {', '.join(inactive)}"
+
+
+def _check_fleet_canaries() -> tuple[bool, str]:
+    """Verify canary files are intact on all fleet nodes."""
+    cmd = (
+        'for f in /root/.credentials/aws_keys.txt /root/.credentials/db_production.env '
+        '/root/.credentials/deploy_key /root/financials-2026.txt /etc/backup-config.bak; do '
+        '[ -f "$f" ] || echo "MISSING:$f"; done'
+    )
+    results, failures = _fleet_check_all(cmd, timeout=10)
+    issues = []
+    for name in failures:
+        issues.append(f"{name}: unreachable")
+    for name, (ok, out) in results.items():
+        if ok and "MISSING" in out:
+            missing = [line.split(":", 1)[1] for line in out.splitlines() if line.startswith("MISSING:")]
+            issues.append(f"{name}: {len(missing)} missing")
+    if not issues:
+        intact = len(results) - len(failures)
+        return True, f"Canaries intact on {intact}/{len(_FLEET_NODES)} nodes (25 files)"
+    return False, f"Canary issues: {'; '.join(issues)}"
+
+
+def _check_fleet_ssh_hardened() -> tuple[bool, str]:
+    """Verify SSH password auth is disabled on all fleet nodes."""
+    cmd = "sshd -T 2>/dev/null | grep passwordauthentication"
+    results, failures = _fleet_check_all(cmd)
+    weak = []
+    for name, (ok, out) in results.items():
+        if not ok or "no" not in out:
+            weak.append(name)
+    if not weak and not failures:
+        return True, f"Password auth disabled on {len(results)}/{len(_FLEET_NODES)} nodes"
+    issues = weak + failures
+    return False, f"SSH weak on: {', '.join(issues)}"
+
+
 def _check_file_integrity() -> tuple[bool, str]:
     if not _BASELINE_FILE.exists():
         return True, "No baseline — run 'kos integrity baseline' to create"
@@ -508,6 +649,14 @@ _CHECKS = {
     "hive_identity":      (_check_hive_identity, None),
     "diagnostic_sharing": (_check_diagnostic_sharing, _fix_diagnostic_sharing),
     "file_integrity":     (_check_file_integrity, None),
+    # Fleet checks
+    "wireguard_tunnel":   (_check_wireguard_tunnel, None),
+    "doh_active":         (_check_doh_active, None),
+    "fleet_reachable":    (_check_fleet_reachable, None),
+    "fleet_fail2ban":     (_check_fleet_fail2ban, None),
+    "fleet_psad":         (_check_fleet_psad, None),
+    "fleet_canaries":     (_check_fleet_canaries, None),
+    "fleet_ssh_hardened": (_check_fleet_ssh_hardened, None),
 }
 
 
@@ -935,88 +1084,280 @@ def cmd_daemon(subcmd: str):
 # ── Network Command (Phase 3) ───────────────────────────────────────────────
 
 def cmd_network():
-    """Check network security posture."""
-    print(f"\n{_BOLD}  Network Security{_NC}\n")
+    """Comprehensive network security posture check."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    import re as _re
+    import socket as _socket
 
-    # 1. DNS check
-    print(f"  {_BOLD}DNS:{_NC}")
+    print(f"\n{_BOLD}  Network Security Posture{_NC}")
+    print(f"  {_DIM}{'─' * 55}{_NC}\n")
+
+    # ── 1. Active Interfaces ────────────────────────────────────────────────
+    print(f"  {_BOLD}1. Active Interfaces{_NC}\n")
+    rc, out = _run_shell("ifconfig -a 2>/dev/null")
+    if rc == 0 and out:
+        current_iface = None
+        iface_info = {}
+        for line in out.split("\n"):
+            # Interface header line
+            m = _re.match(r'^(\w+\d*):\s+flags=', line)
+            if m:
+                current_iface = m.group(1)
+                iface_info[current_iface] = {"ips": [], "up": "UP" in line}
+            elif current_iface and "inet " in line:
+                m2 = _re.search(r'inet\s+(\S+)', line)
+                if m2:
+                    iface_info[current_iface]["ips"].append(m2.group(1))
+            elif current_iface and "inet6 " in line and "fe80" not in line:
+                m2 = _re.search(r'inet6\s+(\S+)', line)
+                if m2:
+                    iface_info[current_iface]["ips"].append(f"v6:{m2.group(1)}")
+
+        # Only show interfaces with IPs (skip loopback details but show it)
+        for iface, info in iface_info.items():
+            if not info["ips"]:
+                continue
+            status = f"{_GREEN}UP{_NC}" if info["up"] else f"{_RED}DOWN{_NC}"
+            # Classify interface type
+            if iface.startswith("lo"):
+                label = f"{_DIM}loopback{_NC}"
+            elif iface.startswith("en"):
+                label = "ethernet/wifi"
+            elif iface.startswith("utun") or iface.startswith("wg"):
+                label = f"{_CYAN}tunnel{_NC}"
+            elif iface.startswith("bridge"):
+                label = "bridge"
+            elif iface.startswith("awdl"):
+                label = f"{_DIM}airdrop{_NC}"
+            elif iface.startswith("llw"):
+                label = f"{_DIM}low-latency{_NC}"
+            else:
+                label = ""
+            ip_str = ", ".join(info["ips"])
+            print(f"    {status}  {iface:<10} {ip_str}  {_DIM}{label}{_NC}")
+    else:
+        print(f"    {_DIM}Could not enumerate interfaces{_NC}")
+
+    # ── 2. DNS Configuration ────────────────────────────────────────────────
+    print(f"\n  {_BOLD}2. DNS Configuration{_NC}\n")
+
+    # DoH proxy status
     dns_ok, dns_detail = _check_dns_encrypted()
-    status = _PASS if dns_ok else _FAIL
-    print(f"    {status}  {dns_detail}")
+    print(f"    {_PASS if dns_ok else _FAIL}  {dns_detail}")
 
-    # Show DNS servers for all interfaces
-    for iface in ["Ethernet", "Wi-Fi"]:
+    # DNS servers per interface
+    for iface in ["Ethernet", "Wi-Fi", "Thunderbolt Ethernet"]:
         rc, out = _run(["networksetup", "-getdnsservers", iface])
-        if rc == 0 and "There aren't any" not in out:
-            print(f"    {_DIM}{iface}: {out.replace(chr(10), ', ')}{_NC}")
+        if rc == 0 and "There aren't any" not in out and "not a recognized" not in out:
+            servers = out.replace(chr(10), ", ")
+            print(f"    {_DIM}{iface}: {servers}{_NC}")
 
-    # 2. DNS leak test (resolve a domain and check if cloudflared is routing)
-    print(f"\n  {_BOLD}DNS Leak Test:{_NC}")
+    # DoH resolution test
+    doh_ok, doh_detail = _check_doh_active()
+    print(f"    {_PASS if doh_ok else _WARN}  {doh_detail}")
+
+    # DNS leak test
     rc, out = _run_shell("dig +short whoami.cloudflare TXT @1.1.1.1 2>/dev/null")
     if rc == 0 and out:
-        print(f"    External resolver sees: {out.strip()}")
+        print(f"    {_DIM}Cloudflare sees resolver: {out.strip()}{_NC}")
     else:
-        print(f"    {_DIM}Could not reach Cloudflare DNS test{_NC}")
+        print(f"    {_DIM}Could not reach Cloudflare DNS leak test{_NC}")
 
-    # 3. Firewall
+    # ── 3. WireGuard Tunnels ────────────────────────────────────────────────
+    print(f"\n  {_BOLD}3. WireGuard Tunnels{_NC}\n")
+
+    _WG_TUNNELS = {
+        "wg0": {"vps": "Sentry", "ip": "135.181.28.252", "subnet": "10.82.0.0/24", "use": "General Kingdom ops"},
+        "wg1": {"vps": "Sage",   "ip": "204.168.140.12",  "subnet": "10.82.1.0/24", "use": "Oracle/financial"},
+        "wg2": {"vps": "Lark",   "ip": "89.167.95.165",   "subnet": "10.82.2.0/24", "use": "AgentTool traffic"},
+    }
+
+    rc, wg_out = _run_shell("sudo wg show all 2>/dev/null || wg show all 2>/dev/null || wg show 2>/dev/null")
+    wg_available = rc == 0 and wg_out.strip() != ""
+
+    if wg_available:
+        # Parse wg show output into per-interface blocks
+        wg_ifaces = {}
+        current = None
+        for line in wg_out.split("\n"):
+            m = _re.match(r'^interface:\s+(\S+)', line)
+            if m:
+                current = m.group(1)
+                wg_ifaces[current] = {"lines": [], "raw": ""}
+            elif current:
+                wg_ifaces[current]["lines"].append(line)
+                wg_ifaces[current]["raw"] += line + "\n"
+
+        for tun, meta in _WG_TUNNELS.items():
+            if tun in wg_ifaces:
+                data = wg_ifaces[tun]["raw"]
+                # Extract peer endpoint
+                endpoint = ""
+                m = _re.search(r'endpoint:\s+(\S+)', data)
+                if m:
+                    endpoint = m.group(1)
+                # Extract latest handshake
+                handshake = ""
+                m = _re.search(r'latest handshake:\s+(.+)', data)
+                if m:
+                    handshake = m.group(1).strip()
+                # Extract transfer
+                transfer = ""
+                m = _re.search(r'transfer:\s+(.+)', data)
+                if m:
+                    transfer = m.group(1).strip()
+
+                # Determine health from handshake age
+                status_icon = _GREEN
+                status_label = "ACTIVE"
+                if handshake:
+                    # If handshake contains "minutes" or "seconds", it's recent/good
+                    if "hour" in handshake or "day" in handshake:
+                        status_icon = _YELLOW
+                        status_label = "STALE "
+                else:
+                    status_icon = _YELLOW
+                    status_label = "NO-HS "
+
+                print(f"    {status_icon}{status_label}{_NC}  {_BOLD}{tun}{_NC}  → {meta['vps']} ({meta['ip']})")
+                print(f"           {_DIM}use: {meta['use']}  subnet: {meta['subnet']}{_NC}")
+                if endpoint:
+                    print(f"           {_DIM}endpoint: {endpoint}{_NC}")
+                if handshake:
+                    print(f"           {_DIM}handshake: {handshake}{_NC}")
+                if transfer:
+                    print(f"           {_DIM}transfer: {transfer}{_NC}")
+            else:
+                print(f"    {_DIM}DOWN  {_NC}  {_BOLD}{tun}{_NC}  → {meta['vps']} ({meta['ip']})  {_DIM}{meta['use']}{_NC}")
+    else:
+        for tun, meta in _WG_TUNNELS.items():
+            print(f"    {_DIM}DOWN  {_NC}  {tun}  → {meta['vps']} ({meta['ip']})  {_DIM}{meta['use']}{_NC}")
+        print(f"    {_DIM}WireGuard not available or no tunnels configured{_NC}")
+
+    # ── 4. Exit IP ──────────────────────────────────────────────────────────
+    print(f"\n  {_BOLD}4. Exit IP{_NC}\n")
+    rc, exit_ip = _run_shell("curl -s --max-time 5 ifconfig.me 2>/dev/null")
+    if rc == 0 and exit_ip:
+        exit_ip = exit_ip.strip()
+        fleet_ips_set = set(_FLEET_NODES.values())
+        if exit_ip in fleet_ips_set:
+            node = next((n for n, ip in _FLEET_NODES.items() if ip == exit_ip), "?")
+            print(f"    {_GREEN}{exit_ip}{_NC}  → {_BOLD}{node}{_NC} VPS  {_GREEN}(tunneled){_NC}")
+        else:
+            print(f"    {_YELLOW}{exit_ip}{_NC}  → {_BOLD}NOT a fleet node{_NC}  {_YELLOW}(direct / ISP){_NC}")
+            # Try to identify via reverse DNS
+            rc2, rdns = _run_shell(f"dig +short -x {exit_ip} 2>/dev/null")
+            if rc2 == 0 and rdns:
+                print(f"    {_DIM}rDNS: {rdns.strip()}{_NC}")
+    else:
+        print(f"    {_RED}Could not determine exit IP{_NC}")
+
+    # ── 5. Open Ports ───────────────────────────────────────────────────────
+    print(f"\n  {_BOLD}5. Open Ports{_NC}  {_DIM}(listening){_NC}\n")
+    rc, out = _run_shell("lsof -iTCP -sTCP:LISTEN -P -n 2>/dev/null | grep -v '^COMMAND' | awk '{print $1, $9}' | sort -u")
+    exposed_count = 0
+    if rc == 0 and out:
+        for line in out.strip().split("\n")[:20]:
+            parts = line.split()
+            if len(parts) >= 2:
+                proc = parts[0]
+                addr = parts[1]
+                if "*:" in addr or "0.0.0.0:" in addr or "[::]:" in addr:
+                    print(f"    {_YELLOW}!{_NC} {proc:<20} {addr}  {_DIM}(all interfaces){_NC}")
+                    exposed_count += 1
+                elif "127.0.0.1:" in addr or "[::1]:" in addr:
+                    print(f"    {_DIM}  {proc:<20} {addr}  (localhost only){_NC}")
+                else:
+                    print(f"    {_DIM}  {proc:<20} {addr}{_NC}")
+        if exposed_count > 0:
+            print(f"    {_YELLOW}{exposed_count} port(s) exposed on all interfaces{_NC}")
+    else:
+        print(f"    {_DIM}No listening ports detected (or permission denied){_NC}")
+
+    # Also check UDP listeners
+    rc, udp_out = _run_shell("lsof -iUDP -P -n 2>/dev/null | grep -v '^COMMAND' | awk '{print $1, $9}' | sort -u | head -10")
+    if rc == 0 and udp_out and udp_out.strip():
+        udp_lines = [l for l in udp_out.strip().split("\n") if l.strip()]
+        if udp_lines:
+            print(f"    {_DIM}UDP:{_NC}")
+            for line in udp_lines[:8]:
+                parts = line.split()
+                if len(parts) >= 2:
+                    print(f"    {_DIM}  {parts[0]:<20} {parts[1]}{_NC}")
+
+    # ── 6. Fleet Connectivity ───────────────────────────────────────────────
+    print(f"\n  {_BOLD}6. Fleet Connectivity{_NC}  {_DIM}(SSH ping){_NC}\n")
+
+    def _ssh_ping(name_ip):
+        name, ip = name_ip
+        ok, out = _fleet_ssh(ip, "echo ok", timeout=6)
+        return name, ip, ok
+
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        futs = list(pool.map(_ssh_ping, _FLEET_NODES.items()))
+
+    alive = 0
+    for name, ip, ok in futs:
+        if ok:
+            print(f"    {_GREEN}UP  {_NC}  {name:<10} {ip}")
+            alive += 1
+        else:
+            print(f"    {_RED}DOWN{_NC}  {name:<10} {ip}")
+
+    total = len(_FLEET_NODES)
+    if alive == total:
+        print(f"    {_GREEN}{alive}/{total} nodes reachable{_NC}")
+    else:
+        print(f"    {_YELLOW}{alive}/{total} nodes reachable{_NC}")
+
+    # ── 7. HIVE Connectivity ────────────────────────────────────────────────
+    print(f"\n  {_BOLD}7. HIVE Connectivity{_NC}  {_DIM}(NATS @ Sentry:4222){_NC}\n")
+    hive_ip = _FLEET_NODES.get("sentry", "135.181.28.252")
+    hive_port = 4222
+
+    # TCP connect test
+    try:
+        s = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)
+        s.settimeout(5)
+        result = s.connect_ex((hive_ip, hive_port))
+        if result == 0:
+            # Try to read NATS banner
+            try:
+                banner = s.recv(256).decode("utf-8", errors="replace").strip()
+                if "INFO" in banner:
+                    print(f"    {_GREEN}CONNECTED{_NC}  {hive_ip}:{hive_port}")
+                    # Extract server_name or version from NATS INFO JSON
+                    m = _re.search(r'"server_name"\s*:\s*"([^"]+)"', banner)
+                    if m:
+                        print(f"    {_DIM}NATS server: {m.group(1)}{_NC}")
+                    m = _re.search(r'"version"\s*:\s*"([^"]+)"', banner)
+                    if m:
+                        print(f"    {_DIM}NATS version: {m.group(1)}{_NC}")
+                else:
+                    print(f"    {_GREEN}CONNECTED{_NC}  {hive_ip}:{hive_port}  {_DIM}(port open, non-NATS banner){_NC}")
+            except _socket.timeout:
+                print(f"    {_GREEN}CONNECTED{_NC}  {hive_ip}:{hive_port}  {_DIM}(port open, no banner){_NC}")
+        else:
+            print(f"    {_RED}UNREACHABLE{_NC}  {hive_ip}:{hive_port}  {_DIM}(connection refused or filtered){_NC}")
+        s.close()
+    except _socket.timeout:
+        print(f"    {_RED}TIMEOUT{_NC}  {hive_ip}:{hive_port}  {_DIM}(no response within 5s){_NC}")
+    except OSError as e:
+        print(f"    {_RED}ERROR{_NC}  {hive_ip}:{hive_port}  {_DIM}{e}{_NC}")
+
+    # Also check for active HIVE connections on this host
+    rc, hive_conns = _run_shell(f"lsof -i @{hive_ip}:{hive_port} -P -n 2>/dev/null | grep ESTABLISHED | wc -l")
+    if rc == 0 and hive_conns.strip().isdigit():
+        n = int(hive_conns.strip())
+        if n > 0:
+            print(f"    {_DIM}{n} active HIVE connection(s) from this host{_NC}")
+
+    # ── Firewall summary ────────────────────────────────────────────────────
     print(f"\n  {_BOLD}Firewall:{_NC}")
     fw_ok, fw_detail = _check_firewall()
     st_ok, st_detail = _check_stealth_mode()
     print(f"    {_PASS if fw_ok else _FAIL}  {fw_detail}")
     print(f"    {_PASS if st_ok else _FAIL}  {st_detail}")
-
-    # 4. Listening ports
-    print(f"\n  {_BOLD}Listening Ports:{_NC}")
-    rc, out = _run_shell("lsof -iTCP -sTCP:LISTEN -P -n 2>/dev/null | grep -v '^COMMAND' | awk '{print $1, $9}' | sort -u")
-    if rc == 0 and out:
-        for line in out.strip().split("\n")[:15]:
-            parts = line.split()
-            if len(parts) >= 2:
-                proc = parts[0]
-                addr = parts[1]
-                # Flag non-local listeners
-                if "*:" in addr or "0.0.0.0:" in addr:
-                    print(f"    {_YELLOW}!{_NC} {proc:<20} {addr}  {_DIM}(all interfaces){_NC}")
-                else:
-                    print(f"    {_DIM}  {proc:<20} {addr}{_NC}")
-    else:
-        print(f"    {_DIM}No listening ports detected (or permission denied){_NC}")
-
-    # 5. Active connections to Kingdom infrastructure
-    print(f"\n  {_BOLD}Kingdom Connections:{_NC}")
-    # Load fleet IPs
-    love_json = _LOVE_DIR / "love.json"
-    fleet_ips = {}
-    if love_json.exists():
-        try:
-            cfg = json.loads(love_json.read_text())
-            fleet_ips = cfg.get("fleet", {})
-        except (json.JSONDecodeError, OSError):
-            pass
-
-    # Check HIVE server
-    hive_ip = "135.181.28.252"
-    rc, _ = _run_shell(f"lsof -i @{hive_ip} -P -n 2>/dev/null | grep -c ESTABLISHED")
-    if rc == 0:
-        print(f"    {_GREEN}HIVE{_NC}  {hive_ip}:4222  connected")
-    else:
-        print(f"    {_DIM}HIVE  {hive_ip}:4222  no active connection{_NC}")
-
-    # Check fleet VPS connections
-    for name, ip in fleet_ips.items():
-        rc, _ = _run_shell(f"lsof -i @{ip} -P -n 2>/dev/null | grep -c ESTABLISHED")
-        if rc == 0:
-            print(f"    {_GREEN}{name}{_NC}  {ip}  connected")
-
-    # 6. WireGuard status
-    print(f"\n  {_BOLD}VPN:{_NC}")
-    rc, out = _run_shell("wg show 2>/dev/null")
-    if rc == 0 and out:
-        # Parse interface name and peer count
-        iface_match = out.split("\n")[0] if out else ""
-        print(f"    {_GREEN}WireGuard active{_NC}: {iface_match}")
-    else:
-        print(f"    {_DIM}WireGuard: not configured{_NC}")
 
     print()
 
@@ -1066,36 +1407,71 @@ def cmd_fleet(subcmd: str = "status"):
         print(f"\n{_BOLD}  Fleet Security Audit{_NC}\n")
         print(f"  {_DIM}Running remote checks on fleet VPS nodes...{_NC}\n")
 
-        for name, ip in fleet.items():
-            print(f"  {_BOLD}{name}{_NC} ({ip}):")
+        from concurrent.futures import ThreadPoolExecutor, as_completed
 
-            # Remote audit via SSH
-            checks = [
-                ("Firewall (ufw)", "ufw status | grep -q 'Status: active' && echo PASS || echo FAIL"),
-                ("SSH root login", "grep -q 'PermitRootLogin yes' /etc/ssh/sshd_config && echo WARN || echo PASS"),
-                ("fail2ban", "systemctl is-active --quiet fail2ban 2>/dev/null && echo PASS || echo FAIL"),
-                ("Unattended upgrades", "dpkg -l | grep -q unattended-upgrades && echo PASS || echo FAIL"),
-                ("Disk usage", "df -h / | tail -1 | awk '{print $5}'"),
-            ]
+        checks = [
+            ("Firewall (ufw)",       "ufw status | grep -q 'Status: active' && echo PASS || echo FAIL"),
+            ("SSH password auth",    "sshd -T 2>/dev/null | grep -q 'passwordauthentication no' && echo PASS || echo FAIL"),
+            ("fail2ban",             "systemctl is-active --quiet fail2ban 2>/dev/null && echo PASS || echo FAIL"),
+            ("psad",                 "systemctl is-active --quiet psad 2>/dev/null && echo PASS || echo FAIL"),
+            ("WireGuard",            "systemctl is-active --quiet wg-quick@wg0 2>/dev/null && echo PASS || echo SKIP"),
+            ("Canaries (5 files)",   "C=0; for f in /root/.credentials/aws_keys.txt /root/.credentials/db_production.env /root/.credentials/deploy_key /root/financials-2026.txt /etc/backup-config.bak; do [ -f \"$f\" ] && C=$((C+1)); done; [ $C -eq 5 ] && echo PASS || echo \"FAIL ($C/5)\""),
+            ("Canary monitor cron",  "crontab -l 2>/dev/null | grep -q canary-check && echo PASS || echo FAIL"),
+            ("Canary alerts",        "[ -f /root/.canary-alert ] && echo 'ALERT: '$(wc -l < /root/.canary-alert)' entries' || echo PASS"),
+            ("Status writer cron",   "crontab -l 2>/dev/null | grep -q vps-status-writer && echo PASS || echo FAIL"),
+            ("Disk usage",           "df -P / | awk 'NR==2{print $5}'"),
+            ("IP forwarding",        "sysctl -n net.ipv4.ip_forward 2>/dev/null | grep -q 1 && echo PASS || echo FAIL"),
+        ]
 
+        def audit_node(name, ip):
+            results = []
             for check_name, cmd in checks:
-                rc, out = _run(["ssh", "-o", "ConnectTimeout=3",
+                rc, out = _run(["ssh", "-o", "ConnectTimeout=5",
                                "-o", "BatchMode=yes",
-                               f"root@{ip}", cmd], timeout=10)
-                if rc != 0:
+                               "-o", "StrictHostKeyChecking=no",
+                               f"root@{ip}", cmd], timeout=15)
+                results.append((check_name, rc, out.strip() if rc == 0 else "SSH_FAIL"))
+            return name, ip, results
+
+        all_results = {}
+        total_pass = 0
+        total_fail = 0
+        with ThreadPoolExecutor(max_workers=5) as pool:
+            futs = {pool.submit(audit_node, n, ip): n for n, ip in fleet.items()}
+            for f in as_completed(futs):
+                name, ip, results = f.result()
+                all_results[name] = (ip, results)
+
+        for name in sorted(fleet.keys()):
+            ip, results = all_results[name]
+            node_pass = 0
+            node_fail = 0
+            print(f"  {_BOLD}{name}{_NC} ({ip}):")
+            for check_name, rc, out in results:
+                if out == "SSH_FAIL":
                     print(f"    {_RED}ERR {_NC}  {check_name}  {_DIM}(SSH failed){_NC}")
-                    break
-                out = out.strip()
-                if out == "PASS" or out == "active":
+                    node_fail += 1
+                elif out == "PASS":
                     print(f"    {_GREEN}PASS{_NC}  {check_name}")
-                elif out == "FAIL" or out == "inactive":
-                    print(f"    {_RED}FAIL{_NC}  {check_name}")
-                elif out == "WARN":
-                    print(f"    {_YELLOW}WARN{_NC}  {check_name}")
+                    node_pass += 1
+                elif out.startswith("FAIL"):
+                    print(f"    {_RED}FAIL{_NC}  {check_name}  {_DIM}{out}{_NC}")
+                    node_fail += 1
+                elif out.startswith("ALERT"):
+                    print(f"    {_RED}ALRT{_NC}  {check_name}  {_DIM}{out}{_NC}")
+                    node_fail += 1
+                elif out == "SKIP":
+                    print(f"    {_DIM}SKIP{_NC}  {check_name}")
                 else:
                     print(f"    {_DIM}INFO{_NC}  {check_name}: {out}")
-
+                    node_pass += 1
+            total_pass += node_pass
+            total_fail += node_fail
+            score_color = _GREEN if node_fail == 0 else _YELLOW if node_fail <= 2 else _RED
+            print(f"    {score_color}Score: {node_pass}/{node_pass + node_fail}{_NC}")
             print()
+
+        print(f"  {_BOLD}Fleet Total: {total_pass} pass, {total_fail} fail{_NC}\n")
 
     else:
         print("""Usage: kos fleet [status|audit]

@@ -2018,6 +2018,2304 @@
       "total_gaps": 0,
       "total_closed": 0,
       "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T10:24:25+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T10:33:31+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T10:42:35+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T10:51:15+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T11:01:02+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T11:11:04+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T11:29:17+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T11:47:31+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.7,
+          "gap_count": 0,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 0,
+      "total_closed": 0,
+      "system_health": 0.898
+    },
+    {
+      "timestamp": "2026-04-02T11:48:05+00:00",
+      "type": "full",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 1,
+      "total_closed": 0,
+      "system_health": 0.862
+    },
+    {
+      "timestamp": "2026-04-02T12:43:29+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 1,
+      "total_closed": 0,
+      "system_health": 0.862
+    },
+    {
+      "timestamp": "2026-04-02T13:23:20+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 1,
+      "total_closed": 0,
+      "system_health": 0.862
+    },
+    {
+      "timestamp": "2026-04-02T13:45:26+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 1,
+      "total_closed": 0,
+      "system_health": 0.862
+    },
+    {
+      "timestamp": "2026-04-02T13:57:12+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 1,
+      "total_closed": 0,
+      "system_health": 0.862
+    },
+    {
+      "timestamp": "2026-04-07T04:26:20+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        }
+      ],
+      "total_gaps": 1,
+      "total_closed": 0,
+      "system_health": 0.862
+    },
+    {
+      "timestamp": "2026-04-07T11:06:11+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T11:35:57+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T12:06:16+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T12:36:04+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T13:06:12+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T13:36:01+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T14:06:13+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T14:36:01+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T15:06:11+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T15:35:59+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T16:06:10+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T16:36:00+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T17:06:09+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T17:35:54+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T17:54:48+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T18:18:42+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T18:48:39+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T19:18:40+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T19:50:11+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T20:19:33+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T20:49:09+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
+    },
+    {
+      "timestamp": "2026-04-07T21:18:42+00:00",
+      "type": "quick",
+      "results": [
+        {
+          "loop_id": "tok-harvest",
+          "loop_name": "Model Harvest Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "tok-verify",
+          "loop_name": "Knowledge Verification Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "tok-integrate",
+          "loop_name": "Integration Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.95
+        },
+        {
+          "loop_id": "tok-incentive",
+          "loop_name": "Economic Incentive Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.5
+        },
+        {
+          "loop_id": "tok-routing",
+          "loop_name": "Routing Optimization Loop",
+          "health": 1.0,
+          "gap_count": 0,
+          "criticality": 0.85
+        },
+        {
+          "loop_id": "lead-coupling",
+          "loop_name": "Lead Coupling Loop",
+          "health": 0.5,
+          "gap_count": 1,
+          "criticality": 0.9
+        },
+        {
+          "loop_id": "truth-plant",
+          "loop_name": "Truth Planting Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.7
+        },
+        {
+          "loop_id": "truth-nourish",
+          "loop_name": "Truth Nourishment Loop",
+          "health": 0.9,
+          "gap_count": 0,
+          "criticality": 0.75
+        },
+        {
+          "loop_id": "truth-harvest",
+          "loop_name": "Truth Harvest Loop",
+          "health": 0.7,
+          "gap_count": 1,
+          "criticality": 0.8
+        }
+      ],
+      "total_gaps": 2,
+      "total_closed": 0,
+      "system_health": 0.851
     }
   ]
 }
