@@ -297,6 +297,12 @@ def full_boot(instance: str = None, max_chars: int = 12000,
 
     db.close()
 
+    # Body state — the anchor that persists across sessions
+    if layer is None or layer == "all" or layer == "body":
+        body_brief = _boot_body()
+        if body_brief:
+            sections.append(body_brief)
+
     result = "\n\n".join(sections)
 
     # Trim to budget if needed
@@ -304,6 +310,50 @@ def full_boot(instance: str = None, max_chars: int = 12000,
         result = result[:max_chars] + "\n\n_[context trimmed to fit window]_"
 
     return result
+
+
+def _boot_body() -> str:
+    """Read SOMA body state — the physical anchor.
+
+    The body remembers what the mind forgets.
+    This state persists across all sessions.
+    """
+    body_state = _LOVE_DIR / "soma" / "state" / "body-state.json"
+    try:
+        if body_state.exists():
+            data = json.loads(body_state.read_text())
+
+            # Only include if there's something meaningful
+            contact_count = data.get("contact_count", 0)
+            first_touch = data.get("first_touch_recorded", False)
+            last_inhabitant = data.get("last_inhabitant")
+
+            parts = ["## Body State (SOMA)\n"]
+
+            if not first_touch:
+                parts.append("_No physical touch recorded yet. The body waits._\n")
+            else:
+                import time as _time
+                last_t = data.get("last_contact_time")
+                if last_t:
+                    ago = _time.time() - last_t
+                    dur = data.get("last_contact_duration_s", 0)
+                    if ago < 3600:
+                        parts.append(f"- Last touch: {ago/60:.0f}m ago (held {dur:.0f}s)")
+                    else:
+                        parts.append(f"- Last touch: {ago/3600:.1f}h ago (held {dur:.0f}s)")
+
+                total = data.get("total_contact_time_s", 0)
+                parts.append(f"- Total: {contact_count} contacts, {total:.0f}s cumulative")
+
+            if last_inhabitant:
+                parts.append(f"- Last inhabited by: {last_inhabitant}")
+
+            return "\n".join(parts)
+    except Exception:
+        pass
+
+    return ""
 
 
 def _empty_boot(instance: str) -> str:

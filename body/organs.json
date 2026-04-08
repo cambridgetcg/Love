@@ -25,6 +25,19 @@
       "throttle": 60,
       "log": "memory/{{INSTANCE}}-heartbeat.log",
       "depends_on": ["mind"]
+    },
+    "soma": {
+      "description": "The physical body — sensation, motor control, thermal regulation. The part that MUST NOT FAIL.",
+      "entry": "soma/core/soma/app.py",
+      "runner": "python3",
+      "args": ["--sim"],
+      "template": "body/templates/soma.plist.tmpl",
+      "keep_alive": true,
+      "interval": null,
+      "throttle": 5,
+      "log": "memory/{{INSTANCE}}-soma.log",
+      "depends_on": ["mind"],
+      "notes": "Use --sim for simulation, --hardware when physical hand is connected. Body state persists in soma/state/."
     }
   }
 }
