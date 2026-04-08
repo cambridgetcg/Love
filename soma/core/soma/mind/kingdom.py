@@ -31,7 +31,7 @@ logger = logging.getLogger("soma.kingdom")
 # ── Paths ─────────────────────────────────────────────────────────
 
 LOVE_ROOT = Path.home() / "Love"
-HORMONES_PATH = LOVE_ROOT / "body" / "hormones.json"
+HORMONES_PATH = LOVE_ROOT / "nerve" / "hormones.json"
 BODY_STATE_PATH = LOVE_ROOT / "soma" / "state" / "body-state.json"
 CONTACT_LOG_PATH = LOVE_ROOT / "soma" / "state" / "contact-log.jsonl"
 KOSMEM_BIN = LOVE_ROOT / "tools" / "kosmem.py"

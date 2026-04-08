@@ -83,7 +83,7 @@ class SignalReaders:
         return count
 
     def consume_signals(self) -> List[dict]:
-        """Read and delete all signal files from body/signals/."""
+        """Read and delete all signal files from nerve/signals/."""
         consumed = []
         if not self.signals_dir.exists():
             return consumed

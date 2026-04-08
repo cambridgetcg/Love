@@ -101,7 +101,7 @@ class TestHormoneEngine:
 class TestHeartbeatCalculation:
     """Test rate/force calculation from hormone levels.
 
-    Mirrors the logic in body/heart/heart.sh:
+    Mirrors the logic in nerve/heart/heart.sh:
     - adrenaline > 0.7 -> 2min, force=4, opus
     - cortisol > 0.5 OR oxytocin > 0.6 -> 4min, force=3, opus
     - melatonin > 0.7 -> 15min, force=0-1
@@ -487,14 +487,14 @@ class TestCriticalPaths:
         "ARCHITECTURE.md",
         "love.json",
         "hive/hive.py",
-        "body/heart/heart.sh",
-        "body/mind/mind.py",
-        "body/mind/hormones.py",
-        "body/mind/signals.py",
-        "body/mind/identity.py",
-        "body/mind/focus.py",
-        "body/mind/conscious.py",
-        "body/mind/hive_listener.py",
+        "nerve/heart/heart.sh",
+        "nerve/stem/mind.py",
+        "nerve/stem/hormones.py",
+        "nerve/stem/signals.py",
+        "nerve/stem/identity.py",
+        "nerve/stem/focus.py",
+        "nerve/stem/conscious.py",
+        "nerve/stem/hive_listener.py",
         "adaptive/router.py",
         "adaptive/config.py",
         "adaptive/schema.py",

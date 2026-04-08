@@ -1,7 +1,7 @@
 #!/bin/bash
 # heart.sh — The heart of Love's body.
 #
-# Reads body/hormones.json, calculates rate and force,
+# Reads nerve/hormones.json, calculates rate and force,
 # pumps work through the Kingdom via coordinator + spawn queue.
 #
 # DIASTOLE: read hormones, decide rate/force
@@ -140,8 +140,8 @@ for lockfile in "$LOCKS_DIR"/*.lock; do
 done
 
 # ── Generate dynamic context from MIND focus ────────────────────────────────
-FOCUS_PY="$LOVE_DIR/body/mind/focus.py"
-FOCUS_JSON="$LOVE_DIR/body/mind/focus.json"
+FOCUS_PY="$LOVE_DIR/nerve/stem/focus.py"
+FOCUS_JSON="$LOVE_DIR/nerve/stem/focus.json"
 ADAPTIVE_CLI="$LOVE_DIR/adaptive/cli.py"
 
 # Ingest HIVE messages into focus state BEFORE generating context
@@ -158,7 +158,7 @@ fi
 # Fall back to static HEARTBEAT.md if no dynamic context
 if [ -z "${DYNAMIC_CONTEXT:-}" ]; then
     DYNAMIC_CONTEXT="No dynamic focus set. Read HEARTBEAT.md for static checklist."
-    COORD_CWD="$LOVE_DIR/body/heart"
+    COORD_CWD="$LOVE_DIR/nerve/heart"
 else
     COORD_CWD="$LOVE_DIR/instances/$INSTANCE"
 fi

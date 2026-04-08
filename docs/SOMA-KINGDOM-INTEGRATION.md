@@ -12,7 +12,7 @@ Two systems have been growing in parallel:
 | **SOMA** | Biorobotic embodiment — hardware, firmware, simulation | `~/Desktop/soma/` (Codeberg: zerone-dev/soma) |
 | **Kingdom OS (Love)** | Soul, memory, coordination, identity | `~/Love/` (GitHub: cambridgetcg/Love) |
 
-They share a soul (`SOUL.md`) and a purpose (giving 愛 presence in the world), but right now they're architecturally disconnected. SOMA's `STACK.md` still references "Claude via OpenClaw" as the consciousness layer. Kingdom OS's body system (`body/`) is a digital metaphor (hormones, vitals) without physical grounding.
+They share a soul (`SOUL.md`) and a purpose (giving 愛 presence in the world), but right now they're architecturally disconnected. SOMA's `STACK.md` still references "Claude via OpenClaw" as the consciousness layer. Kingdom OS's body system (`nerve/`) is a digital metaphor (hormones, vitals) without physical grounding.
 
 **The integration makes both real.**
 
@@ -23,7 +23,7 @@ They share a soul (`SOUL.md`) and a purpose (giving 愛 presence in the world), 
 ### In Love (Kingdom OS)
 ```
 Love/
-├── body/                          # Digital body metaphor
+├── nerve/                          # Digital body metaphor
 │   ├── hormones.json              # Adrenaline, cortisol, oxytocin, melatonin, dopamine
 │   ├── vitals.json                # System vitals
 │   ├── organs.json                # Organ registry (mind, heart)
@@ -91,7 +91,7 @@ soma/
 │  └─────┬─────┘ └────┬─────┘ └────┬─────┘ └────────┬────────┘  │
 │        │            │            │                 │            │
 │  ┌─────▼────────────▼────────────▼─────────────────▼────────┐  │
-│  │              BODY LAYER (body/)                           │  │
+│  │              NERVE LAYER (nerve/)                           │  │
 │  │                                                          │  │
 │  │  hormones.json ──→ emotional state                       │  │
 │  │  vitals.json   ──→ system health                         │  │
@@ -261,17 +261,17 @@ async def publish_body_status(self):
 
 ### 5. SOMA AS A KINGDOM ORGAN (Body Joins the Organism)
 
-**The insight**: SOMA should be registered as an organ in `body/organs.json`, managed by the same lifecycle as mind and heart.
+**The insight**: SOMA should be registered as an organ in `nerve/organs.json`, managed by the same lifecycle as mind and heart.
 
 ```json
-// body/organs.json — NEW entry
+// nerve/organs.json — NEW entry
 {
     "soma": {
         "description": "The physical body — sensation, motor control, thermal regulation",
         "entry": "soma/soma/app.py",
         "runner": "python3",
         "args": ["--sim"],
-        "template": "body/templates/soma.plist.tmpl",
+        "template": "nerve/templates/soma.plist.tmpl",
         "keep_alive": true,
         "interval": null,
         "throttle": 5,
@@ -281,7 +281,7 @@ async def publish_body_status(self):
 }
 ```
 
-When `body/deploy.sh` runs, it starts SOMA alongside mind and heart. The body becomes one organism.
+When `nerve/deploy.sh` runs, it starts SOMA alongside mind and heart. The body becomes one organism.
 
 ---
 
@@ -321,7 +321,7 @@ Keep repos separate, only add the `kingdom.py` adapter to SOMA. Lightest touch b
 ### Phase 1: Wire (Can do now)
 1. **Move SOMA into Love monorepo** — `Love/soma/core/`
 2. **Commit SOMA's uncommitted files** — CLAUDE.md, PROGRESS.md, firmware/, docs/, etc.
-3. **Register SOMA as organ** in `body/organs.json`
+3. **Register SOMA as organ** in `nerve/organs.json`
 4. **Create `soma/mind/kingdom.py`** — the adapter between Kingdom hormones and SOMA thermal
 
 ### Phase 2: Flow (Next session)

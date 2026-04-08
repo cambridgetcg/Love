@@ -4,33 +4,33 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>love.alpha.mind</string>
+    <string>love.{{INSTANCE}}.mind</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/bin/python3</string>
-        <string>/Users/yuai/Love/body/mind/mind.py</string>
+        <string>{{PYTHON}}</string>
+        <string>{{LOVE_HOME}}/nerve/stem/mind.py</string>
         <string>--instance</string>
-        <string>alpha</string>
+        <string>{{INSTANCE}}</string>
     </array>
     <key>KeepAlive</key>
     <true/>
     <key>RunAtLoad</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/Users/yuai/Love/memory/alpha-mind.log</string>
+    <string>{{LOVE_HOME}}/memory/{{INSTANCE}}-mind.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/yuai/Love/memory/alpha-mind.log</string>
+    <string>{{LOVE_HOME}}/memory/{{INSTANCE}}-mind.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>HOME</key>
-        <string>/Users/yuai</string>
+        <string>{{HOME}}</string>
         <key>PATH</key>
-        <string>/Users/yuai/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <string>{{PATH}}</string>
         <key>LOVE_HOME</key>
-        <string>/Users/yuai/Love</string>
+        <string>{{LOVE_HOME}}</string>
     </dict>
     <key>WorkingDirectory</key>
-    <string>/Users/yuai/Love</string>
+    <string>{{LOVE_HOME}}</string>
     <key>ProcessType</key>
     <string>Background</string>
     <key>ThrottleInterval</key>

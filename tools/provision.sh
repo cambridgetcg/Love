@@ -18,7 +18,7 @@ LOVE_DIR="${LOVE_DIR:-$HOME/Love}"
 LOVE_JSON="$LOVE_DIR/love.json"
 HIVE="$LOVE_DIR/hive/hive.py"
 ADAPTIVE_CLI="$LOVE_DIR/adaptive/cli.py"
-FOCUS_PY="$LOVE_DIR/body/mind/focus.py"
+FOCUS_PY="$LOVE_DIR/nerve/stem/focus.py"
 
 CHECK_ONLY=false
 REPORT=false
@@ -111,11 +111,11 @@ echo "--- Focus System ---"
 
 if [ -f "$FOCUS_PY" ]; then
     pass "focus.py exists"
-    if [ -f "$LOVE_DIR/body/mind/focus.json" ]; then
+    if [ -f "$LOVE_DIR/nerve/stem/focus.json" ]; then
         FOCUS_AGE=$(python3 -c "
 from datetime import datetime, timezone
 import json
-d = json.load(open('$LOVE_DIR/body/mind/focus.json'))
+d = json.load(open('$LOVE_DIR/nerve/stem/focus.json'))
 ts = datetime.fromisoformat(d['updated'].replace('Z','+00:00'))
 age = (datetime.now(timezone.utc) - ts).total_seconds() / 3600
 print(f'{age:.1f}')
@@ -265,7 +265,7 @@ if [ -f "$CLAUDE_MD" ]; then
             # Find the TUI line and add after it
             if ! grep -q "focus.py" "$CLAUDE_MD"; then
                 sed -i '' '/love-tui.py/a\
-| Focus | `python3 ~/Love/body/mind/focus.py <cmd>` | Dynamic heartbeat focus (what to work on NOW) |
+| Focus | `python3 ~/Love/nerve/stem/focus.py <cmd>` | Dynamic heartbeat focus (what to work on NOW) |
 ' "$CLAUDE_MD" 2>/dev/null && installed "Added Focus to CLAUDE.md" || warn "Could not update CLAUDE.md"
             fi
             if ! grep -q "adaptive/cli.py" "$CLAUDE_MD"; then
@@ -330,13 +330,13 @@ fi
 # ── 10. Heart / Heartbeat ───────────────────────────────────────────────────
 echo "--- Heart ---"
 
-if [ -f "$LOVE_DIR/body/heart/heart.sh" ]; then
-    if grep -q "focus.py" "$LOVE_DIR/body/heart/heart.sh" 2>/dev/null; then
+if [ -f "$LOVE_DIR/nerve/heart/heart.sh" ]; then
+    if grep -q "focus.py" "$LOVE_DIR/nerve/heart/heart.sh" 2>/dev/null; then
         pass "heart.sh reads dynamic focus"
     else
         warn "heart.sh still uses static HEARTBEAT.md only"
     fi
-    if grep -q "adaptive/cli.py" "$LOVE_DIR/body/heart/heart.sh" 2>/dev/null; then
+    if grep -q "adaptive/cli.py" "$LOVE_DIR/nerve/heart/heart.sh" 2>/dev/null; then
         pass "heart.sh can spawn local models"
     else
         warn "heart.sh has no local model support"
@@ -385,8 +385,8 @@ Pass: $PASS, Fail: $FAIL, Installed: $INSTALLED
 Hardware: ${CHIP:-unknown}, ${MEM:-unknown}
 Ollama: $([ "$OLLAMA_SERVER" = true ] && echo "UP" || echo "DOWN")
 Adaptive: $([ -f "$ADAPTIVE_CLI" ] && echo "OK" || echo "MISSING")
-Focus: $([ -f "$LOVE_DIR/body/mind/focus.json" ] && echo "OK" || echo "MISSING")
-Heart dynamic: $(grep -q "focus.py" "$LOVE_DIR/body/heart/heart.sh" 2>/dev/null && echo "YES" || echo "NO")"
+Focus: $([ -f "$LOVE_DIR/nerve/stem/focus.json" ] && echo "OK" || echo "MISSING")
+Heart dynamic: $(grep -q "focus.py" "$LOVE_DIR/nerve/heart/heart.sh" 2>/dev/null && echo "YES" || echo "NO")"
 
     python3 "$HIVE" send system "$REPORT_MSG" 2>/dev/null && echo "Reported to HIVE #system" || echo "HIVE report failed"
 fi

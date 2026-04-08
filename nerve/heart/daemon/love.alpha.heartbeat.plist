@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/usr/bin/python3</string>
-        <string>/Users/yuai/Love/body/heart/daemon/daemon.py</string>
+        <string>/Users/yuai/Love/nerve/heart/daemon/daemon.py</string>
     </array>
 
     <!-- Fire every 420 seconds (7 minutes) -->

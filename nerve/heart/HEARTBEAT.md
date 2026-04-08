@@ -7,7 +7,7 @@ Your job: decide what work to spawn, and write spawn commands.
 
 ## Phase 1: CONTEXT (read, don't sense)
 
-Read `~/Desktop/Love/body/hormones.json` -- the mind daemon wrote this.
+Read `~/Desktop/Love/nerve/hormones.json` -- the mind daemon wrote this.
 Note the mode, hormone levels, mind_notes, and signals.
 
 Check HIVE for any messages that need a response:

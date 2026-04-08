@@ -14,7 +14,7 @@
       "description": "Full E2E health check of every subsystem. Catches drift, broken imports, stale state, dead services.",
       "value": "Prevents silent failures from compounding. Baseline for all other methodologies.",
       "steps": [
-        "1. Python import check — every .py file in tools/ body/ adaptive/ hive/",
+        "1. Python import check — every .py file in tools/ nerve/ adaptive/ hive/",
         "2. Service liveness — HIVE tunnel, Ollama, mind daemon, heart daemon",
         "3. Fleet SSH check — all 5 VPS nodes reachable and healthy",
         "4. File reference integrity — all paths in love.json, focus.json, dev-state.json exist",

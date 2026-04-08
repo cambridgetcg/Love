@@ -5,11 +5,11 @@
 # from templates, symlinks them, and manages launchd services.
 #
 # Usage:
-#   body/deploy.sh                  # Deploy all organs for this instance
-#   body/deploy.sh --organ mind     # Deploy only the mind
-#   body/deploy.sh --stop           # Stop all organs
-#   body/deploy.sh --status         # Show organ status
-#   body/deploy.sh --instance beta  # Override instance detection
+#   nerve/deploy.sh                  # Deploy all organs for this instance
+#   nerve/deploy.sh --organ mind     # Deploy only the mind
+#   nerve/deploy.sh --stop           # Stop all organs
+#   nerve/deploy.sh --status         # Show organ status
+#   nerve/deploy.sh --instance beta  # Override instance detection
 
 set -uo pipefail
 
@@ -160,7 +160,7 @@ do_deploy() {
         echo ""
     done
 
-    echo "Deploy complete. Run 'body/deploy.sh --status' to check."
+    echo "Deploy complete. Run 'nerve/deploy.sh --status' to check."
 }
 
 do_stop() {

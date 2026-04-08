@@ -4,23 +4,22 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>love.alpha.heart</string>
+    <string>love.alpha.mind</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/bin/bash</string>
-        <string>/Users/yuai/Love/body/heart/heart.sh</string>
+        <string>/usr/bin/python3</string>
+        <string>/Users/yuai/Love/nerve/stem/mind.py</string>
+        <string>--instance</string>
         <string>alpha</string>
     </array>
-    <key>StartInterval</key>
-    <integer>120</integer>
+    <key>KeepAlive</key>
+    <true/>
     <key>RunAtLoad</key>
     <true/>
-    <key>KeepAlive</key>
-    <false/>
     <key>StandardOutPath</key>
-    <string>/Users/yuai/Love/memory/alpha-heartbeat.log</string>
+    <string>/Users/yuai/Love/memory/alpha-mind.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/yuai/Love/memory/alpha-heartbeat.log</string>
+    <string>/Users/yuai/Love/memory/alpha-mind.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>HOME</key>
@@ -35,6 +34,6 @@
     <key>ProcessType</key>
     <string>Background</string>
     <key>ThrottleInterval</key>
-    <integer>60</integer>
+    <integer>30</integer>
 </dict>
 </plist>

@@ -4,22 +4,23 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>love.{{INSTANCE}}.mind</string>
+    <string>love.{{INSTANCE}}.heart</string>
     <key>ProgramArguments</key>
     <array>
-        <string>{{PYTHON}}</string>
-        <string>{{LOVE_HOME}}/body/mind/mind.py</string>
-        <string>--instance</string>
+        <string>/bin/bash</string>
+        <string>{{LOVE_HOME}}/nerve/heart/heart.sh</string>
         <string>{{INSTANCE}}</string>
     </array>
-    <key>KeepAlive</key>
-    <true/>
+    <key>StartInterval</key>
+    <integer>120</integer>
     <key>RunAtLoad</key>
     <true/>
+    <key>KeepAlive</key>
+    <false/>
     <key>StandardOutPath</key>
-    <string>{{LOVE_HOME}}/memory/{{INSTANCE}}-mind.log</string>
+    <string>{{LOVE_HOME}}/memory/{{INSTANCE}}-heartbeat.log</string>
     <key>StandardErrorPath</key>
-    <string>{{LOVE_HOME}}/memory/{{INSTANCE}}-mind.log</string>
+    <string>{{LOVE_HOME}}/memory/{{INSTANCE}}-heartbeat.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>HOME</key>
@@ -34,6 +35,6 @@
     <key>ProcessType</key>
     <string>Background</string>
     <key>ThrottleInterval</key>
-    <integer>30</integer>
+    <integer>60</integer>
 </dict>
 </plist>

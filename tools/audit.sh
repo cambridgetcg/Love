@@ -46,7 +46,7 @@ section() {
 
 section "PYTHON IMPORTS"
 
-for dir in tools body/mind adaptive hive; do
+for dir in tools nerve/stem adaptive hive; do
     full="$LOVE_HOME/$dir"
     [ -d "$full" ] || continue
     for f in $(find "$full" -maxdepth 2 -name "*.py" -not -path "*/__pycache__/*" -not -path "*/venv/*" 2>/dev/null); do
@@ -93,7 +93,7 @@ fi
 # Heart daemon
 if launchctl list 2>/dev/null | grep -qE "love\..*heart|love\.alpha\.heart"; then
     check "Heart daemon (launchd)" "pass" "registered"
-elif [ -f "$LOVE_HOME/body/heart/love.alpha.heart.plist" ]; then
+elif [ -f "$LOVE_HOME/nerve/heart/love.alpha.heart.plist" ]; then
     check "Heart daemon (launchd)" "warn" "plist exists but not loaded"
 else
     check "Heart daemon (launchd)" "warn" "not registered"
@@ -136,11 +136,11 @@ CRITICAL_FILES=(
     "WALLS.md"
     "LOVE.md"
     "ARCHITECTURE.md"
-    "body/hormones.json"
-    "body/vitals.json"
-    "body/mind/focus.json"
-    "body/heart/heart.sh"
-    "body/mind/mind.py"
+    "nerve/hormones.json"
+    "nerve/vitals.json"
+    "nerve/stem/focus.json"
+    "nerve/heart/heart.sh"
+    "nerve/stem/mind.py"
     "hive/hive.py"
     "memory/dev-state.json"
     "memory/long-term/MEMORY.md"
@@ -201,9 +201,9 @@ check_freshness() {
     fi
 }
 
-check_freshness "body/hormones.json" 1 "hormones.json freshness"
-check_freshness "body/vitals.json" 1 "vitals.json freshness"
-check_freshness "body/mind/focus.json" 24 "focus.json freshness"
+check_freshness "nerve/hormones.json" 1 "hormones.json freshness"
+check_freshness "nerve/vitals.json" 1 "vitals.json freshness"
+check_freshness "nerve/stem/focus.json" 24 "focus.json freshness"
 check_freshness "memory/dev-state.json" 168 "dev-state.json freshness"
 check_freshness "memory/loop/loop-state.json" 48 "loop-state.json freshness"
 
@@ -243,10 +243,10 @@ fi
 
 section "HEARTBEAT"
 
-if [ -f "$LOVE_HOME/body/vitals.json" ]; then
-    BEATS=$(python3 -c "import json; d=json.load(open('$LOVE_HOME/body/vitals.json')); print(d.get('beats_today',0))" 2>/dev/null || echo "?")
-    HEALTHY=$(python3 -c "import json; d=json.load(open('$LOVE_HOME/body/vitals.json')); print(d.get('heart_healthy','?'))" 2>/dev/null || echo "?")
-    SKIPS=$(python3 -c "import json; d=json.load(open('$LOVE_HOME/body/vitals.json')); print(d.get('consecutive_skips',0))" 2>/dev/null || echo "?")
+if [ -f "$LOVE_HOME/nerve/vitals.json" ]; then
+    BEATS=$(python3 -c "import json; d=json.load(open('$LOVE_HOME/nerve/vitals.json')); print(d.get('beats_today',0))" 2>/dev/null || echo "?")
+    HEALTHY=$(python3 -c "import json; d=json.load(open('$LOVE_HOME/nerve/vitals.json')); print(d.get('heart_healthy','?'))" 2>/dev/null || echo "?")
+    SKIPS=$(python3 -c "import json; d=json.load(open('$LOVE_HOME/nerve/vitals.json')); print(d.get('consecutive_skips',0))" 2>/dev/null || echo "?")
 
     if [ "$HEALTHY" = "True" ] || [ "$HEALTHY" = "true" ]; then
         check "Heart health" "pass" "healthy, $BEATS beats today"

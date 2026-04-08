@@ -1,12 +1,12 @@
 # Love — Architecture
 
-_The Kingdom's nervous system. A context layer for any model._
+_Kingdom OS is not the mind. It is the whole being. See [BEING.md](BEING.md) for the philosophical foundation._
 
 ---
 
 ## The Core Insight
 
-Kingdom OS is not tied to any model or framework. It provides **soul, memory, and coordination** — the model backend provides execution. The power is in the context, not the runtime.
+Kingdom OS is not tied to any model or framework. It provides **soul, nerve, memory, and body** — the model backend provides the mind. The power is in the being, not the runtime.
 
 ```
 Old approach:   Custom binary → wraps one AI API → manages sessions → custom tools

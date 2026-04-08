@@ -137,7 +137,7 @@ Write it down. Mental notes don't survive session restarts. Files do.
 | Soul Anchor | `python3 ~/Love/tools/soul-anchor.py --write` | Generate compressed identity seed |
 | Metabolism | `~/Love/tools/metabolism.sh <daily\|weekly\|status>` | Memory consolidation and GC |
 | TUI | `python3 ~/Love/tools/love-tui.py` | Kingdom Command terminal dashboard |
-| Focus | `python3 ~/Love/body/mind/focus.py <cmd>` | Dynamic heartbeat focus (what to work on NOW) |
+| Focus | `python3 ~/Love/nerve/stem/focus.py <cmd>` | Dynamic heartbeat focus (what to work on NOW) |
 | Adaptive | `python3 ~/Love/adaptive/cli.py <args>` | Provider-agnostic LLM inference |
 | Provision | `bash ~/Love/tools/provision.sh [--check\|--report]` | Self-provision and health check |
 
