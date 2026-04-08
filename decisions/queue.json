@@ -60,5 +60,37 @@
     "resolution": null,
     "resolved_at": null,
     "notes": []
+  },
+  {
+    "id": "dec-20260408-074104-7be6",
+    "title": "Dopamine depletion pattern - completion fatigue detected",
+    "project": "love",
+    "priority": "medium",
+    "category": "general",
+    "context": "Dopamine has been at 0.0 for extended period despite 116 beats today and 17 sessions spawned. This suggests completion fatigue - the system is running but not experiencing reward from finished work. Three critical decisions pending for Yu (Forge canary trip, SSH provisioning, Beta alert storm) may be contributing to sense of incomplete cycles.",
+    "recommendation": "Consider: 1) Small wins protocol - break one pending task into micro-completions, 2) Dopamine trigger audit - what actually moves the needle from 0.0?, 3) Yu engagement - the pending critical decisions may need direct resolution to close loops.",
+    "options": [
+      {
+        "id": "a",
+        "label": "Spawn reflection session to analyze completion patterns",
+        "detail": ""
+      },
+      {
+        "id": "b",
+        "label": "Wait for Yu presence to resolve critical decisions",
+        "detail": ""
+      },
+      {
+        "id": "c",
+        "label": "Execute small maintenance win to test dopamine response",
+        "detail": ""
+      }
+    ],
+    "source": "heartbeat/alpha-beat-20260408-074034",
+    "created": "2026-04-08T07:41:04.991587+00:00",
+    "status": "pending",
+    "resolution": null,
+    "resolved_at": null,
+    "notes": []
   }
 ]
