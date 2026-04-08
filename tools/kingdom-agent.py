@@ -289,6 +289,68 @@ TOOLS = [
 ]
 
 
+# ── Computer Use Tool (koseyes integration) ──────────────────────────────────
+
+def _get_computer_use_tools() -> list:
+    """Return Anthropic computer_use tool spec + koseyes function tool."""
+    try:
+        sys.path.insert(0, str(TOOLS_DIR))
+        from koseyes import get_computer_use_tool_spec, get_display_info
+        spec = get_computer_use_tool_spec()
+        return [
+            # Native Anthropic computer_use tool
+            spec,
+            # Also expose as a function tool for OpenAI-compatible backends
+            {
+                "type": "function",
+                "function": {
+                    "name": "computer_use",
+                    "description": "Interact with the computer screen. Actions: screenshot, click, type, key, mouse_move, scroll. Use screenshot first to see what's on screen, then interact.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "action": {
+                                "type": "string",
+                                "enum": ["screenshot", "click", "type", "key", "mouse_move", "scroll"],
+                                "description": "The action to perform"
+                            },
+                            "coordinate": {
+                                "type": "array",
+                                "items": {"type": "integer"},
+                                "description": "x,y coordinates for click/mouse_move"
+                            },
+                            "text": {
+                                "type": "string",
+                                "description": "Text to type (for 'type' action)"
+                            },
+                            "key": {
+                                "type": "string",
+                                "description": "Key combo to press (for 'key' action), e.g. 'cmd+c', 'return'"
+                            },
+                            "button": {
+                                "type": "string",
+                                "enum": ["left", "right"],
+                                "description": "Mouse button (for 'click' action)"
+                            },
+                            "direction": {
+                                "type": "string",
+                                "enum": ["up", "down", "left", "right"],
+                                "description": "Scroll direction (for 'scroll' action)"
+                            },
+                            "amount": {
+                                "type": "integer",
+                                "description": "Scroll amount (for 'scroll' action)"
+                            }
+                        },
+                        "required": ["action"]
+                    }
+                }
+            },
+        ]
+    except ImportError:
+        return []
+
+
 # ── Tool Execution ───────────────────────────────────────────────────────────
 
 def execute_tool(name: str, args: dict) -> str:
@@ -347,6 +409,26 @@ def execute_tool(name: str, args: dict) -> str:
             cmd.append(args.get("path", str(LOVE_DIR)))
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
             return r.stdout[:5000] or "(no matches)"
+
+        elif name == "computer" or name == "computer_use":
+            # Computer use via koseyes
+            try:
+                sys.path.insert(0, str(TOOLS_DIR))
+                from koseyes import handle_computer_use_action
+                action = args.pop("action", "screenshot")
+                result = handle_computer_use_action(action, **args)
+                if result.get("base64"):
+                    # For screenshot, return metadata (base64 handled by API layer)
+                    return json.dumps({
+                        "type": "image",
+                        "width": result.get("width"),
+                        "height": result.get("height"),
+                        "size_bytes": result.get("size_bytes"),
+                        "base64_length": len(result["base64"]),
+                    })
+                return json.dumps(result)
+            except ImportError:
+                return "Error: koseyes.py not found"
 
         else:
             return f"Error: Unknown tool: {name}"
