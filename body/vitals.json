@@ -1,8 +1,8 @@
 {
-  "last_beat": "2026-04-08T06:04:11.412055+00:00",
-  "beat_id": "alpha-beat-20260408-060349",
+  "last_beat": "2026-04-08T07:26:07.357145+00:00",
+  "beat_id": "alpha-beat-20260408-072539",
   "beat_result": "idle",
-  "beats_today": 104,
+  "beats_today": 115,
   "skips_today": 0,
   "sessions_spawned": 0,
   "sessions_spawned_today": 17,
@@ -12,7 +12,7 @@
   "heart_healthy": true,
   "action_results": [
     {
-      "type": "hive_send",
+      "type": "write_file",
       "status": "ok"
     }
   ],
@@ -20,7 +20,7 @@
     "adrenaline": 0.1,
     "cortisol": 0.3,
     "oxytocin": 0.1,
-    "melatonin": 0.6290903368828136,
+    "melatonin": 0.5,
     "dopamine": 0.0
   },
   "mode_at_beat": "normal"
