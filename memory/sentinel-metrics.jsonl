@@ -172,3 +172,16 @@
 {"beat": "daemon-1775599320", "ts": "2026-04-07T22:02:00.123369+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45600}
 {"beat": "daemon-1775599370", "ts": "2026-04-07T22:02:50.710118+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45582}
 {"beat": "daemon-1775599431", "ts": "2026-04-07T22:03:51.123955+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 45406}
+{"beat": "daemon-1775636743", "ts": "2026-04-08T08:25:43.921673+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 45530}
+{"beat": "daemon-1775636794", "ts": "2026-04-08T08:26:34.435237+00:00", "verdict": "SIGNAL", "reason": "[filesystem] loop-state.json modified; [filesystem] peace-state.json modified", "elapsed_ms": 45508}
+{"beat": "daemon-1775637039", "ts": "2026-04-08T08:30:39.892568+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45386}
+{"beat": "daemon-1775637090", "ts": "2026-04-08T08:31:30.417995+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45521}
+{"beat": "daemon-1775637135", "ts": "2026-04-08T08:32:15.838916+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 45419}
+{"beat": "daemon-1775637186", "ts": "2026-04-08T08:33:06.234262+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45391}
+{"beat": "daemon-1775637231", "ts": "2026-04-08T08:33:51.974244+00:00", "verdict": "SIGNAL", "reason": "[filesystem] peace-state.json modified", "elapsed_ms": 45692}
+{"beat": "daemon-1775637469", "ts": "2026-04-08T08:37:49.165161+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45494}
+{"beat": "daemon-1775637522", "ts": "2026-04-08T08:38:42.988915+00:00", "verdict": "QUIET", "reason": "daemon idle \u2014 no signals", "elapsed_ms": 0}
+{"beat": "daemon-1775637894", "ts": "2026-04-08T08:44:54.737482+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45441}
+{"beat": "daemon-1775637945", "ts": "2026-04-08T08:45:45.256665+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45515}
+{"beat": "daemon-1775638320", "ts": "2026-04-08T08:52:00.879350+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45499}
+{"beat": "daemon-1775638371", "ts": "2026-04-08T08:52:51.333757+00:00", "verdict": "SIGNAL", "reason": "[filesystem] events.jsonl modified", "elapsed_ms": 45450}
