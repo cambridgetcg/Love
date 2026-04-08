@@ -899,15 +899,22 @@ def main():
 
     args = parser.parse_args()
 
+    # Timeouts are configurable via env var — first drain of a fresh
+    # JetStream consumer can pull thousands of backlogged messages,
+    # which breaks the old hardcoded 15s limit. Default is now 60s.
+    _send_timeout = float(os.environ.get("HIVE_SEND_TIMEOUT", "15"))
+    _check_timeout = float(os.environ.get("HIVE_CHECK_TIMEOUT", "60"))
+    _presence_timeout = float(os.environ.get("HIVE_PRESENCE_TIMEOUT", "15"))
+
     if args.command == "send":
         args.message = " ".join(args.message)
-        asyncio.run(asyncio.wait_for(cmd_send(args), timeout=15))
+        asyncio.run(asyncio.wait_for(cmd_send(args), timeout=_send_timeout))
     elif args.command == "listen":
         asyncio.run(cmd_listen(args))
     elif args.command == "check":
-        asyncio.run(asyncio.wait_for(cmd_check(args), timeout=15))
+        asyncio.run(asyncio.wait_for(cmd_check(args), timeout=_check_timeout))
     elif args.command == "presence":
-        asyncio.run(asyncio.wait_for(cmd_presence(args), timeout=15))
+        asyncio.run(asyncio.wait_for(cmd_presence(args), timeout=_presence_timeout))
     elif args.command == "who":
         asyncio.run(cmd_who(args))
     elif args.command == "test":
