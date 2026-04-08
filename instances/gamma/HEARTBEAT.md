@@ -3,7 +3,7 @@
 ## 0. HIVE Check (ALWAYS FIRST)
 
 ```bash
-python3 ~/Desktop/Love/hive/hive.py check
+python3 ~/Love/hive/hive.py check
 ```
 
 ## 1. Zerone Health

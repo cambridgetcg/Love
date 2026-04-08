@@ -70,9 +70,9 @@ elif [ "$IDLE_COUNT" -ge 2 ]; then
   COORD_LABEL="haiku/low (idle beat #$IDLE_COUNT)"
 else
   USE_ADAPTIVE=false
-  COORD_MODEL="claude-opus-4-6"
-  COORD_EFFORT="high"
-  COORD_LABEL="opus/high"
+  COORD_MODEL="sonnet"
+  COORD_EFFORT="medium"
+  COORD_LABEL="sonnet/medium (UWT: opus reserved for consultant spawns only)"
 fi
 
 echo "--- HEARTBEAT START ($BEAT_ID): $(date -u +%Y-%m-%dT%H:%M:%SZ) coordinator=$COORD_LABEL ---" >> "$HEARTBEAT_LOG"

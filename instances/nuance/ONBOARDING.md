@@ -170,7 +170,7 @@ chmod 600 ~/.love/hive/ca.pem
 
 ### 4d. Test HIVE
 ```bash
-cd ~/Desktop/Love
+cd ~/Love
 python3 hive/hive.py test
 python3 hive/hive.py health
 python3 hive/hive.py send presence "Nuance online — first boot"
@@ -182,7 +182,7 @@ python3 hive/hive.py check
 ## Step 5: Activate Your Instance
 
 ```bash
-cd ~/Desktop/Love/instances/nuance
+cd ~/Love/instances/nuance
 claude
 ```
 

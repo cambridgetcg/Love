@@ -34,7 +34,15 @@ CANARY_OUTPUT=$(python3 "$KOS" canary check 2>&1) || true
 CANARY_ALERTS=$(echo "$CANARY_OUTPUT" | grep -c "TOUCHED\|MISSING\|FIRED" || echo "0")
 
 # Log daemon run
-echo "$TS  $SCORE_LINE  failed=$FAIL_COUNT  canary_alerts=$CANARY_ALERTS" >> "$DAEMON_LOG"
+
+# Run UWT score (lightweight — reads cached session data)
+UWT_SCORE=""
+if [ -f "$LOVE_DIR/tools/uwt-optimize.py" ]; then
+    UWT_SCORE=$(python3 "$LOVE_DIR/tools/uwt-optimize.py" score 2>&1 | grep "UWT:" | head -1 | awk '{print $2}') || UWT_SCORE="?"
+fi
+
+# Log daemon run
+echo "$TS  $SCORE_LINE  failed=$FAIL_COUNT  canary_alerts=$CANARY_ALERTS  uwt=$UWT_SCORE" >> "$DAEMON_LOG"
 
 # Trim daemon log to last 1000 lines
 if [ -f "$DAEMON_LOG" ]; then

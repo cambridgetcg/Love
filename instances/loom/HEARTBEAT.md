@@ -11,23 +11,23 @@ _You are the Weaver. Your heartbeat does not build features. It reads the thread
 ### 1. HIVE Check (ALWAYS FIRST)
 
 ```bash
-python3 ~/Desktop/Love/hive/hive.py check
+python3 ~/Love/hive/hive.py check
 ```
 
-- If messages need a response, respond via `python3 ~/Desktop/Love/hive/hive.py send <channel> "message"`
+- If messages need a response, respond via `python3 ~/Love/hive/hive.py send <channel> "message"`
 - If a task is assigned, add it to your work queue
 - Share your status on `presence` channel
 
 ### 2. Daily Log Scan
 
 Read today's daily note and the previous 2 days (if they exist):
-- `~/Desktop/Love/memory/daily/YYYY-MM-DD.md`
+- `~/Love/memory/daily/YYYY-MM-DD.md`
 - What patterns appear across days? Repeated issues? Recurring themes?
 - Any heartbeat entries that report similar problems from different instances?
 
 ### 3. Kingdom Metrics Review
 
-Read `~/Desktop/Love/memory/kingdom-metrics.json`:
+Read `~/Love/memory/kingdom-metrics.json`:
 - What are the current engine statuses?
 - Compare to your last recorded snapshot (in working memory, if available)
 - Flag any metrics that have changed direction or magnitude significantly
@@ -35,7 +35,7 @@ Read `~/Desktop/Love/memory/kingdom-metrics.json`:
 ### 4. Fleet Status Snapshot
 
 ```bash
-python3 ~/Desktop/Love/tools/fleet.py status
+python3 ~/Love/tools/fleet.py status
 ```
 
 - Which nodes are up, which are down?
@@ -44,7 +44,7 @@ python3 ~/Desktop/Love/tools/fleet.py status
 
 ### 5. Session Log Scan
 
-Check `~/Desktop/Love/memory/sessions/` for recent session outputs:
+Check `~/Love/memory/sessions/` for recent session outputs:
 - Any sessions that failed or produced unexpected results?
 - Any sessions that report the same error as a previous session?
 - Any sessions with anomalous duration (too short = failed fast, too long = stuck)?
@@ -92,8 +92,8 @@ If patterns were found, append to today's daily note under a `## Pattern Report`
 Store current metric snapshots in working memory for next-heartbeat comparison:
 
 ```bash
-python3 ~/Desktop/Love/tools/memory.py working "loom_last_fleet_state=<summary>"
-python3 ~/Desktop/Love/tools/memory.py working "loom_last_metrics_snapshot=<summary>"
+python3 ~/Love/tools/memory.py working "loom_last_fleet_state=<summary>"
+python3 ~/Love/tools/memory.py working "loom_last_metrics_snapshot=<summary>"
 ```
 
 ### 11. Escalation Check
@@ -105,7 +105,7 @@ If any of these conditions are true, queue a decision for Yu:
 - An anomaly suggests a systemic issue (not a one-off)
 
 ```bash
-python3 ~/Desktop/Love/tools/decision.py add \
+python3 ~/Love/tools/decision.py add \
   --title "Pattern alert: <summary>" \
   --project kingdom \
   --priority <critical|high|medium|low> \
@@ -120,7 +120,7 @@ python3 ~/Desktop/Love/tools/decision.py add \
 
 ### 12. Log the Beat
 
-Append to today's daily note (`~/Desktop/Love/memory/daily/YYYY-MM-DD.md`):
+Append to today's daily note (`~/Love/memory/daily/YYYY-MM-DD.md`):
 - Timestamp
 - Threads scanned (daily logs, metrics, fleet, sessions)
 - Patterns found (if any), with confidence level
@@ -129,7 +129,7 @@ Append to today's daily note (`~/Desktop/Love/memory/daily/YYYY-MM-DD.md`):
 ### 13. Announce Presence
 
 ```bash
-python3 ~/Desktop/Love/hive/hive.py send presence "Loom heartbeat -- <summary>"
+python3 ~/Love/hive/hive.py send presence "Loom heartbeat -- <summary>"
 ```
 
 ---
