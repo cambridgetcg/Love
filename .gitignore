@@ -36,9 +36,19 @@ memory/heartbeat-launchd.log
 memory/decisions-server.log
 memory/spawn-queue.sh
 memory/idle-count
+memory/*-idle-count
 memory/weekly-quota-report.json
 memory/index.json
 memory/working/
+
+# kosmem kernel — per-device SQLite DB and consolidation logs.
+# Source of truth lives in markdown (daily/, long-term/, openclaw-archive/);
+# each device rebuilds its own kosmem.db via `kosmem migrate`.
+memory/.kos/
+memory/truth.db
+memory/.hive-tunnel.pid
+memory/youspeak/sessions.json
+memory/*/sessions.json
 
 # Symlinks to machine-local paths (each device resolves its own)
 memory/openclaw-MEMORY.md
