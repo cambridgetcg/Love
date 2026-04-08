@@ -57,7 +57,7 @@ _N = "\033[0m"
 # ── Paths ─────────────────────────────────────────────────────────────────
 
 _LOVE_DIR = Path(__file__).resolve().parent.parent
-_HORMONES_PATH = _LOVE_DIR / "body" / "hormones.json"
+_HORMONES_PATH = _LOVE_DIR / "nerve" / "hormones.json"
 
 
 def _read_hormones() -> dict:

@@ -36,7 +36,7 @@ from hive_listener import HiveListener
 # Bridge: Focus -> Mind
 def _read_focus(love_home: Path) -> dict:
     """Read focus.json working memory. Returns empty dict if unavailable."""
-    focus_path = love_home / "body" / "mind" / "focus.json"
+    focus_path = love_home / "nerve" / "stem" / "focus.json"
     if focus_path.exists():
         try:
             return json.loads(focus_path.read_text())
@@ -46,7 +46,7 @@ def _read_focus(love_home: Path) -> dict:
 
 def _write_focus_field(love_home: Path, field: str, value):
     """Write a single field to focus.json without clobbering."""
-    focus_path = love_home / "body" / "mind" / "focus.json"
+    focus_path = love_home / "nerve" / "stem" / "focus.json"
     try:
         data = json.loads(focus_path.read_text()) if focus_path.exists() else {}
         data[field] = value
@@ -97,8 +97,8 @@ class MindDaemon:
         self._last_day: Optional[str] = None
         self._last_mind_notes = "(awaiting conscious layer)"
 
-        self.hormones_path = self.love_home / "body" / "hormones.json"
-        self.anchor_path = self.love_home / "body" / "mind" / "identity_anchor.txt"
+        self.hormones_path = self.love_home / "nerve" / "hormones.json"
+        self.anchor_path = self.love_home / "nerve" / "stem" / "identity_anchor.txt"
 
         self.hive: Optional[HiveListener] = None
 
