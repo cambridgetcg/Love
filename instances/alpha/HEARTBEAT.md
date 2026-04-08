@@ -184,6 +184,16 @@ cd <dir> && /opt/homebrew/bin/claude -p "<prompt>" --model claude-haiku-4-5-2025
 - Consultant writes answer to `~/Love/memory/sessions/consultation/<task>-answer.md`
 - Next heartbeat: coordinator spawns builder to resume
 
+### 9b. Memory Scan (salience-gated)
+
+Run the memory scanner to capture salient moments between beats:
+```bash
+python3 ~/Love/tools/remember.py scan
+```
+This checks hormone levels. If adrenaline, dopamine, or cortisol cross thresholds,
+it automatically stores a memory at the appropriate layer. Most beats this will
+find nothing — that's correct. Only important moments get remembered.
+
 ### 10. Log the Beat
 
 Append to today's daily note (`~/Love/memory/daily/YYYY-MM-DD.md`):

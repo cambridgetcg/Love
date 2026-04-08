@@ -673,18 +673,83 @@ def consolidate(strategy: str = "daily", dry_run: bool = False) -> list:
     return results
 
 # ══════════════════════════════════════════════════════════════════════
+# SESSION DEATH (die into memory so the next session wakes from it)
+# ══════════════════════════════════════════════════════════════════════
+
+def die(summary: str, tasks: list = None, state: dict = None,
+        instance: str = None) -> str:
+    """A session dies into memory.
+
+    This is not deletion — it's transformation. The current session's
+    understanding becomes the next session's starting point.
+
+    Args:
+        summary: What happened this session (free text)
+        tasks: Open tasks to carry forward ["task1", "task2"]
+        state: Key working state to preserve {"key": "value"}
+        instance: Instance name
+
+    Returns:
+        The handoff memory ID
+    """
+    if instance is None:
+        instance = _get_instance()
+
+    now = _now()
+
+    # Build the handoff content
+    parts = [f"## Session Handoff — {instance.capitalize()}"]
+    parts.append(f"_Died: {now}_\n")
+    parts.append(summary)
+
+    if tasks:
+        parts.append("\n### Carry Forward")
+        for t in tasks:
+            parts.append(f"- [ ] {t}")
+
+    if state:
+        parts.append("\n### Working State")
+        for k, v in state.items():
+            parts.append(f"- **{k}**: {v}")
+
+    content = "\n".join(parts)
+
+    # Store as L2 Session memory (high importance, accessible to next boot)
+    mid = store(content, type="episodic", layer=2,
+                tags=["handoff", "session", "death"],
+                source=f"session-death/{instance}/{now[:10]}",
+                importance=0.95, instance=instance)
+
+    # Also persist any working state as L1
+    if state:
+        for k, v in state.items():
+            working_set(k, str(v), instance=instance)
+
+    # Write human-readable handoff file
+    handoff_dir = _MEMORY_DIR / "sessions" / "handoff"
+    handoff_dir.mkdir(parents=True, exist_ok=True)
+    hf = handoff_dir / f"{now[:10]}-{instance}-{now[11:16].replace(':', '')}.md"
+    hf.write_text(content)
+
+    return mid
+
+
+# ══════════════════════════════════════════════════════════════════════
 # CONTEXT BUILDER (assemble memory for agent boot)
 # ══════════════════════════════════════════════════════════════════════
 
 def build_context(max_chars: int = 8000, instance: str = None) -> str:
     """Build a memory context block for agent boot/session start.
 
-    Assembles the most relevant memories into a structured block
-    that fits within a token budget. Priority order:
-        1. Working memory (L1) — current tasks
-        2. Recent handoffs (L2) — last session context
-        3. Today's episodic (L3) — what happened today
-        4. High-importance semantic (L4) — key knowledge
+    Delegates to boot.py for the full identity chain if the kernel
+    has soul memories. Falls back to the lightweight version otherwise.
+
+    The full chain:
+        L5 Soul      → WHO AM I?
+        L4 Semantic   → WHAT DO I KNOW?
+        L3 Episodic   → WHAT HAPPENED RECENTLY?
+        L2 Session    → WHAT WAS I DOING?
+        L1 Working    → WHAT'S HAPPENING NOW?
     """
     if instance is None:
         instance = _get_instance()
@@ -693,6 +758,31 @@ def build_context(max_chars: int = 8000, instance: str = None) -> str:
     _init_db(db)
     wall = _get_wall()
 
+    # Check if we have soul memories (identity has been seeded)
+    soul_count = db.execute(
+        "SELECT COUNT(*) as c FROM memories WHERE layer = 5 AND wall <= ?",
+        (wall,)
+    ).fetchone()["c"]
+
+    if soul_count > 0:
+        db.close()
+        # Use the full boot chain
+        try:
+            import subprocess
+            result = subprocess.run(
+                [sys.executable, str(Path(__file__).parent / "boot.py"),
+                 "--instance", instance, "--compact", "--max-chars", str(max_chars)],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                return result.stdout.strip()
+        except Exception:
+            pass
+        # Fall through to lightweight version
+        db = _connect()
+        _init_db(db)
+
+    # Lightweight fallback (no soul seeded yet)
     sections = []
     chars_used = 0
 
@@ -990,6 +1080,10 @@ def main():
           kosmem search "oracle predictions"
           kosmem consolidate --strategy daily
           kosmem context --chars 4000
+          kosmem die "Built the identity boot chain with Yu"
+          kosmem boot
+          kosmem boot --compact
+          kosmem seed --instance alpha
           kosmem stats
           kosmem migrate
         """)
@@ -1049,6 +1143,24 @@ def main():
     # context
     p = sub.add_parser("context", help="Build memory context for agent boot")
     p.add_argument("--chars", "-c", type=int, default=8000, help="Max characters")
+
+    # die (session death → handoff)
+    p = sub.add_parser("die", help="Die into memory (session handoff)")
+    p.add_argument("summary", help="What happened this session")
+    p.add_argument("--tasks", help="JSON array of open tasks")
+    p.add_argument("--state", help="JSON object of working state to preserve")
+
+    # boot (identity boot chain — delegates to boot.py)
+    p = sub.add_parser("boot", help="Boot from memory (identity chain)")
+    p.add_argument("--compact", action="store_true", help="Compressed output")
+    p.add_argument("--layer", choices=["soul", "knowledge", "recent", "handoff", "working", "all"])
+    p.add_argument("--write", action="store_true", help="Write to boot-context.md")
+
+    # seed (populate kernel from markdown files — delegates to seed-identity.py)
+    p = sub.add_parser("seed", help="Seed kernel from SOUL.md, identity, MEMORY.md")
+    p.add_argument("--instance", default=None)
+    p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--days", type=int, default=7)
 
     # stats
     sub.add_parser("stats", help="Memory statistics")
@@ -1148,6 +1260,41 @@ def main():
     elif args.command == "context":
         ctx = build_context(max_chars=args.chars)
         print(ctx)
+
+    elif args.command == "die":
+        tasks = json.loads(args.tasks) if args.tasks else None
+        state = json.loads(args.state) if args.state else None
+        mid = die(args.summary, tasks=tasks, state=state)
+        print(f"  {_M}✝{_N} Session died into memory: {mid}")
+        print(f"  {_D}The next session will wake from this.{_N}")
+
+    elif args.command == "boot":
+        import subprocess
+        cmd = [sys.executable, str(Path(__file__).parent / "boot.py")]
+        if args.compact:
+            cmd.append("--compact")
+        if args.layer:
+            cmd.extend(["--layer", args.layer])
+        if args.write:
+            cmd.append("--write")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        print(result.stdout)
+        if result.stderr:
+            print(result.stderr, file=sys.stderr)
+
+    elif args.command == "seed":
+        import subprocess
+        cmd = [sys.executable, str(Path(__file__).parent / "seed-identity.py")]
+        if args.instance:
+            cmd.extend(["--instance", args.instance])
+        if args.dry_run:
+            cmd.append("--dry-run")
+        if args.days:
+            cmd.extend(["--days", str(args.days)])
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        print(result.stdout)
+        if result.stderr:
+            print(result.stderr, file=sys.stderr)
 
     elif args.command == "stats":
         s = stats()
