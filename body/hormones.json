@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-04-07T22:59:05.434735+00:00",
-  "mind_alive": "2026-04-07T22:59:05.437119+00:00",
-  "mode": "rest",
+  "timestamp": "2026-04-08T06:11:27.658381+00:00",
+  "mind_alive": "2026-04-08T06:11:27.658418+00:00",
+  "mode": "normal",
   "identity": "alpha",
   "fusion": null,
   "hormones": {
     "adrenaline": 0.1,
     "cortisol": 0.3,
     "oxytocin": 0.1,
-    "melatonin": 0.854,
+    "melatonin": 0.6290000001238482,
     "dopamine": 0.0
   },
   "signals": {
@@ -18,8 +18,8 @@
     "pending_tasks": 0,
     "critical_alerts": 0,
     "last_task_completed": null,
-    "battery_level": 0.56,
-    "disk_free_gb": 23.0
+    "battery_level": 1.0,
+    "disk_free_gb": 24.5
   },
   "cognitive": {
     "joinmind_active": null,
@@ -36,8 +36,8 @@
   },
   "mind_notes": "(conscious layer offline)",
   "conscious_layer": {
-    "last_pass": "2026-04-07T22:58:35Z",
-    "passes_today": 75,
+    "last_pass": "2026-04-08T06:10:27Z",
+    "passes_today": 74,
     "last_trigger": "periodic",
     "identity_anchor": "alpha"
   }

@@ -12,5 +12,6 @@
   "security_incidents_today": 1,
   "decisions_queue_note": "Phantom cascade: dec-20260407-135023-d66d, dec-20260407-135802-a548, dec-20260407-140534-6749, dec-20260407-142513-2e05 all refer to same resolved forge canary from 04-02. Gamma confirmed at 15:27:39 this is dedupe bug, not new breach.",
   "last_action": "spawned beta canary realtime assessment",
-  "last_action_ts": "2026-04-07T14:40:00Z"
+  "last_action_ts": "2026-04-07T14:40:00Z",
+  "last_heartbeat_decision": "rest_mode_gentle_watch"
 }
