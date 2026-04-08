@@ -71,7 +71,7 @@ TUNNEL_FLAG = LOVE_HOME / "hive" / "use-tunnel"
 
 def _get_server() -> str:
     if TUNNEL_FLAG.exists() or os.environ.get("HIVE_TUNNEL"):
-        return "nats://127.0.0.1:4222"
+        return "nats://127.0.0.1:2222"
     return HIVE_CONFIG["server"]
 
 def get_instance_id() -> str:

@@ -534,7 +534,7 @@ def cmd_status():
         print(f"  Memories:  ?")
 
     # HIVE
-    nats_ok = subprocess.run(["nc", "-z", "-w1", "localhost", "4222"],
+    nats_ok = subprocess.run(["nc", "-z", "-w1", "localhost", "2222"],
                               capture_output=True).returncode == 0
     print(f"  HIVE:      {'✅' if nats_ok else '❌'}")
 

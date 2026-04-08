@@ -44,7 +44,7 @@ def _use_tunnel() -> bool:
 
 def _get_server() -> str:
     if os.environ.get("HIVE_TUNNEL") or _use_tunnel():
-        return "nats://127.0.0.1:4222"
+        return "nats://127.0.0.1:2222"
     return HIVE_CONFIG["server"]
 
 

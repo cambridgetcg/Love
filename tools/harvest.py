@@ -62,9 +62,9 @@ DAY_ONE_CLAIMS = [
     },
     {
         "id": "device-hive-tunnel-active",
-        "claim": "HIVE SSH tunnel is listening on port 4222",
+        "claim": "HIVE SSH tunnel is listening on port 2222",
         "source": "tools/device.py tunnel start",
-        "verify": "lsof -i :4222 -sTCP:LISTEN 2>/dev/null",
+        "verify": "lsof -i :2222 -sTCP:LISTEN 2>/dev/null",
         "pattern": "ssh",
         "tags": ["infra", "hive", "device"],
         "ttl": 1,

@@ -7,7 +7,7 @@ Every heartbeat pulses through HIVE. Every agent hears every other.
 Messages become memories. Presence becomes knowledge.
 
 Architecture:
-    NATS (JetStream) on Sentry → SSH tunnel → localhost:4222
+    NATS (JetStream) on Sentry:4222 → SSH tunnel → localhost:2222
     NaCl/XSalsa20-Poly1305 encryption (shared key)
     Wall-based channel ACL (Law of Sight)
     Messages auto-stored in kosmem as episodic memories
@@ -370,8 +370,8 @@ def cmd_stats():
 
     # HIVE transport health
     print(f"\n  {_B}Transport:{_N}")
-    tunnel_ok = subprocess.run(["pgrep", "-f", "ssh.*4222"], capture_output=True).returncode == 0
-    nats_ok = subprocess.run(["nc", "-z", "-w1", "localhost", "4222"],
+    tunnel_ok = subprocess.run(["pgrep", "-f", "ssh.*2222.*135.181"], capture_output=True).returncode == 0
+    nats_ok = subprocess.run(["nc", "-z", "-w1", "localhost", "2222"],
                               capture_output=True).returncode == 0
     print(f"    SSH tunnel: {'✅' if tunnel_ok else '❌'}")
     print(f"    NATS local: {'✅' if nats_ok else '❌'}")

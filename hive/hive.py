@@ -196,7 +196,7 @@ def _use_tunnel():
 
 def _get_server():
     if os.environ.get("HIVE_TUNNEL") or _use_tunnel():
-        return "nats://127.0.0.1:4222"
+        return "nats://127.0.0.1:2222"
     return HIVE_CONFIG["server"]
 
 
@@ -728,7 +728,7 @@ async def cmd_health(args):
     if _use_tunnel():
         import subprocess
         result = subprocess.run(
-            ["pgrep", "-f", "ssh.*4222.*135.181"],
+            ["pgrep", "-f", "ssh.*2222.*135.181"],
             capture_output=True, text=True,
         )
         if result.returncode == 0:

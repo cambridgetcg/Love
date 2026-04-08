@@ -64,10 +64,10 @@ done
 section "SERVICES"
 
 # HIVE tunnel
-if nc -z 127.0.0.1 4222 2>/dev/null; then
-    check "HIVE tunnel (localhost:4222)" "pass" "open"
+if nc -z 127.0.0.1 2222 2>/dev/null; then
+    check "HIVE tunnel (localhost:2222)" "pass" "open"
 else
-    check "HIVE tunnel (localhost:4222)" "fail" "connection refused"
+    check "HIVE tunnel (localhost:2222)" "fail" "connection refused"
 fi
 
 # Ollama

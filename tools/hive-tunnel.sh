@@ -1,5 +1,5 @@
 #!/bin/bash
-# hive-tunnel.sh — Persistent SSH tunnel to Sentry NATS (127.0.0.1:4222)
+# hive-tunnel.sh — Persistent SSH tunnel to Sentry NATS (local 127.0.0.1:2222 → Sentry 4222)
 # Managed by launchd (com.love.hive-tunnel)
 # Uses SSH config host "hive-tunnel" which sets LocalForward, keepalive, etc.
 
