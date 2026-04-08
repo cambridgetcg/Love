@@ -15,5 +15,6 @@
   "last_action_ts": "2026-04-07T14:40:00Z",
   "last_heartbeat_decision": "rest_mode_gentle_watch",
   "last_heartbeat_gap_detected": "2026-04-08T06:48:24Z",
-  "gap_duration_hours": 8.3
+  "gap_duration_hours": 8.3,
+  "last_beat": "2026-04-08T13:33:27.064216+00:00"
 }
