@@ -247,10 +247,25 @@ def cmd_attest(args) -> int:
     did_at = entry.get("did_at", f"did:at:{instance}")
     did_lgm = entry.get("did_lgm", f"did:lgm:{address}")
 
-    # Build attestation claim text
+    # Query current block height for nonce (BRIDGE-GAP-002 fix: unique content hash per attestation)
+    current_height = None
+    try:
+        h_result = subprocess.run(
+            [str(LEGBLED), "query", "block", "--home", str(DEVNET_HOME), "-o", "json"],
+            capture_output=True, text=True, timeout=10
+        )
+        if h_result.returncode == 0:
+            h_data = json.loads(h_result.stdout)
+            current_height = (h_data.get("header") or h_data.get("block", {}).get("header", {})).get("height")
+    except Exception:
+        pass
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Build attestation claim text — nonce (block height + timestamp) prevents deduplication
     claim_text = (
         f"Agent identity attestation: {did_at} controls {did_lgm}. "
         f"Role: {role}. Wall: {wall}. "
+        f"Attested at block {current_height}, timestamp {now}. "
         f"This claim submitted by the controlling key proves identity binding."
     )
 
