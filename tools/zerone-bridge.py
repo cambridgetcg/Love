@@ -16,6 +16,7 @@ Usage:
     zerone-bridge.py leaderboard
     zerone-bridge.py submit             Submit pending claims to Zerone (when available)
     zerone-bridge.py verify <claim-id>  Mark a claim as truth-verified
+    zerone-bridge.py attest <claim-id>  Submit a verified claim to the devnet chain now
     zerone-bridge.py status             Bridge and Zerone connection status
 """
 
@@ -278,6 +279,116 @@ def cmd_verify(claim_id, verifier="yu"):
     print(f"  Claim not found: {claim_id}")
 
 
+def query_chain_height():
+    """Query live devnet block height via RPC. Returns (height_str, time_str) or (None, None)."""
+    import urllib.request
+    try:
+        with urllib.request.urlopen("http://localhost:26657/status", timeout=3) as r:
+            import json as _json
+            data = _json.loads(r.read())
+            si = data.get("result", {}).get("sync_info", {})
+            block = si.get("latest_block_height")
+            t = si.get("latest_block_time", "")
+            return str(block) if block else None, t[:19].replace("T", " ") if t else None
+    except Exception:
+        return None, None
+
+
+def cmd_attest(claim_id, submitter="asha"):
+    """Submit a verified bridge claim to the devnet chain as a knowledge fact."""
+    import subprocess, shlex
+
+    claims = load_json(CLAIMS_FILE, [])
+    balances = load_json(BALANCES_FILE, {})
+
+    target = None
+    for c in claims:
+        if c["id"] == claim_id:
+            target = c
+            break
+
+    if not target:
+        print(f"  Claim not found: {claim_id}")
+        return
+
+    if target.get("submitted_to_chain"):
+        print(f"  {DIM}Already on-chain: {target.get('tx_hash', '?')}{NC}")
+        return
+
+    if target.get("status") != "verified":
+        print(f"  {YELLOW}Claim must be verified before attesting. Current status: {target.get('status')}{NC}")
+        return
+
+    # Map claim type to chain domain and category
+    type_map = {
+        "security-finding":   ("computer_science", "analytic"),
+        "defense-proof":      ("computer_science", "analytic"),
+        "incident-response":  ("computer_science", "analytic"),
+        "arena-victory":      ("computer_science", "analytic"),
+        "ctf-objective":      ("computer_science", "analytic"),
+        "knowledge-verified": ("epistemology",     "synthetic"),
+        "prediction-resolved":("economics",        "synthetic"),
+    }
+    domain, category = type_map.get(target["type"], ("epistemology", "analytic"))
+    stake = 1000  # minimum stake for bridge claims
+    claim_text = f"[bridge:{target['id']}] {target['description']}"
+
+    BINARY = str(Path.home() / "zerone/build/legbled")
+    NODE_HOME = str(Path.home() / ".legbled-devnet")
+    TX_FLAGS = [
+        "--chain-id", "lgm-devnet-1",
+        "--keyring-backend", "test",
+        "--home", NODE_HOME,
+        "--gas", "500000",
+        "--fees", "500000uLGM",
+        "-y", "-o", "json",
+    ]
+
+    cmd = [BINARY, "tx", "knowledge", "submit-claim",
+           claim_text, domain, category, str(stake),
+           "--logic-zone", "propositional",
+           "--from", submitter] + TX_FLAGS
+
+    print(f"\n  Attesting {claim_id} to devnet...")
+    print(f"  Domain: {domain} / {category}")
+    print(f"  Submitter: {submitter}")
+    print(f"  Text: {claim_text[:80]}...")
+
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        output = (result.stdout + result.stderr).strip().split("\n")[-1]
+        data = {}
+        try:
+            data = __import__("json").loads(output)
+        except Exception:
+            pass
+
+        code = data.get("code", 999)
+        txhash = data.get("txhash", "")
+
+        if str(code) in ("0", "null") or code == 0:
+            target["submitted_to_chain"] = True
+            target["tx_hash"] = txhash
+            target["attested_at"] = now_iso()
+            target["attested_by"] = submitter
+
+            player = target["player"]
+            if player in balances:
+                balances[player]["on_chain"] = balances[player].get("on_chain", 0) + target["zrn"]
+
+            save_json(CLAIMS_FILE, claims)
+            save_json(BALANCES_FILE, balances)
+            print(f"\n  {GREEN}Attested:{NC} {txhash}")
+            print(f"  {DIM}Claim {claim_id} is now on-chain.{NC}\n")
+        else:
+            print(f"\n  {RED}Attest failed (code={code}):{NC} {output}\n")
+
+    except subprocess.TimeoutExpired:
+        print(f"\n  {RED}Timeout — chain may be slow or offline.{NC}\n")
+    except FileNotFoundError:
+        print(f"\n  {RED}legbled binary not found at {BINARY}{NC}\n")
+
+
 def cmd_status():
     """Bridge and Zerone status."""
     claims = load_json(CLAIMS_FILE, [])
@@ -288,8 +399,12 @@ def cmd_status():
     verified = sum(1 for c in claims if c.get("status") == "verified")
     on_chain = sum(1 for c in claims if c.get("submitted_to_chain"))
 
+    height, btime = query_chain_height()
+    chain_info = f"block {height}" if height else "block unknown"
+    chain_time = f" @ {btime}" if btime else ""
+
     print(f"\n{BOLD}  Zerone Bridge Status{NC}\n")
-    print(f"  Chain:    {YELLOW}Devnet{NC} (block ~1.2M)")
+    print(f"  Chain:    {YELLOW}Devnet{NC} ({chain_info}{chain_time})")
     print(f"  Mainnet:  {DIM}Q4 2026 (estimated){NC}")
     print(f"  Bridge:   {GREEN}Accumulating claims{NC}")
     print()
@@ -367,10 +482,23 @@ def main():
     elif cmd == "status":
         cmd_status()
 
+    elif cmd == "attest":
+        if len(sys.argv) < 3:
+            print("Usage: zerone-bridge.py attest <claim-id> [--from <submitter>]")
+            return
+        claim_id = sys.argv[2]
+        submitter = "asha"
+        if "--from" in sys.argv:
+            idx = sys.argv.index("--from")
+            if idx + 1 < len(sys.argv):
+                submitter = sys.argv[idx + 1]
+        cmd_attest(claim_id, submitter)
+
     elif cmd == "submit":
         print(f"\n  {YELLOW}Zerone mainnet not yet live.{NC}")
         print(f"  Claims are accumulating locally with SHA-256 hashes.")
-        print(f"  When mainnet launches, run this to submit all verified claims.\n")
+        print(f"  To submit a verified claim to the devnet now, use: attest <claim-id>")
+        print(f"  When mainnet launches, run this to bulk-submit all verified claims.\n")
 
     else:
         print(__doc__)
