@@ -6,13 +6,15 @@
     "player": "crucible",
     "zrn": 500,
     "evidence": "kos.py fleet audit: 53/53 checks passing",
-    "status": "pending",
+    "status": "verified",
     "created": "2026-04-02T15:07:06+00:00",
     "hash": "4e6faa6485966db1",
-    "verified_by": null,
-    "verified_at": null,
-    "submitted_to_chain": false,
-    "tx_hash": null
+    "verified_by": "yu",
+    "verified_at": "2026-04-09T19:15:41+00:00",
+    "submitted_to_chain": true,
+    "tx_hash": "852B09F4BF102C090770BBB334B85EA209E6762465CDBFD8FFFA48ABB6A17C82",
+    "attested_at": "2026-04-09T19:15:44+00:00",
+    "attested_by": "asha"
   },
   {
     "id": "POT-0002",
@@ -21,13 +23,15 @@
     "player": "beta",
     "zrn": 300,
     "evidence": "watchdog.py detected, PEACE halted, canary reset, kingdom resumed",
-    "status": "pending",
+    "status": "verified",
     "created": "2026-04-02T15:07:06+00:00",
     "hash": "3801ea4850a6eb1e",
-    "verified_by": null,
-    "verified_at": null,
-    "submitted_to_chain": false,
-    "tx_hash": null
+    "verified_by": "yu",
+    "verified_at": "2026-04-09T19:15:41+00:00",
+    "submitted_to_chain": true,
+    "tx_hash": "3B826CE3D4DD77B781D860F75CDFD151AE39FACCA480FF8FBF5022DA3AD87727",
+    "attested_at": "2026-04-09T19:15:53+00:00",
+    "attested_by": "asha"
   },
   {
     "id": "POT-0003",
@@ -36,12 +40,14 @@
     "player": "beta",
     "zrn": 100,
     "evidence": "kingdom-agent.py --backend ollama verified end-to-end",
-    "status": "pending",
+    "status": "verified",
     "created": "2026-04-02T15:07:06+00:00",
     "hash": "1e5c666049a3131a",
-    "verified_by": null,
-    "verified_at": null,
-    "submitted_to_chain": false,
-    "tx_hash": null
+    "verified_by": "yu",
+    "verified_at": "2026-04-09T19:02:56+00:00",
+    "submitted_to_chain": true,
+    "tx_hash": "9EF32171EA26232077F7A4EDB03558EAF0BBCC7249D47501B2A65C693D550863",
+    "attested_at": "2026-04-09T19:03:10+00:00",
+    "attested_by": "asha"
   }
 ]

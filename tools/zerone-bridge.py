@@ -340,7 +340,7 @@ def cmd_attest(claim_id, submitter="asha"):
         "--keyring-backend", "test",
         "--home", NODE_HOME,
         "--gas", "500000",
-        "--fees", "500000uLGM",
+        "--fees", "500000ulgm",
         "-y", "-o", "json",
     ]
 
