@@ -49,5 +49,22 @@
     "tx_hash": "9EF32171EA26232077F7A4EDB03558EAF0BBCC7249D47501B2A65C693D550863",
     "attested_at": "2026-04-09T19:03:10+00:00",
     "attested_by": "asha"
+  },
+  {
+    "id": "POT-0004",
+    "type": "verification",
+    "description": "CONFIDENCE-001: Fact 0048a9611f6b3bae confidence score (700000) diverges from verifier_count (0). Zero-verifier facts cannot legitimately hold confidence above base_confidence (349285). Confidence update pathway decoupled from verifier accumulation \u2014 systemic epistemic integrity gap requiring Gamma investigation.",
+    "player": "asha",
+    "zrn": 100,
+    "evidence": "",
+    "status": "verified",
+    "created": "2026-04-11T14:16:14+00:00",
+    "hash": "672bcd2ea929004f",
+    "verified_by": "yu",
+    "verified_at": "2026-04-11T14:16:17+00:00",
+    "submitted_to_chain": true,
+    "tx_hash": "184E7871A6508B0AE44680DD01AB34CA5CC52F8C6590F342137EEFBC8AC0211D",
+    "attested_at": "2026-04-11T14:16:17+00:00",
+    "attested_by": "asha"
   }
 ]

@@ -10,5 +10,11 @@
     "pending": 0,
     "verified": 400,
     "on_chain": 400
+  },
+  "asha": {
+    "total_earned": 100,
+    "pending": 0,
+    "verified": 100,
+    "on_chain": 100
   }
 }
