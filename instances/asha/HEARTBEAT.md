@@ -29,8 +29,16 @@ _The Keeper's primary duty. Check the chain before anything else._
 # Quick health check
 bash ~/zerone/scripts/chain-health.sh 2>/dev/null || echo "CHAIN: OFFLINE or binary not built"
 
-# If chain is online, inject a claim to keep it active
-bash ~/zerone/scripts/chain-health.sh inject 2>/dev/null
+# Queue agent attestation via KTA bridge (works online or offline; replaces bare inject)
+# Set BEAT_ID, CHAIN_STATUS, DUTIES from context before running
+bash ~/zerone/scripts/kta-heartbeat.sh \
+  --beat-id "${BEAT_ID}" \
+  --chain-status "${CHAIN_STATUS}" \
+  --duties "${DUTIES}" \
+  --instance asha 2>/dev/null || echo "KTA: bridge not available"
+
+# On chain OFFLINE→ONLINE transition only: flush queued beats
+# bash ~/zerone/scripts/kta-heartbeat.sh --flush --instance asha 2>/dev/null
 ```
 
 If chain is OFFLINE: note it in the daily log. Do not attempt restart without Yu's approval.
