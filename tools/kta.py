@@ -408,6 +408,104 @@ class TCGAdapter(KTA):
         ))
 
 
+class KOSAdapter(KTA):
+    """Bridges KingdomOS security events to Zerone chain truth claims.
+
+    Only high/critical severity events are bridged — low/medium are operational
+    noise, not externally-verifiable truth claims worth on-chain anchoring.
+    """
+
+    EVENTS_FILE = LOVE / "security" / "events.jsonl"
+    BRIDGE_SEVERITIES = {"critical", "high"}
+
+    # event type → (stake, epistemic_category)
+    _TYPE_STAKE = {
+        "integrity_violation": (2000, "empirical"),
+        "check_failed":        (1000, "empirical"),
+        "auto_fix":            (1500, "empirical"),
+        "audit":               (500,  "empirical"),
+    }
+
+    def __init__(self):
+        super().__init__(engine="kos", key="kos-bridge")
+
+    def _event_source_id(self, event: dict) -> str:
+        raw = f"kos-{event.get('ts', '')}-{event.get('type', '')}-{event.get('check', '')}"
+        return hashlib.sha256(raw.encode()).hexdigest()[:20]
+
+    def _event_to_msg(self, event: dict) -> Optional[FactMsg]:
+        ev_type = event.get("type", "")
+        severity = event.get("severity", "")
+        if severity not in self.BRIDGE_SEVERITIES:
+            return None
+        if ev_type not in self._TYPE_STAKE:
+            return None
+
+        check = event.get("check", "")
+        message = event.get("message", "").strip()
+        detail = event.get("detail", "").strip()
+        ts = event.get("ts", "")
+
+        summary = message
+        if detail:
+            summary = f"{message}. Detail: {detail[:200]}"
+        claim_text = f"KOS security event ({severity}/{ev_type}) at {ts}: {summary}"
+        if len(claim_text) > 450:
+            claim_text = claim_text[:447] + "..."
+
+        stake, category = self._TYPE_STAKE[ev_type]
+        return FactMsg(
+            claim_text=claim_text,
+            domain="computer_science",
+            epistemic_category=category,
+            stake=stake,
+            source_id=self._event_source_id(event),
+        )
+
+    def submit_pending_events(self) -> dict:
+        """Read events.jsonl, bridge unseen high/critical events, return summary."""
+        if not self.EVENTS_FILE.exists():
+            return {"submitted": 0, "queued": 0, "skipped": 0, "error": "no events file"}
+
+        submitted_ids = self._load_submitted()
+        bridged, queued, skipped = 0, 0, 0
+
+        try:
+            lines = self.EVENTS_FILE.read_text().splitlines()
+        except OSError as e:
+            return {"submitted": 0, "queued": 0, "skipped": 0, "error": str(e)}
+
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            sid = self._event_source_id(event)
+            if sid in submitted_ids:
+                skipped += 1
+                continue
+
+            msg = self._event_to_msg(event)
+            if msg is None:
+                skipped += 1
+                continue
+
+            result = self.submit(msg)
+            status = result.get("status", "failed")
+            if status == "submitted":
+                bridged += 1
+            elif status in ("queued", "duplicate"):
+                queued += 1
+            else:
+                skipped += 1
+
+        return {"submitted": bridged, "queued": queued, "skipped": skipped}
+
+
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def _all_engines() -> list[str]:
