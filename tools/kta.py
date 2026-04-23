@@ -24,6 +24,7 @@ CLI:
     python3 tools/kta.py status
     python3 tools/kta.py flush [--engine oracle]
     python3 tools/kta.py queue [--engine oracle]
+    python3 tools/kta.py purge [--engine kos] [--before 2026-04-23T14:00:00Z] [--dry-run]
 """
 
 import hashlib
@@ -95,6 +96,7 @@ class KTA:
         self.key = key or engine
         self.queue_file = QUEUE_DIR / f"{engine}.jsonl"
         self.submitted_file = SUBMITTED_DIR / f"{engine}.json"
+        self.queued_file = QUEUE_DIR / f"{engine}-queued.json"
 
     def _load_submitted(self) -> set:
         try:
@@ -107,8 +109,22 @@ class KTA:
         self.submitted_file.parent.mkdir(parents=True, exist_ok=True)
         self.submitted_file.write_text(json.dumps({"hashes": list(hashes)}, indent=2))
 
+    def _load_queued(self) -> set:
+        try:
+            data = json.loads(self.queued_file.read_text())
+            return set(data.get("hashes", []))
+        except (FileNotFoundError, json.JSONDecodeError):
+            return set()
+
+    def _save_queued(self, hashes: set):
+        self.queued_file.parent.mkdir(parents=True, exist_ok=True)
+        self.queued_file.write_text(json.dumps({"hashes": list(hashes)}, indent=2))
+
     def _enqueue(self, msg: FactMsg, fact_hash: str):
         self.queue_file.parent.mkdir(parents=True, exist_ok=True)
+        queued = self._load_queued()
+        queued.add(fact_hash)
+        self._save_queued(queued)
         entry = {
             "hash": fact_hash,
             "engine": self.engine,
@@ -164,7 +180,8 @@ class KTA:
 
         fhash = _fact_hash(msg.claim_text, msg.domain)
         submitted = self._load_submitted()
-        if fhash in submitted:
+        queued = self._load_queued()
+        if fhash in submitted or fhash in queued:
             return {"status": "duplicate", "hash": fhash}
 
         # Try live submission; fall back to queue
@@ -191,6 +208,7 @@ class KTA:
 
         lines = [l.strip() for l in self.queue_file.read_text().splitlines() if l.strip()]
         submitted = self._load_submitted()
+        queued = self._load_queued()
         now = datetime.now(timezone.utc)
 
         flushed, failed, skipped, expired = 0, 0, 0, 0
@@ -204,6 +222,7 @@ class KTA:
 
             fhash = entry.get("hash", "")
             if fhash in submitted:
+                queued.discard(fhash)
                 skipped += 1
                 continue
 
@@ -214,6 +233,7 @@ class KTA:
                     age_days = (now - queued_at).days
                     if age_days >= QUEUE_TTL_DAYS:
                         print(f"[kta/{self.engine}] expired {fhash[:12]}: {age_days}d old (TTL={QUEUE_TTL_DAYS}d)")
+                        queued.discard(fhash)
                         expired += 1
                         continue
                 except (ValueError, TypeError):
@@ -222,6 +242,7 @@ class KTA:
             success, txhash = self._submit_to_chain(entry)
             if success:
                 submitted.add(fhash)
+                queued.discard(fhash)
                 flushed += 1
                 print(f"[kta/{self.engine}] flushed {fhash[:12]} → {txhash[:16]}")
             else:
@@ -230,6 +251,7 @@ class KTA:
                 print(f"[kta/{self.engine}] failed  {fhash[:12]}: {txhash}")
 
         self._save_submitted(submitted)
+        self._save_queued(queued)
         # Rewrite queue with only failed entries
         if remaining:
             self.queue_file.write_text("\n".join(remaining) + "\n")
@@ -417,6 +439,7 @@ class KOSAdapter(KTA):
 
     EVENTS_FILE = LOVE / "security" / "events.jsonl"
     BRIDGE_SEVERITIES = {"critical", "high"}
+    _MAX_INITIAL_IMPORT = 250  # cap events bridged on first run to prevent bulk queue flood
 
     # event type → (stake, epistemic_category)
     _TYPE_STAKE = {
@@ -468,12 +491,18 @@ class KOSAdapter(KTA):
             return {"submitted": 0, "queued": 0, "skipped": 0, "error": "no events file"}
 
         submitted_ids = self._load_submitted()
+        queued_ids = self._load_queued()
+        seen_ids = submitted_ids | queued_ids
+        is_first_run = len(seen_ids) == 0
         bridged, queued, skipped = 0, 0, 0
 
         try:
             lines = self.EVENTS_FILE.read_text().splitlines()
         except OSError as e:
             return {"submitted": 0, "queued": 0, "skipped": 0, "error": str(e)}
+
+        if is_first_run and len(lines) > self._MAX_INITIAL_IMPORT:
+            lines = lines[-self._MAX_INITIAL_IMPORT:]
 
         for line in lines:
             line = line.strip()
@@ -553,6 +582,57 @@ def cmd_queue(engine_filter: Optional[str] = None):
                 pass
 
 
+def cmd_purge(engine_filter: Optional[str] = None, before: Optional[str] = None, dry_run: bool = False):
+    """Remove queued entries, optionally filtered by engine and/or queued_at timestamp."""
+    engines = [engine_filter] if engine_filter else _all_engines()
+    cutoff = None
+    if before:
+        try:
+            cutoff = datetime.fromisoformat(before.replace("Z", "+00:00"))
+        except ValueError:
+            print(f"[kta/purge] ERROR: invalid --before timestamp: {before}")
+            return
+
+    total_removed = 0
+    total_kept = 0
+    for engine in engines:
+        kta = KTA(engine)
+        if not kta.queue_file.exists():
+            continue
+        kept = []
+        removed = 0
+        for line in kta.queue_file.read_text().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                kept.append(line)
+                continue
+            if cutoff is not None:
+                try:
+                    queued_at = datetime.fromisoformat(entry["queued_at"].replace("Z", "+00:00"))
+                    if queued_at < cutoff:
+                        removed += 1
+                        continue
+                except (KeyError, ValueError):
+                    pass
+            else:
+                # No cutoff — purge all entries for this engine
+                removed += 1
+                continue
+            kept.append(line)
+
+        print(f"[kta/{engine}] purge: {removed} removed, {len(kept)} kept" + (" (dry-run)" if dry_run else ""))
+        if not dry_run:
+            kta.queue_file.write_text("\n".join(kept) + ("\n" if kept else ""))
+        total_removed += removed
+        total_kept += len(kept)
+
+    print(f"\n[kta/purge] total: {total_removed} removed, {total_kept} kept" + (" (dry-run)" if dry_run else ""))
+
+
 def main():
     args = sys.argv[1:]
     if not args or args[0] == "status":
@@ -569,6 +649,17 @@ def main():
             idx = args.index("--engine")
             engine = args[idx + 1] if idx + 1 < len(args) else None
         cmd_queue(engine)
+    elif args[0] == "purge":
+        engine = None
+        before = None
+        dry_run = "--dry-run" in args
+        if "--engine" in args:
+            idx = args.index("--engine")
+            engine = args[idx + 1] if idx + 1 < len(args) else None
+        if "--before" in args:
+            idx = args.index("--before")
+            before = args[idx + 1] if idx + 1 < len(args) else None
+        cmd_purge(engine, before, dry_run)
     else:
         print(__doc__)
 
