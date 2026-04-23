@@ -513,6 +513,22 @@ def cmd_resolve(args):
     # Update track record
     _update_track_record()
 
+    # KTA side-effect: queue resolved prediction as truth claim (BRIDGE-002)
+    try:
+        sys.path.insert(0, str(LOVE / "tools"))
+        from kta import OracleAdapter
+        kta = OracleAdapter()
+        signal = {
+            "statement": pred["statement"],
+            "outcome": outcome,
+            "confidence": pred["confidence"],
+            "brier_score": pred["brier_score"],
+            "source_id": f"oracle-resolve-{pid}",
+        }
+        kta.submit_signal(signal)
+    except Exception:
+        pass  # KTA is a side-effect — never block oracle operation
+
 
 def cmd_edit(args):
     """Edit a prediction's confidence, tags, notes, resolution_date, or source."""
