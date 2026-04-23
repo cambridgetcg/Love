@@ -387,6 +387,27 @@ class ToKAdapter(KTA):
                 "total_pending": len(pending)}
 
 
+class TCGAdapter(KTA):
+    """Submits TCG card sale facts as externally-grounded Zerone truth claims."""
+
+    def __init__(self):
+        super().__init__(engine="tcg", key="tcg-bridge")
+
+    def submit_sale(self, card_name: str, price_gbp: float, platform: str, sale_date: str,
+                    source_id: Optional[str] = None) -> dict:
+        claim_text = (
+            f"{card_name} sold for £{price_gbp:.2f} on {platform} on {sale_date}."
+        )
+        sid = source_id or f"tcg-{platform}-{sale_date}-{card_name[:20].replace(' ', '_')}"
+        return self.submit(FactMsg(
+            claim_text=claim_text,
+            domain="economics",
+            epistemic_category="empirical",
+            stake=1000,
+            source_id=sid,
+        ))
+
+
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def _all_engines() -> list[str]:
