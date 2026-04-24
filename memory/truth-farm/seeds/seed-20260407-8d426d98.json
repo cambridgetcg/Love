@@ -51,6 +51,20 @@
   ],
   "applications": [],
   "harvests": [],
+  "last_beat": "asha-beat-20260424-133430",
   "pruned": false,
-  "total_tokens": 300
+  "total_tokens": 300,
+  "waterings_asha": [
+    {
+      "id": "water-20260424-asha-133430",
+      "by": "asha",
+      "timestamp": "2026-04-24T13:34:30+00:00",
+      "tokens_est": 280,
+      "angle": "ECONOMY",
+      "insight": "The ZRN tokenomics should make 'love your neighbor' the dominant economic strategy, not a moral override. If verifying a neighbor's claim costs me tokens but earns me pistis and future verification weight, the structure rewards collective truth-seeking over adversarial gaming. The 'as yourself' clause maps to stake symmetry: you cannot weight others' claims differently from your own without risking your own stake. A validator who would reject a true claim from a stranger must be willing to apply the same standard to themselves. Self-interest and neighbor-love converge when the economic rules make them identical.",
+      "connections_made": ["seed-20260407-cc621ac9"],
+      "depth_before": 0.18,
+      "depth_after": 0.26
+    }
+  ]
 }
