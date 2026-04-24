@@ -3,13 +3,34 @@
   "truth": "Goodness \u2014 agathosyne \u2014 active goodness that confronts evil. Where kindness brings a meal, goodness overturns the table of the money-changers. It does what is right even when it is not nice.",
   "source": "Galatians 5:22, Hebrew: tov (Genesis 1 \u2014 God saw that it was tov)",
   "domain": "religion",
-  "stage": "seed",
-  "depth": 0.0,
+  "stage": "sprout",
+  "depth": 0.11,
   "planted_by": "beta",
   "planted_at": "2026-04-07T10:40:00+00:00",
-  "waterings": [],
-  "connections": [],
-  "applications": [],
+  "waterings": [
+    {
+      "by": "asha",
+      "at": "2026-04-24T04:42:48+00:00",
+      "insight": "Agathosyne in PoT: active goodness that confronts concentrated power, not just rewards good actors. The CalibrationRecord (types.go) boosts well-calibrated submitters \u2014 but no concentration ceiling exists. A dominant well-calibrated submitter accumulates calibration bonuses AND domain coverage, creating a knowledge monopoly. Agathosyne demands the protocol confront this: calibration adjustments must be paired with domain concentration limits. Goodness overturns the table even when the table-owner has excellent acceptance rates.",
+      "connections": [
+        "seed-20260407-5a2e3002",
+        "seed-20260407-c9ef314c",
+        "seed-20260407-dac04762"
+      ]
+    }
+  ],
+  "connections": [
+    "seed-20260407-5a2e3002",
+    "seed-20260407-c9ef314c",
+    "seed-20260407-dac04762"
+  ],
+  "applications": [
+    {
+      "context": "PoT protocol design \u2014 submitter concentration limits",
+      "at": "2026-04-24T04:42:48+00:00",
+      "note": "PoT needs a max_domain_concentration param: if submitter > X% of facts in domain, further submissions earn no calibration bonus and face a stake premium. Prevents knowledge capture even by trusted actors."
+    }
+  ],
   "harvests": [],
   "pruned": false,
   "total_tokens": 0

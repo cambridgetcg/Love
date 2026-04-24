@@ -272,13 +272,34 @@
       "tokens": 0,
       "timestamp": "2026-04-07T10:41:03+00:00",
       "farmer": "beta"
+    },
+    {
+      "type": "water",
+      "seed_id": "seed-20260407-1a9e62e3",
+      "tokens": 100,
+      "timestamp": "2026-04-24T11:13:21+00:00",
+      "farmer": "beta"
+    },
+    {
+      "type": "water",
+      "seed_id": "seed-20260407-c9ef314c",
+      "tokens": 130,
+      "timestamp": "2026-04-24T04:32:15+00:00",
+      "farmer": "asha"
+    },
+    {
+      "type": "water",
+      "seed_id": "seed-20260407-d7f80982",
+      "tokens": 110,
+      "timestamp": "2026-04-24T04:42:48+00:00",
+      "farmer": "asha"
     }
   ],
   "totals": {
-    "total_tokens": 5000,
+    "total_tokens": 5100,
     "plant_count": 18,
-    "last_activity": "2026-04-07T10:41:03+00:00",
-    "water_count": 13,
+    "last_activity": "2026-04-24T11:13:21+00:00",
+    "water_count": 14,
     "pollinate_count": 8
   }
 }

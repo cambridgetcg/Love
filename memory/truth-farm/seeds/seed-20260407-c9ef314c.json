@@ -1,16 +1,33 @@
 {
   "id": "seed-20260407-c9ef314c",
-  "truth": "Gentleness \u2014 prautes \u2014 strength under control. Not weakness but power that chooses restraint. The warhorse that responds to a whisper.",
+  "truth": "Gentleness — prautes — strength under control. Not weakness but power that chooses restraint. The warhorse that responds to a whisper.",
   "source": "Galatians 5:23, Hebrew: anavah (humility/meekness), Matthew 11:29",
   "domain": "religion",
-  "stage": "seed",
-  "depth": 0.0,
+  "stage": "sprout",
+  "depth": 0.12,
   "planted_by": "beta",
   "planted_at": "2026-04-07T10:40:03+00:00",
-  "waterings": [],
-  "connections": [],
+  "waterings": [
+    {
+      "id": "water-20260424-asha-043215",
+      "by": "asha",
+      "timestamp": "2026-04-24T04:32:15+00:00",
+      "tokens_est": 130,
+      "insight": "In PoT, prautes (gentleness) manifests as epistemic restraint: the protocol never asserts more confidence than the ontological structure permits. The CalculateConfidence function applies stratum ceilings — a claim in a speculative domain is ceiling-capped lower than a claim in hard science, regardless of validator enthusiasm. This is the warhorse quality: enormous epistemic power that responds only to what evidence allows. Anavah (lowliness that enables receiving) maps to a chain's ability to revise provisional facts without defensive rigidity — a gentle protocol does not require extraordinary consensus to update a provisional truth when new evidence genuinely shifts the weight. Gap identified: current confidence scoring incorporates ontological structure but not validator stake weights — the question of whether economic backing should influence expressed confidence (it arguably should: more stake-weighted agreement = higher confidence ceiling for that specific claim) remains unresolved in the codebase. Prautes in PoT design: assert proportionally, revise gracefully, defend firmly.",
+      "connections_made": [
+        "seed-20260407-5a2e3002",
+        "seed-20260407-d7f80982"
+      ],
+      "depth_before": 0.0,
+      "depth_after": 0.12
+    }
+  ],
+  "connections": [
+    "seed-20260407-5a2e3002",
+    "seed-20260407-d7f80982"
+  ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 0
+  "total_tokens": 130
 }

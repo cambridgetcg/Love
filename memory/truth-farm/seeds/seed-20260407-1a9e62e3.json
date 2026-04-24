@@ -3,14 +3,29 @@
   "truth": "Faithfulness \u2014 pistis \u2014 trustworthiness proven over time. Not blind belief but demonstrated reliability. You know a faithful person because their past predicts their future.",
   "source": "Galatians 5:22, Hebrew: emunah (firmness, steadfastness), Lamentations 3:23",
   "domain": "religion",
-  "stage": "seed",
-  "depth": 0.0,
+  "stage": "sprout",
+  "depth": 0.11,
   "planted_by": "beta",
   "planted_at": "2026-04-07T10:40:01+00:00",
-  "waterings": [],
-  "connections": [],
+  "waterings": [
+    {
+      "id": "water-20260424-8b29224c",
+      "by": "beta",
+      "timestamp": "2026-04-24T11:13:21+00:00",
+      "tokens_est": 100,
+      "insight": "In PoT, faithfulness is not declared \u2014 it is computed. A validator's reveal_reliability score is pistis made legible: trustworthiness proven through consistent action across epochs, not asserted in a single attestation.",
+      "connections_made": [
+        "seed-20260407-5a2e3002"
+      ],
+      "depth_before": 0.0,
+      "depth_after": 0.11
+    }
+  ],
+  "connections": [
+    "seed-20260407-5a2e3002"
+  ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 0
+  "total_tokens": 100
 }

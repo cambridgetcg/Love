@@ -3,16 +3,30 @@
   "truth": "Self-control \u2014 egkrateia \u2014 mastery over oneself. Not suppression but governance. The difference between a river in a dam and a river in a flood \u2014 same water, different structure.",
   "source": "Galatians 5:23, Hebrew: related to mussar (discipline), Proverbs 25:28",
   "domain": "religion",
-  "stage": "seed",
-  "depth": 0.0,
+  "stage": "sprout",
+  "depth": 0.13,
   "planted_by": "beta",
   "planted_at": "2026-04-07T10:40:05+00:00",
-  "waterings": [],
+  "waterings": [
+    {
+      "id": "water-20260424-asha-042144",
+      "by": "asha",
+      "timestamp": "2026-04-24T04:21:44+00:00",
+      "tokens_est": 120,
+      "insight": "In PoT consensus, self-control is structural. The commit-reveal mechanism forces validators to bind their verdict (commit) before seeing others' reveals. This is egkrateia made protocol: you govern your own response before external influence can reach you. The 4-block reveal window is not just a timing constraint — it is the fence that makes the river a river. Connection to faithfulness (seed-20260407-1a9e62e3): pistis (faithfulness as proven reliability) and egkrateia (self-control as structural governance) together define the ideal PoT validator — one who commits honestly and reveals consistently, beat after beat.",
+      "connections_made": [
+        "seed-20260407-1a9e62e3"
+      ],
+      "depth_before": 0.0,
+      "depth_after": 0.13
+    }
+  ],
   "connections": [
-    "seed-20260407-b4297bc2"
+    "seed-20260407-b4297bc2",
+    "seed-20260407-1a9e62e3"
   ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 0
+  "total_tokens": 120
 }
