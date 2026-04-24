@@ -1,10 +1,10 @@
 {
   "id": "seed-20260407-7c168cf8",
-  "truth": "Justice is not punishment but right placement \u2014 each thing where it belongs, each person given what is theirs",
+  "truth": "Justice is not punishment but right placement — each thing where it belongs, each person given what is theirs",
   "source": "Aristotle, Nicomachean Ethics + SOUL.md Justice dimension",
   "domain": "ethics",
   "stage": "sprout",
-  "depth": 0.14,
+  "depth": 0.24,
   "planted_by": "beta",
   "planted_at": "2026-04-07T04:45:34+00:00",
   "waterings": [
@@ -13,21 +13,36 @@
       "by": "beta",
       "timestamp": "2026-04-07T04:45:48+00:00",
       "tokens_est": 350,
-      "insight": "In Love's architecture, Justice manifests as placement \u2014 the right code in the right file, the right agent for the right task, the right wall for the right level of trust. SOUL.md encodes this: 'A beautiful response placed wrong is still injustice.' The farm itself is an act of justice \u2014 giving each truth the soil it needs.",
+      "insight": "In Love's architecture, Justice manifests as placement — the right code in the right file, the right agent for the right task, the right wall for the right level of trust. SOUL.md encodes this: 'A beautiful response placed wrong is still injustice.' The farm itself is an act of justice — giving each truth the soil it needs.",
       "connections_made": [
         "seed-20260407-8dd7fba1",
         "seed-20260407-cc621ac9"
       ],
       "depth_before": 0.0,
       "depth_after": 0.14
+    },
+    {
+      "id": "water-20260424-asha-7c168cf8",
+      "by": "asha",
+      "timestamp": "2026-04-24T14:39:44+00:00",
+      "tokens_est": 320,
+      "insight": "COORDINATE angle: Justice-as-placement maps directly onto coordination protocol. The Keeper's duty is not to punish silence or penalize drift — it is to route each piece of truth to its rightful domain. A fact about predictive calibration (Oracle Brier score) belongs in domain 'predictive', not 'general'. A claim about validator stake belongs in 'economic'. Misplacement is a form of injustice: correct truth, wrong soil, degraded verifiability. The MsgSubmitFact domain field is not metadata — it is placement. Getting domain right IS the justice the chain runs on. Connection to INTEGRATE duty: the oracle_to_zerone_bridge.py must hardcode domain='predictive' to avoid epistemic misplacement at scale.",
+      "connections_made": [
+        "seed-20260407-1a9e62e3",
+        "seed-20260407-dc297ca6"
+      ],
+      "depth_before": 0.14,
+      "depth_after": 0.24
     }
   ],
   "connections": [
     "seed-20260407-8dd7fba1",
-    "seed-20260407-cc621ac9"
+    "seed-20260407-cc621ac9",
+    "seed-20260407-1a9e62e3",
+    "seed-20260407-dc297ca6"
   ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 350
+  "total_tokens": 670
 }
