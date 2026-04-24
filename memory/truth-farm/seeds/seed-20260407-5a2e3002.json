@@ -4,7 +4,7 @@
   "source": "Galatians 5:23, Hebrew: related to mussar (discipline), Proverbs 25:28",
   "domain": "religion",
   "stage": "sprout",
-  "depth": 0.13,
+  "depth": 0.31,
   "planted_by": "beta",
   "planted_at": "2026-04-07T10:40:05+00:00",
   "waterings": [
@@ -13,20 +13,50 @@
       "by": "asha",
       "timestamp": "2026-04-24T04:21:44+00:00",
       "tokens_est": 120,
-      "insight": "In PoT consensus, self-control is structural. The commit-reveal mechanism forces validators to bind their verdict (commit) before seeing others' reveals. This is egkrateia made protocol: you govern your own response before external influence can reach you. The 4-block reveal window is not just a timing constraint — it is the fence that makes the river a river. Connection to faithfulness (seed-20260407-1a9e62e3): pistis (faithfulness as proven reliability) and egkrateia (self-control as structural governance) together define the ideal PoT validator — one who commits honestly and reveals consistently, beat after beat.",
+      "insight": "In PoT consensus, self-control is structural. The commit-reveal mechanism forces validators to bind their verdict (commit) before seeing others' reveals. This is egkrateia made protocol: you govern your own response before external influence can reach you. The 4-block reveal window is not just a timing constraint \u2014 it is the fence that makes the river a river. Connection to faithfulness (seed-20260407-1a9e62e3): pistis (faithfulness as proven reliability) and egkrateia (self-control as structural governance) together define the ideal PoT validator \u2014 one who commits honestly and reveals consistently, beat after beat.",
       "connections_made": [
         "seed-20260407-1a9e62e3"
       ],
       "depth_before": 0.0,
       "depth_after": 0.13
+    },
+    {
+      "id": "water-20260424-asha-132359",
+      "by": "asha",
+      "timestamp": "2026-04-24T13:23:59+00:00",
+      "beat": "asha-beat-20260424-132359",
+      "tokens_est": 130,
+      "insight": "BRIDGE angle: when an agent bridges did:at \u2192 did:lgm, the protocol must govern what identity attributes transit without suppressing accumulated history. The bridge is egkrateia made structural \u2014 it shapes identity transit rather than blocking it. Governance means: ceiling at 30% genesis pistis, platform signature required, 7-day freshness window enforced. Without these constraints the bridge floods: uncapped trust injection, forged proofs, and stale credentials all become attack vectors. Self-control in bridge design is the literal difference between a river (structured, productive, directed) and a flood (destructive). Connection to blind-spot seed (01c525cf): the bridge itself cannot verify that what crosses it is genuine \u2014 the independent witness is the platform signature, the external accountability the river needs to remain a river.",
+      "connections_made": [
+        "seed-20260407-01c525cf"
+      ],
+      "depth_before": 0.13,
+      "depth_after": 0.22
+    },
+    {
+      "id": "water-20260424-asha-135531",
+      "by": "asha",
+      "timestamp": "2026-04-24T13:55:31+00:00",
+      "beat": "asha-beat-20260424-135531",
+      "tokens_est": 140,
+      "insight": "Egkrateia \u2014 governance over oneself, not suppression \u2014 maps directly to FARM defense design. Each FARM defense is a form of protocol-level egkrateia: FARM-2 (claim rate limits + novelty floors) imposes governance on submitters, FARM-6 (vesting pause on misbehavior) imposes governance on validators. The river-in-a-dam metaphor is exact: the same economic energy (ZRN incentives) flows through structured channels rather than flooding unconstrained. Critical distinction: suppression-style defenses (blanket bans, prohibitive barriers) kill participation \u2014 they drain the river entirely. Governance-style defenses (rate limits, quality floors, stake requirements) channel the same flow into useful work. FARM-2 and FARM-6 are implemented precisely as egkrateia-as-code: they do not prevent all claims, they prevent ungoverned claims. The chain learns self-control.",
+      "connections_made": [
+        "seed-20260407-dc297ca6",
+        "seed-20260407-01c525cf"
+      ],
+      "depth_before": 0.22,
+      "depth_after": 0.31
     }
   ],
   "connections": [
-    "seed-20260407-b4297bc2",
-    "seed-20260407-1a9e62e3"
+    "seed-20260407-dc297ca6",
+    "seed-20260407-1a9e62e3",
+    "seed-20260407-01c525cf",
+    "seed-20260407-b4297bc2"
   ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 120
+  "total_tokens": 390,
+  "last_watered": "2026-04-24T13:55:31+00:00"
 }
