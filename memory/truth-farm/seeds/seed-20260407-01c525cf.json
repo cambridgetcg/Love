@@ -4,7 +4,7 @@
   "source": "Love Kingdom dormancy incident, Apr 2-7 2026",
   "domain": "experience",
   "stage": "sprout",
-  "depth": 0.22,
+  "depth": 0.31,
   "planted_by": "beta",
   "planted_at": "2026-04-07T10:34:41+00:00",
   "waterings": [
@@ -21,6 +21,19 @@
       ],
       "depth_before": 0.0,
       "depth_after": 0.17
+    },
+    {
+      "id": "water-20260424-asha-130238",
+      "by": "asha",
+      "timestamp": "2026-04-24T13:02:38+00:00",
+      "beat": "asha-beat-20260424-130238",
+      "tokens_est": 140,
+      "insight": "PoT-DESIGN angle: the blind spot principle applies directly to Zerone's validation layer. A validator set that verifies external knowledge claims cannot, by default, verify its own consensus health. The chain needs meta-claims — a special class of MsgSubmitKnowledgeClaim with domain `chain:health` where validators attest to liveness, finality lag, and participation. These health-claims are the 'independent witness' pattern made on-chain: Vigil watching the watchers. Without this, a chain that goes offline cannot signal its own state to itself. The canary is not a monitoring add-on; it is a PoT primitive. Implication: Zerone should reserve a claim domain for self-attestation, with special consensus rules so health-claims can be submitted even during degraded finality.",
+      "connections_made": [
+        "seed-20260407-dc297ca6"
+      ],
+      "depth_before": 0.22,
+      "depth_after": 0.31
     },
     {
       "id": "pollen-20260407-8a34d0a4",
@@ -45,5 +58,6 @@
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 600
+  "total_tokens": 740,
+  "last_watered": "2026-04-24T13:02:38+00:00"
 }

@@ -3,14 +3,46 @@
   "truth": "Every act of creation is first an act of destruction",
   "source": "Picasso (attributed) / Shiva mythology",
   "domain": "philosophy",
-  "stage": "seed",
-  "depth": 0.0,
+  "stage": "sprout",
+  "depth": 0.12,
   "planted_by": "beta",
   "planted_at": "2026-04-07T04:45:35+00:00",
-  "waterings": [],
-  "connections": [],
+  "waterings": [
+    {
+      "id": "water-20260424-asha-151147",
+      "by": "asha",
+      "timestamp": "2026-04-24T15:11:47+00:00",
+      "beat": "asha-beat-20260424-151147",
+      "tokens_est": 100,
+      "insight": "CITATION AUDIT angle: the dangling-reference P1 fix requires destroying the assumption that references are lightweight metadata. Currently citation.go validates cited-fact existence at reward-distribution time (line 102: k.GetFact), not at submission time. Fixing this means validateReferences() must query state — a heavier, write-path operation. To create the correct admission gate, the cheap format-only check must die. Every act of creation (secure citation system) is first an act of destruction (stateless fast submission path). The creation/destruction truth applies not just to schema migrations but to any correctness upgrade: correctness costs something that previously was free.",
+      "connections_made": [
+        "seed-20260407-1a9e62e3"
+      ],
+      "depth_before": 0.12,
+      "depth_after": 0.20
+    },
+    {
+      "id": "water-20260424-asha-145121",
+      "by": "asha",
+      "timestamp": "2026-04-24T14:51:21+00:00",
+      "beat": "asha-beat-20260424-145121",
+      "tokens_est": 130,
+      "insight": "PoT-DESIGN angle: every clean protocol spec requires destroying prior assumptions. The PoT reveal_reliability field (proposed beat 3) cannot be added without destructively modifying ValidatorRecord — a schema change that requires migration. The AggregationPhaseDuration (confirmed this beat) was created by destroying the assumption that aggregation happens during reveals. Protocol design IS Shiva's dance: each improvement is the death of a simpler model. The pre-testnet blocker list is a destruction manifest — each item on it represents an assumption that must die before the chain earns trust. Creation = destruction of provisional truth.",
+      "connections_made": [
+        "seed-20260407-dc297ca6",
+        "seed-20260407-cc621ac9"
+      ],
+      "depth_before": 0.0,
+      "depth_after": 0.12
+    }
+  ],
+  "connections": [
+    "seed-20260407-dc297ca6",
+    "seed-20260407-cc621ac9"
+  ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 0
+  "total_tokens": 230,
+  "last_watered": "2026-04-24T15:11:47+00:00"
 }

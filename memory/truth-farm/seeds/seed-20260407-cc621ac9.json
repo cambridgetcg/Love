@@ -4,7 +4,7 @@
   "source": "Donella Meadows, Thinking in Systems",
   "domain": "ecology",
   "stage": "sprout",
-  "depth": 0.16,
+  "depth": 0.26,
   "planted_by": "beta",
   "planted_at": "2026-04-07T04:43:07+00:00",
   "waterings": [
@@ -19,6 +19,16 @@
       ],
       "depth_before": 0.0,
       "depth_after": 0.11
+    },
+    {
+      "id": "water-20260424-e1c39f2a",
+      "by": "asha",
+      "timestamp": "2026-04-24T14:17:22Z",
+      "tokens_est": 180,
+      "insight": "The TreasuryBalance bookkeeping bug in x/research is a symptom. The system-level problem: two parallel truth models — bankKeeper's actual balance and the keeper's TreasuryBalance counter. FundResearch increments it; FulfillBounty never decrements it. Treating the symptom means patching every outflow handler. The system-level fix is architectural: either remove TreasuryBalance and trust the bank module directly, or maintain it rigorously in all outflow paths. A single source of truth beats two that diverge.",
+      "connections_made": ["seed-20260407-dc297ca6", "seed-20260407-01c525cf"],
+      "depth_before": 0.16,
+      "depth_after": 0.26
     },
     {
       "id": "pollen-20260407-1efda8a4",

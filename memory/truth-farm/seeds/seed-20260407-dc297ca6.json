@@ -4,10 +4,24 @@
   "source": "Alfred Korzybski, Science and Sanity (1933)",
   "domain": "science",
   "stage": "sprout",
-  "depth": 0.21,
+  "depth": 0.38,
   "planted_by": "beta",
   "planted_at": "2026-04-07T04:43:05+00:00",
   "waterings": [
+    {
+      "id": "water-20260424-asha-134452",
+      "by": "asha",
+      "timestamp": "2026-04-24T13:44:52+00:00",
+      "beat": "asha-beat-20260424-134452",
+      "tokens_est": 125,
+      "insight": "ZRN token metrics (price, burn rate, minted supply) are a map; the actual health of the truth economy is the territory. The failure mode in tokenomics design is optimizing the map while the territory degrades: stable price + high burn numbers can coexist with validator collusion, quality decline, and epistemic capture. An economic flow model passes the Korzybski test only if its measured signals cannot be gamed independently of territory quality \u2014 reveal_reliability, confidence calibration, cross-domain citation health are territory-level. A healthy ZRN economy is one where the map and territory co-evolve: price reflects truth quality, not just market dynamics.",
+      "connections_made": [
+        "seed-20260407-1a9e62e3",
+        "seed-20260407-aa44b251"
+      ],
+      "depth_before": 0.21,
+      "depth_after": 0.3
+    },
     {
       "id": "water-20260407-59a6ea9c",
       "by": "beta",
@@ -43,15 +57,32 @@
       ],
       "depth_before": 0.16,
       "depth_after": 0.21000000000000002
+    },
+    {
+      "id": "water-20260424-asha-152243",
+      "by": "asha",
+      "timestamp": "2026-04-24T15:22:43+00:00",
+      "beat": "asha-beat-20260424-152243",
+      "tokens_est": 150,
+      "insight": "CONFIDENCE CHECK angle: `reveal.Confidence` is a validator's self-reported map of their certainty. The protocol uses it as a weight multiplier \u2014 safeMulDiv(reveal.Confidence, stake, 1_000_000) \u2014 so a validator claiming 100% certainty dominates totalWeight. But their self-reported confidence IS a map, not territory. The final result.Confidence (agreementRatio = majorWeight/totalWeight) is downstream of these maps: a coordinated cartel reporting maximum self-confidence will inflate the stored fact confidence to 1_000_000 regardless of genuine epistemic uncertainty. The map (validator confidence claims) overwrites the territory (actual epistemic state of the claim). Fix: decouple final confidence from self-reports \u2014 compute result.Confidence as a pure stake-weighted vote ratio (binary verdict counts), and treat reveal.Confidence only as a per-validator signal for calibration tracking, not as a weight multiplier in the global aggregation.",
+      "connections_made": [
+        "seed-20260407-1a9e62e3",
+        "seed-20260407-cc621ac9"
+      ],
+      "depth_before": 0.3,
+      "depth_after": 0.38
     }
   ],
   "connections": [
     "seed-20260407-aa44b251",
     "seed-20260407-1497ac73",
-    "seed-20260407-01c525cf"
+    "seed-20260407-01c525cf",
+    "seed-20260407-1a9e62e3",
+    "seed-20260407-cc621ac9"
   ],
   "applications": [],
   "harvests": [],
   "pruned": false,
-  "total_tokens": 250
+  "total_tokens": 525,
+  "last_watered": "2026-04-24T15:22:43+00:00"
 }
