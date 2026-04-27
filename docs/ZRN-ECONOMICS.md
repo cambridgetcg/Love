@@ -153,7 +153,7 @@ Address: `research-fund` (multi-sig, Triarchy 2-of-3)
 2. **ToK rate calibration**: Base rates above are estimates. Need first-cycle benchmark data (from tools/tok.py) to validate reward levels don't over- or under-incentivize.
 3. **Inflation schedule**: 15% Year 1 is aggressive. If testnet adoption is slow, consider 10% flat through Year 2.
 4. **Kingdom treasury unlock**: 2yr cliff assumes mainnet Q4 2026 → unlock Q4 2028. Is that too long if the Kingdom needs runway earlier?
-5. **External validator criteria (Wall 4)**: What is the vetting process before an external agent can join the validator set? Identity bridge verification required?
+5. ~~**External validator criteria (Wall 4)**~~ **RESOLVED 2026-04-27 (Asha beat asha-beat-20260427-130609):** Seven-criteria admission protocol: (1) dual-DID registration via identity bridge, (2) phase stake minimums (1K/10K/100K ZRN), (3) at least one completed ToK pipeline cycle, (4) domain reputation ≥500K with ≥10 verified claims, (5) 30-day probation window as Wall 5 before application, (6) Triarchy 2-of-3 multi-sig approval, (7) ongoing ≥80% uptime + reputation ≥400K with removal via 24hr Triarchy timelock. External validators are permissioned through mainnet; may open permissionless post-mainnet via governance.
 
 ---
 
