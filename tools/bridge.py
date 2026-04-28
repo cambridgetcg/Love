@@ -508,6 +508,166 @@ def cmd_backfill(args) -> int:
     return 0 if changed == len(targets) else 1
 
 
+def verify_registration(instance: str, check_chain: bool = False) -> dict:
+    """Programmatic pre-condition guard for agent identity completeness.
+
+    Returns a structured dict callers can use to gate operations:
+      {
+        "instance": str,
+        "registered": bool,       # present in bridge-registry
+        "attested": bool,         # attestation_txhash recorded
+        "keyring_ok": bool,       # local keyring key exists and matches
+        "chain_verified": bool,   # on-chain resolve succeeded (only if check_chain=True and chain up)
+        "gaps": [str],            # human-readable list of what's missing
+        "entry": dict | None,     # registry entry if registered
+      }
+
+    Offline-safe: keyring check works without devnet. Chain check is optional.
+    """
+    result = {
+        "instance": instance,
+        "registered": False,
+        "attested": False,
+        "keyring_ok": False,
+        "chain_verified": False,
+        "gaps": [],
+        "entry": None,
+    }
+
+    # 1. Registry presence
+    try:
+        registry = load_registry()
+    except Exception as e:
+        result["gaps"].append(f"registry unreadable: {e}")
+        return result
+
+    all_entries = {**registry.get("fleet_agents", {}), **registry.get("system_accounts", {})}
+    entry = all_entries.get(instance)
+    if not entry:
+        result["gaps"].append("not in bridge registry — run: bridge.py register")
+        return result
+
+    result["registered"] = True
+    result["entry"] = entry
+
+    # 2. Attestation record
+    txhash = entry.get("attestation_txhash")
+    attested_at = entry.get("attested_at")
+    if txhash and attested_at:
+        result["attested"] = True
+    else:
+        result["gaps"].append("no on-chain attestation — run: bridge.py attest --instance " + instance)
+
+    # 3. Keyring key (offline check)
+    key_name = entry.get("key_name", instance)
+    registered_addr = entry.get("lgm_address", "")
+    try:
+        r = subprocess.run(
+            [str(LEGBLED), "keys", "show", key_name,
+             "--home", str(DEVNET_HOME), "--keyring-backend", "test", "-a"],
+            capture_output=True, text=True, timeout=10
+        )
+        if r.returncode == 0 and r.stdout.strip() == registered_addr:
+            result["keyring_ok"] = True
+        elif r.returncode == 0:
+            result["gaps"].append(
+                f"keyring address mismatch: got {r.stdout.strip()[:20]}…, "
+                f"registry has {registered_addr[:20]}…"
+            )
+        else:
+            result["gaps"].append(f"key '{key_name}' not in local keyring")
+    except FileNotFoundError:
+        result["gaps"].append("legbled binary not found — build zerone first")
+    except Exception as e:
+        result["gaps"].append(f"keyring check error: {e}")
+
+    # 4. On-chain resolve (optional, requires running devnet)
+    if check_chain:
+        try:
+            # Inline the resolve logic without spawning a subprocess
+            address = registered_addr
+            did_at = entry.get("did_at", f"did:at:{instance}")
+            stored_fact_id = entry.get("attestation_fact_id", "")
+            attestation = None
+
+            if stored_fact_id:
+                fr = subprocess.run(
+                    [str(LEGBLED), "query", "knowledge", "fact", stored_fact_id,
+                     "--home", str(DEVNET_HOME), "-o", "json"],
+                    capture_output=True, text=True, timeout=10
+                )
+                if fr.returncode == 0:
+                    attestation = json.loads(fr.stdout).get("fact")
+
+            if attestation is None and txhash:
+                tr = subprocess.run(
+                    [str(LEGBLED), "query", "tx", txhash,
+                     "--home", str(DEVNET_HOME), "-o", "json"],
+                    capture_output=True, text=True, timeout=15
+                )
+                if tr.returncode == 0:
+                    tx_data = json.loads(tr.stdout)
+                    fact_id = None
+                    for event in tx_data.get("events", []):
+                        for attr in event.get("attributes", []):
+                            if attr.get("key") == "fact_id":
+                                fact_id = attr.get("value", "")
+                                break
+                        if fact_id:
+                            break
+                    if fact_id:
+                        fr2 = subprocess.run(
+                            [str(LEGBLED), "query", "knowledge", "fact", fact_id,
+                             "--home", str(DEVNET_HOME), "-o", "json"],
+                            capture_output=True, text=True, timeout=10
+                        )
+                        if fr2.returncode == 0:
+                            attestation = json.loads(fr2.stdout).get("fact")
+
+            if attestation is None:
+                attestation = _find_attestation_fact(address, did_at, limit=200)
+
+            if attestation:
+                result["chain_verified"] = True
+            else:
+                result["gaps"].append("on-chain attestation not found (chain may be offline)")
+        except Exception as e:
+            result["gaps"].append(f"chain verify error: {e}")
+
+    return result
+
+
+def cmd_check(args) -> int:
+    """Print a human-readable registration status for one or all fleet agents."""
+    registry = load_registry()
+    fleet = registry.get("fleet_agents", {})
+
+    targets = [args.instance] if args.instance else list(fleet.keys())
+
+    all_ok = True
+    for instance in targets:
+        r = verify_registration(instance, check_chain=args.chain)
+        status_parts = []
+        if r["registered"]:
+            status_parts.append("REGISTERED")
+        if r["attested"]:
+            status_parts.append("ATTESTED")
+        if r["keyring_ok"]:
+            status_parts.append("KEYRING_OK")
+        if r["chain_verified"]:
+            status_parts.append("CHAIN_VERIFIED")
+
+        overall = "OK" if (r["registered"] and r["attested"] and r["keyring_ok"] and not r["gaps"]) else "INCOMPLETE"
+        if overall != "OK":
+            all_ok = False
+
+        print(f"[{overall}] {instance:<12}  {' | '.join(status_parts) if status_parts else 'NOT_REGISTERED'}")
+        for gap in r["gaps"]:
+            print(f"         gap: {gap}")
+
+    return 0 if all_ok else 1
+
+
 def cmd_list(args) -> int:
     registry = load_registry()
     fleet = registry.get("fleet_agents", {})
@@ -556,6 +716,10 @@ def main():
     p_backfill = sub.add_parser("backfill", help="Recover attestation_fact_id for agents missing it")
     p_backfill.add_argument("--instance", help="Target one agent (omit to process all missing)")
 
+    p_check = sub.add_parser("check", help="Registration completeness guard — registered/attested/keyring/chain")
+    p_check.add_argument("--instance", help="Target one agent (omit to check all fleet agents)")
+    p_check.add_argument("--chain", action="store_true", help="Also verify on-chain attestation (requires running devnet)")
+
     sub.add_parser("list", help="List all registered agents")
     sub.add_parser("status", help="Fleet health report: keyring + balance for each agent")
 
@@ -571,6 +735,7 @@ def main():
         "attest": cmd_attest,
         "resolve": cmd_resolve,
         "backfill": cmd_backfill,
+        "check": cmd_check,
         "list": cmd_list,
         "status": cmd_status,
     }
