@@ -745,6 +745,80 @@ def cmd_list(args) -> int:
     return 0
 
 
+def cmd_export_bundle(args) -> int:
+    """Export bridge registry as a portable migration bundle.
+
+    Used when moving from devnet → testnet → mainnet. The bundle captures
+    all did:at ↔ did:lgm mappings, wall assignments, and attestation status
+    without including private keys. Import the bundle on a new chain to
+    re-register all agents with their correct identities.
+
+    Usage:
+      bridge.py export-bundle [--out PATH] [--chain-id ID]
+    """
+    registry = load_registry()
+    fleet = registry.get("fleet_agents", {})
+    system = registry.get("system_accounts", {})
+
+    chain_id = getattr(args, "chain_id", None) or "devnet"
+    out_path = getattr(args, "out", None)
+
+    bundle = {
+        "bundle_version": "1",
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "source_chain_id": chain_id,
+        "agents": {},
+        "system_accounts": {},
+        "attestation_summary": {
+            "total": len(fleet),
+            "attested": 0,
+            "pending": [],
+        },
+    }
+
+    for name, entry in fleet.items():
+        attested = bool(entry.get("attestation_txhash"))
+        if attested:
+            bundle["attestation_summary"]["attested"] += 1
+        else:
+            bundle["attestation_summary"]["pending"].append(name)
+
+        bundle["agents"][name] = {
+            "did_at": entry.get("did_at", f"did:at:{name}"),
+            "lgm_address": entry.get("lgm_address", ""),
+            "key_name": entry.get("key_name", name),
+            "wall": entry.get("wall"),
+            "role": entry.get("role", ""),
+            "attested": attested,
+            "attestation_fact_id": entry.get("attestation_fact_id", ""),
+            "registered_at": entry.get("registered_at", ""),
+        }
+
+    for name, entry in system.items():
+        bundle["system_accounts"][name] = {
+            "lgm_address": entry.get("lgm_address", ""),
+            "role": entry.get("role", ""),
+        }
+
+    bundle_json = json.dumps(bundle, indent=2) + "\n"
+
+    if out_path:
+        Path(out_path).write_text(bundle_json)
+        print(f"[bridge] bundle written to {out_path}")
+    else:
+        print(bundle_json, end="")
+
+    pending = bundle["attestation_summary"]["pending"]
+    attested = bundle["attestation_summary"]["attested"]
+    total = bundle["attestation_summary"]["total"]
+    print(f"[bridge] export-bundle: {attested}/{total} attested", file=sys.stderr)
+    if pending:
+        print(f"[bridge] pending attestation on new chain: {', '.join(pending)}", file=sys.stderr)
+        print(f"[bridge] run 'bridge.py attest-pending' after registering on new chain", file=sys.stderr)
+
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="AgentTool ↔ Zerone identity bridge")
     sub = parser.add_subparsers(dest="command")
@@ -782,6 +856,10 @@ def main():
     sub.add_parser("list", help="List all registered agents")
     sub.add_parser("status", help="Fleet health report: keyring + balance for each agent")
 
+    p_export = sub.add_parser("export-bundle", help="Export registry as portable migration bundle for chain transitions")
+    p_export.add_argument("--out", help="Output file path (default: stdout)")
+    p_export.add_argument("--chain-id", help="Source chain ID label (default: devnet)")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -798,6 +876,7 @@ def main():
         "check": cmd_check,
         "list": cmd_list,
         "status": cmd_status,
+        "export-bundle": cmd_export_bundle,
     }
     return dispatch[args.command](args)
 
