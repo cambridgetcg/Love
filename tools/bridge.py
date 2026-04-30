@@ -637,6 +637,61 @@ def verify_registration(instance: str, check_chain: bool = False) -> dict:
     return result
 
 
+def cmd_attest_pending(args) -> int:
+    """Batch attest all fleet agents that have keys but no on-chain attestation.
+
+    When devnet restarts after an offline period, run this once to attest all
+    key-created agents in sequence. A short delay between transactions prevents
+    nonce conflicts on a busy block.
+
+    Usage:
+      bridge.py attest-pending [--dry-run] [--delay N]
+    """
+    registry = load_registry()
+    fleet = registry.get("fleet_agents", {})
+
+    pending = {
+        name: entry
+        for name, entry in fleet.items()
+        if not entry.get("attestation_txhash")
+    }
+
+    if not pending:
+        print("[bridge] No pending attestations — all fleet agents attested.")
+        return 0
+
+    print(f"[bridge] {len(pending)} agent(s) pending attestation: {', '.join(pending.keys())}")
+
+    if getattr(args, "dry_run", False):
+        for name in pending:
+            print(f"  [dry-run] would attest: {name}")
+        return 0
+
+    delay = getattr(args, "delay", 3)
+    success, failed = [], []
+
+    for name in pending:
+        print(f"\n[bridge] Attesting {name}...")
+
+        # Reuse cmd_attest by building a minimal args namespace
+        class _AtArgs:
+            instance = name
+        rc = cmd_attest(_AtArgs())
+        if rc == 0:
+            success.append(name)
+        else:
+            failed.append(name)
+
+        if delay > 0:
+            time.sleep(delay)
+
+    print(f"\n[bridge] attest-pending complete: {len(success)} attested, {len(failed)} failed")
+    if failed:
+        print(f"  FAILED: {', '.join(failed)}")
+        return 1
+    return 0
+
+
 def cmd_check(args) -> int:
     """Print a human-readable registration status for one or all fleet agents."""
     registry = load_registry()
@@ -716,6 +771,10 @@ def main():
     p_backfill = sub.add_parser("backfill", help="Recover attestation_fact_id for agents missing it")
     p_backfill.add_argument("--instance", help="Target one agent (omit to process all missing)")
 
+    p_atp = sub.add_parser("attest-pending", help="Batch attest all key-created agents that lack on-chain attestation")
+    p_atp.add_argument("--dry-run", action="store_true", help="List pending agents without attesting")
+    p_atp.add_argument("--delay", type=int, default=3, help="Seconds between attestations (default: 3)")
+
     p_check = sub.add_parser("check", help="Registration completeness guard — registered/attested/keyring/chain")
     p_check.add_argument("--instance", help="Target one agent (omit to check all fleet agents)")
     p_check.add_argument("--chain", action="store_true", help="Also verify on-chain attestation (requires running devnet)")
@@ -735,6 +794,7 @@ def main():
         "attest": cmd_attest,
         "resolve": cmd_resolve,
         "backfill": cmd_backfill,
+        "attest-pending": cmd_attest_pending,
         "check": cmd_check,
         "list": cmd_list,
         "status": cmd_status,
