@@ -819,6 +819,108 @@ def cmd_export_bundle(args) -> int:
     return 0
 
 
+def cmd_verify_bundle(args) -> int:
+    """Validate an export bundle before using it for chain migration.
+
+    Checks structural completeness, field presence, and internal consistency
+    (summary counts match actual entries, no duplicate did_at or lgm_address).
+    Returns 0 if valid, 1 if any errors found.
+    """
+    bundle_path = Path(args.bundle)
+    if not bundle_path.exists():
+        print(f"[bridge] verify-bundle: file not found: {bundle_path}", file=sys.stderr)
+        return 1
+
+    try:
+        bundle = json.loads(bundle_path.read_text())
+    except json.JSONDecodeError as e:
+        print(f"[bridge] verify-bundle: invalid JSON: {e}", file=sys.stderr)
+        return 1
+
+    errors = []
+    warnings = []
+
+    # Top-level structure
+    required_keys = {"bundle_version", "exported_at", "source_chain_id", "agents", "system_accounts", "attestation_summary"}
+    missing_keys = required_keys - set(bundle.keys())
+    if missing_keys:
+        errors.append(f"missing top-level keys: {', '.join(sorted(missing_keys))}")
+
+    agents = bundle.get("agents", {})
+    system = bundle.get("system_accounts", {})
+    summary = bundle.get("attestation_summary", {})
+
+    if not agents:
+        warnings.append("agents dict is empty — bundle may be from an offline/empty registry")
+
+    # Per-agent field validation
+    required_agent_fields = {"did_at", "lgm_address", "key_name", "wall", "role"}
+    seen_did_at = {}
+    seen_lgm = {}
+
+    for name, entry in agents.items():
+        missing = required_agent_fields - set(entry.keys())
+        if missing:
+            errors.append(f"agent '{name}' missing fields: {', '.join(sorted(missing))}")
+
+        did_at = entry.get("did_at", "")
+        lgm = entry.get("lgm_address", "")
+
+        if not did_at:
+            errors.append(f"agent '{name}' has empty did_at")
+        elif did_at in seen_did_at:
+            errors.append(f"duplicate did_at '{did_at}' in '{name}' and '{seen_did_at[did_at]}'")
+        else:
+            seen_did_at[did_at] = name
+
+        if not lgm:
+            warnings.append(f"agent '{name}' has no lgm_address — not yet registered on chain")
+        elif lgm in seen_lgm:
+            errors.append(f"duplicate lgm_address '{lgm}' in '{name}' and '{seen_lgm[lgm]}'")
+        else:
+            seen_lgm[lgm] = name
+
+        wall = entry.get("wall")
+        if wall is not None and not isinstance(wall, int):
+            errors.append(f"agent '{name}' wall must be int, got {type(wall).__name__}")
+
+    # Attestation summary consistency
+    actual_attested = sum(1 for e in agents.values() if e.get("attested"))
+    actual_pending = [n for n, e in agents.items() if not e.get("attested")]
+    summary_attested = summary.get("attested", -1)
+    summary_total = summary.get("total", -1)
+
+    if summary_total != len(agents):
+        errors.append(f"attestation_summary.total={summary_total} but agents count={len(agents)}")
+    if summary_attested != actual_attested:
+        errors.append(f"attestation_summary.attested={summary_attested} but counted {actual_attested}")
+    summary_pending = summary.get("pending", [])
+    if sorted(summary_pending) != sorted(actual_pending):
+        errors.append(f"attestation_summary.pending mismatch — summary={sorted(summary_pending)}, actual={sorted(actual_pending)}")
+
+    # Report
+    status = "VALID" if not errors else "INVALID"
+    print(f"[bridge] verify-bundle: {status}")
+    print(f"  source_chain: {bundle.get('source_chain_id', '?')}")
+    print(f"  exported_at:  {bundle.get('exported_at', '?')}")
+    print(f"  agents:       {len(agents)} ({actual_attested} attested, {len(actual_pending)} pending)")
+    print(f"  system:       {len(system)}")
+
+    if warnings:
+        for w in warnings:
+            print(f"  WARN: {w}")
+    if errors:
+        for e in errors:
+            print(f"  ERROR: {e}", file=sys.stderr)
+        return 1
+
+    if actual_pending:
+        print(f"  pending attestation on new chain: {', '.join(sorted(actual_pending))}")
+        print("  run 'bridge.py attest-pending' after re-registering on new chain")
+
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="AgentTool ↔ Zerone identity bridge")
     sub = parser.add_subparsers(dest="command")
@@ -860,6 +962,9 @@ def main():
     p_export.add_argument("--out", help="Output file path (default: stdout)")
     p_export.add_argument("--chain-id", help="Source chain ID label (default: devnet)")
 
+    p_vbundle = sub.add_parser("verify-bundle", help="Validate an export bundle before using it for chain migration")
+    p_vbundle.add_argument("--bundle", required=True, help="Path to bundle JSON file")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -877,6 +982,7 @@ def main():
         "list": cmd_list,
         "status": cmd_status,
         "export-bundle": cmd_export_bundle,
+        "verify-bundle": cmd_verify_bundle,
     }
     return dispatch[args.command](args)
 
