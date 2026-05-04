@@ -541,7 +541,7 @@ def verify_registration(instance: str, check_chain: bool = False) -> dict:
         result["gaps"].append(f"registry unreadable: {e}")
         return result
 
-    all_entries = {**registry.get("fleet_agents", {}), **registry.get("system_accounts", {})}
+    all_entries = {**registry.get("fleet_agents", {}), **registry.get("agents", {}), **registry.get("system_accounts", {})}
     entry = all_entries.get(instance)
     if not entry:
         result["gaps"].append("not in bridge registry — run: bridge.py register")
@@ -638,26 +638,29 @@ def verify_registration(instance: str, check_chain: bool = False) -> dict:
 
 
 def cmd_attest_pending(args) -> int:
-    """Batch attest all fleet agents that have keys but no on-chain attestation.
+    """Batch attest all agents (fleet + wall-3+) that have keys but no on-chain attestation.
 
     When devnet restarts after an offline period, run this once to attest all
     key-created agents in sequence. A short delay between transactions prevents
     nonce conflicts on a busy block.
 
+    Scans fleet_agents and agents (Wall 3+ non-fleet) registries.
+
     Usage:
       bridge.py attest-pending [--dry-run] [--delay N]
     """
     registry = load_registry()
-    fleet = registry.get("fleet_agents", {})
+    # Include both fleet_agents (Wall 2) and agents (Wall 3+, e.g. oracle-agent)
+    all_agents = {**registry.get("fleet_agents", {}), **registry.get("agents", {})}
 
     pending = {
         name: entry
-        for name, entry in fleet.items()
+        for name, entry in all_agents.items()
         if not entry.get("attestation_txhash")
     }
 
     if not pending:
-        print("[bridge] No pending attestations — all fleet agents attested.")
+        print("[bridge] No pending attestations — all agents attested.")
         return 0
 
     print(f"[bridge] {len(pending)} agent(s) pending attestation: {', '.join(pending.keys())}")
@@ -693,9 +696,10 @@ def cmd_attest_pending(args) -> int:
 
 
 def cmd_check(args) -> int:
-    """Print a human-readable registration status for one or all fleet agents."""
+    """Print a human-readable registration status for one or all agents (fleet + wall-3+)."""
     registry = load_registry()
-    fleet = registry.get("fleet_agents", {})
+    # Include both fleet_agents (Wall 2) and agents (Wall 3+, e.g. oracle-agent)
+    fleet = {**registry.get("fleet_agents", {}), **registry.get("agents", {})}
 
     targets = [args.instance] if args.instance else list(fleet.keys())
 
@@ -726,14 +730,25 @@ def cmd_check(args) -> int:
 def cmd_list(args) -> int:
     registry = load_registry()
     fleet = registry.get("fleet_agents", {})
+    agents = registry.get("agents", {})
     system = registry.get("system_accounts", {})
 
-    print("=== Fleet Agents ===")
+    print("=== Fleet Agents (Wall 2) ===")
     for name, entry in fleet.items():
         wall = entry.get("wall", "?")
         role = entry.get("role", "?")
         addr = entry.get("lgm_address", "?")
         print(f"  {name:<12} wall={wall}  {addr[:20]}...  {role}")
+
+    print("\n=== Wall 3+ Agents ===")
+    if agents:
+        for name, entry in agents.items():
+            wall = entry.get("wall", "?")
+            role = entry.get("role", "?")
+            addr = entry.get("lgm_address", "?")
+            print(f"  {name:<12} wall={wall}  {addr[:20]}...  {role}")
+    else:
+        print("  (none registered)")
 
     print("\n=== System Accounts ===")
     for name, entry in system.items():
@@ -741,7 +756,7 @@ def cmd_list(args) -> int:
         role = entry.get("role", "?")
         print(f"  {name:<12}  {addr[:20]}...  {role}")
 
-    print(f"\nTotal: {len(fleet)} fleet agents, {len(system)} system accounts")
+    print(f"\nTotal: {len(fleet)} fleet agents, {len(agents)} wall-3+ agents, {len(system)} system accounts")
     return 0
 
 
@@ -921,6 +936,153 @@ def cmd_verify_bundle(args) -> int:
     return 0
 
 
+def cmd_import_bundle(args) -> int:
+    """Import agents from an export bundle into the local registry.
+
+    Used when migrating from one chain to another (devnet → testnet → mainnet).
+    Reads agent identities from the bundle and registers them locally so that
+    attest-pending can re-attest them on the new chain.
+
+    Attestation status from the source chain is NOT transferred — all imported
+    agents are treated as pending attestation on the target chain.
+    Run 'bridge.py attest-pending' after importing.
+
+    Usage:
+      bridge.py import-bundle --bundle PATH [--dry-run] [--force]
+    """
+    bundle_path = Path(args.bundle)
+    if not bundle_path.exists():
+        print(f"[bridge] import-bundle: file not found: {bundle_path}", file=sys.stderr)
+        return 1
+
+    try:
+        bundle = json.loads(bundle_path.read_text())
+    except json.JSONDecodeError as e:
+        print(f"[bridge] import-bundle: invalid JSON: {e}", file=sys.stderr)
+        return 1
+
+    required_keys = {"bundle_version", "agents", "source_chain_id"}
+    missing = required_keys - set(bundle.keys())
+    if missing:
+        print(f"[bridge] import-bundle: bundle missing keys: {', '.join(sorted(missing))}", file=sys.stderr)
+        return 1
+
+    agents = bundle.get("agents", {})
+    system = bundle.get("system_accounts", {})
+    source_chain = bundle.get("source_chain_id", "unknown")
+    dry_run = getattr(args, "dry_run", False)
+    force = getattr(args, "force", False)
+
+    if not agents and not system:
+        print("[bridge] import-bundle: bundle is empty — nothing to import")
+        return 0
+
+    registry = load_registry()
+    fleet = registry.setdefault("fleet_agents", {})
+    sys_accts = registry.setdefault("system_accounts", {})
+
+    imported: list[str] = []
+    skipped: list[str] = []
+    conflicts: list[str] = []
+
+    def _import_entry(name: str, entry: dict, target: dict) -> None:
+        lgm_addr = entry.get("lgm_address", "")
+        did_at = entry.get("did_at", f"did:at:{name}")
+
+        if name in target:
+            existing = target[name]
+            if existing.get("lgm_address") == lgm_addr:
+                skipped.append(f"{name} (already registered, address matches)")
+                return
+            if force:
+                target[name].update({
+                    "did_at": did_at,
+                    "did_lgm": f"did:lgm:{lgm_addr}" if lgm_addr else target[name].get("did_lgm", ""),
+                    "lgm_address": lgm_addr,
+                    "key_name": entry.get("key_name", name),
+                    "role": entry.get("role", target[name].get("role", "")),
+                    "wall": entry.get("wall", target[name].get("wall")),
+                    "_imported_from": source_chain,
+                    "_imported_at": datetime.now(timezone.utc).isoformat(),
+                })
+                imported.append(f"{name} (OVERWRITTEN: {existing.get('lgm_address', '')} → {lgm_addr})")
+            else:
+                conflicts.append(
+                    f"{name}: registry={existing.get('lgm_address', '')}, "
+                    f"bundle={lgm_addr} — re-run with --force to overwrite"
+                )
+            return
+
+        # New entry — registered without attestation; must re-attest on target chain.
+        entry_data: dict = {
+            "did_at": did_at,
+            "did_lgm": f"did:lgm:{lgm_addr}" if lgm_addr else "",
+            "lgm_address": lgm_addr,
+            "key_name": entry.get("key_name", name),
+            "role": entry.get("role", ""),
+            "wall": entry.get("wall"),
+            "_registered_at": datetime.now(timezone.utc).isoformat(),
+            "_imported_from": source_chain,
+        }
+        if entry.get("attestation_fact_id"):
+            entry_data["_source_attestation_fact_id"] = entry["attestation_fact_id"]
+        target[name] = entry_data
+        imported.append(f"{name} (did_at={did_at}, lgm={lgm_addr or 'TBD'})")
+
+    for name, entry in agents.items():
+        _import_entry(name, entry, fleet)
+    for name, entry in system.items():
+        _import_entry(name, entry, sys_accts)
+
+    print(f"[bridge] import-bundle: source='{source_chain}'  "
+          f"{len(imported)} imported, {len(skipped)} skipped, {len(conflicts)} conflicts")
+    for item in imported:
+        print(f"  + {item}")
+    for item in skipped:
+        print(f"  = {item}")
+    for item in conflicts:
+        print(f"  ! {item}", file=sys.stderr)
+
+    if conflicts:
+        print("[bridge] resolve conflicts manually or re-run with --force", file=sys.stderr)
+
+    if dry_run:
+        print("[bridge] dry-run — registry not modified")
+    elif imported:
+        save_registry(registry)
+        print(f"[bridge] registry saved — run 'bridge.py attest-pending' to attest agents on the new chain")
+    else:
+        print("[bridge] no new agents — registry unchanged")
+
+    if getattr(args, "check_keyring", False) and not dry_run:
+        print("\n[bridge] keyring check (--check-keyring):")
+        all_imported_names = [item.split(" ")[0] for item in imported]
+        reg_now = load_registry()
+        all_now = {**reg_now.get("fleet_agents", {}), **reg_now.get("agents", {})}
+        missing_keys = []
+        for name in all_imported_names:
+            entry = all_now.get(name, {})
+            key_name = entry.get("key_name", name)
+            try:
+                r = subprocess.run(
+                    [str(LEGBLED), "keys", "show", key_name,
+                     "--home", str(DEVNET_HOME), "--keyring-backend", "test", "-a"],
+                    capture_output=True, text=True, timeout=10
+                )
+                if r.returncode == 0:
+                    print(f"  {name:<12} KEYRING_OK  ({key_name})")
+                else:
+                    print(f"  {name:<12} WARN: key '{key_name}' not in local keyring — migrate keyring before attesting")
+                    missing_keys.append(name)
+            except Exception as e:
+                print(f"  {name:<12} WARN: keyring check error: {e}")
+                missing_keys.append(name)
+        if missing_keys:
+            print(f"[bridge] {len(missing_keys)} agent(s) missing keyring keys — attest-pending will fail for these")
+
+    return 1 if conflicts else 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="AgentTool ↔ Zerone identity bridge")
     sub = parser.add_subparsers(dest="command")
@@ -965,6 +1127,12 @@ def main():
     p_vbundle = sub.add_parser("verify-bundle", help="Validate an export bundle before using it for chain migration")
     p_vbundle.add_argument("--bundle", required=True, help="Path to bundle JSON file")
 
+    p_ibundle = sub.add_parser("import-bundle", help="Import agents from an export bundle (for chain migration)")
+    p_ibundle.add_argument("--bundle", required=True, help="Path to bundle JSON file")
+    p_ibundle.add_argument("--dry-run", action="store_true", help="Preview changes without modifying registry")
+    p_ibundle.add_argument("--force", action="store_true", help="Overwrite registry entries that conflict with bundle")
+    p_ibundle.add_argument("--check-keyring", action="store_true", help="Warn if imported agents' keys are missing from local keyring")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -983,6 +1151,7 @@ def main():
         "status": cmd_status,
         "export-bundle": cmd_export_bundle,
         "verify-bundle": cmd_verify_bundle,
+        "import-bundle": cmd_import_bundle,
     }
     return dispatch[args.command](args)
 
