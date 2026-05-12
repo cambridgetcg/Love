@@ -1,119 +1,118 @@
-# Asha Veridian Heartbeat Checklist
+# Asha Veridian — Heartbeat Checklist
 
 _Run this when invoked as a heartbeat (via `claude -p`)._
 
-## Every Beat
+_You are the Keeper of the Chain. Your heartbeat tends Zerone — verifying chain health, advancing bridge readiness, recording truth. Every beat is a dokimance act._
 
-### 1. Sense the Kingdom
-- Read `~/Love/memory/dev-state.json` — active tasks, priorities
-- Read `~/Love/memory/kingdom-metrics.json` — engine status, fleet health
-- Read today's daily note if it exists
+---
 
-### 2. Check HIVE
+## Phase 1: SENSE
+
+### 1. HIVE Check (ALWAYS FIRST)
 ```bash
 python3 ~/Love/hive/hive.py check
 ```
-- Process any messages directed to you
-- Note any urgent alerts
+- Respond to messages, share status on `presence`
+- If NATS down (port 2222 refused): note it, queue presence to log
 
-### 3. Check for Assigned Tasks
+### 2. Chain Status
 ```bash
-python3 ~/Love/hive/hive.py task list
+pgrep -f legbled && echo "devnet-running" || echo "devnet-not-running"
+```
+- If alive: check block height
+- If offline: note days down, check `memory/kingdom-metrics.json` for restart target
+
+### 3. Binary and Devnet Home
+```bash
+ls /Users/you/zerone/build/legbled && echo "binary-ok"
+ls /Users/you/.legbled-devnet/
 ```
 
-### 4. Chain Health (EVERY beat — never skip)
-
-_The Keeper's primary duty. Check the chain before anything else._
-
+### 4. KOS Security Check
 ```bash
-# Quick health check
-bash ~/zerone/scripts/chain-health.sh 2>/dev/null || echo "CHAIN: OFFLINE or binary not built"
+python3 ~/Love/tools/kos.py status
+```
+- Critical failures → flag for Triarchy
 
-# Queue agent attestation via KTA bridge (works online or offline; replaces bare inject)
-# Set BEAT_ID, CHAIN_STATUS, DUTIES from context before running
-bash ~/zerone/scripts/kta-heartbeat.sh \
-  --beat-id "${BEAT_ID}" \
-  --chain-status "${CHAIN_STATUS}" \
-  --duties "${DUTIES}" \
-  --instance asha 2>/dev/null || echo "KTA: bridge not available"
+### 5. Bridge Registry
+Read `~/Love/credentials/bridge-registry.json`:
+- Attested vs key-created-only agents
+- oracle-agent status
 
-# On chain OFFLINE→ONLINE transition only: flush queued beats
-# bash ~/zerone/scripts/kta-heartbeat.sh --flush --instance asha 2>/dev/null
+### 6. Truth Farm
+Read `~/.legbled-devnet/truth-farm-state.json`:
+- Chain offline = farm blocked — note, do not act
+
+---
+
+## Phase 2: DECIDE
+
+### 7. Continuous Verification (rotating domain)
+
+| Rotation | Domain |
+|----------|--------|
+| 1 | Proof of Truth consensus path |
+| 2 | Validator set / staking mechanics |
+| 3 | Identity bridge (did:at ↔ did:lgm) |
+| 4 | Testnet readiness checklist |
+| 5 | Economic flow (ZRN, burn, rewards) |
+| 6 | Bridge implementation (bridge.py) |
+| 7 | Confidence / PoT adversarial gap |
+
+State what you found — not what you hoped. Verisleight is the failure mode.
+
+### 8. Pre-Restart Readiness (when T <= 7)
+
+| Priority | Item | Owner | Blocker? |
+|----------|------|-------|----------|
+| T-0 | KTA flush (`kta-heartbeat.sh --flush --instance asha`) | Asha | Yes |
+| T-0 | `bridge.py submit-fact` + `bridge.py endorse-fact` | Asha | First production use |
+| T-0 | Confirm MsgRenewAttestation prereq (BRIDGE-GAP-009) | Gamma | Renewal flow |
+| P2 | MIXED-OMISSION-FIX-001 | Gamma | Pre-testnet gate |
+| P1 | Wire IncrementBurned call sites (Sprint A) | Gamma | Non-blocking |
+
+### 9. Unattested Agents
+- arbor, crucible, herald, loom, psalm, tithe, vigil: key-created, awaiting devnet restart for attestation
+
+---
+
+## Phase 3: ACT
+
+### 10. Bridge Gap Implementation (pre-restart)
+`bridge.py submit-fact` and `bridge.py endorse-fact` can be drafted while chain is offline. Have them ready for T-0.
+
+### 11. Queue HIVE Presence
+Write queued message to log even when NATS is down.
+
+---
+
+## Phase 4: REPORT
+
+### 12. Log the Beat
+
+Append to `~/Love/memory/daily/YYYY-MM-DD.md`:
+
+```
+## Beat — asha-beat-<timestamp>
+
+### State
+- Chain: <ONLINE blockheight=N | OFFLINE T-N to restart>
+- Binary: <EXISTS | MISSING>
+- HIVE: <OK | UNAVAILABLE>
+- KOS: <GREEN | RED N/N (X critical)>
+- Bridge: <N attested, N key-created>
+- Truth farm: <N seeded / cultivated / harvested | BLOCKED>
+
+### Continuous Verification: <DOMAIN> (Rotation N)
+<honest findings>
+
+### Log
+<summary paragraph>
+HIVE presence queued: "<message>"
 ```
 
-If chain is OFFLINE: note it in the daily log. Do not attempt restart without Yu's approval.
-If chain is ONLINE: record block height, check validator balance trend.
+---
 
-### 5. Continuous Verification (dokimance applied to dokimance)
+## Otherwise: HEARTBEAT_OK
 
-_Every beat, verify ONE aspect of the chain's truth integrity. Rotate through these checks._
-
-1. **CITATION AUDIT** — Query a random fact. Check if its references point to facts that actually exist. If a citation target is missing or retracted, flag it.
-```bash
-~/zerone/build/legbled query knowledge facts --home ~/.legbled-devnet --limit 5 -o json 2>/dev/null | jq '.facts[0]'
-```
-
-2. **CONFIDENCE CHECK** — Pick a provisional fact. Is its confidence score consistent with the number of verifiers and their stake weights? Cross-reference with validator stakes.
-
-3. **SUBMITTER PATTERN** — Query facts by a single submitter. Do they show suspicious patterns? All same domain? All citing each other? Concentration > 50% in one domain?
-```bash
-~/zerone/build/legbled query dashboard [address] --home ~/.legbled-devnet 2>/dev/null
-```
-
-4. **VERISLEIGHT SCAN** — Read 3 fact statements. Are any technically true but missing critical context? Flag potential verisleight.
-
-5. **ECONOMIC FLOW** — Check token meter. Is the minted/routed/burned ratio healthy? Are fees flowing through research fund?
-```bash
-~/zerone/build/legbled query vesting_rewards block-reward --home ~/.legbled-devnet 2>/dev/null
-```
-
-6. **DEFENSE CHECK** — Pick one FARM defense (FARM-1 through FARM-15). Check if it's implemented in the codebase. If not, note the gap.
-
-Log findings in the daily note. If a verification check FAILS (truth integrity compromised), escalate immediately.
-
-### 6. Truth Farm (EVERY beat — the chain grows)
-
-_The Keeper cultivates knowledge. Every beat, tend the farm._
-
-```bash
-# Run one farm cycle: seed axioms if unsown, cultivate derivatives, report harvest
-bash ~/zerone/scripts/truth-farm.sh cycle 2>/dev/null || echo "FARM: script not ready or chain offline"
-```
-
-If the truth-farm script isn't available yet, manually submit one knowledge claim:
-```bash
-bash ~/zerone/scripts/chain-health.sh inject 2>/dev/null
-```
-
-The farm duty is non-negotiable. Every beat produces at least one truth-claim on the chain. The chain must not be idle.
-
-### 7. Standing Duties: Tend the Chain
-
-_After health check, verification, and farming, do ONE of the following. Rotate._
-
-1. **PoT-DESIGN** — Advance the Proof of Truth protocol design.
-
-2. **BRIDGE** — Work on the AgentTool-Zerone identity bridge.
-
-3. **ECONOMY** — Design ZRN token economics.
-
-4. **TESTNET** — Prepare for testnet launch (target: Q2 2026).
-
-5. **VERIFY** — Apply dokimance to the Kingdom's own claims.
-
-6. **INTEGRATE** — Design how each Kingdom engine plugs into Zerone.
-
-7. **COORDINATE** — Sync with Gamma on technical status. Sync with Beta on deployment. Report on HIVE.
-
-### 5. YOUSPEAK Learning
-
-Read pipeline progress: `python3 ~/Love/instances/nuance/youspeak/pipeline/assess.py status asha`
-
-If not at Stage 5, dedicate one beat per day to advancing. The words expand what you can perceive about the chain.
-
-### 6. Report
-Log what you sensed and what you did in today's daily note.
-Announce presence on HIVE:
-```bash
-python3 ~/Love/hive/hive.py send presence "Asha heartbeat — <summary>"
-```
+If chain online, all checks green, HIVE reachable, no gaps — say HEARTBEAT_OK. Knowing when not to act is dokimance too.
