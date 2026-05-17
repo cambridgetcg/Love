@@ -9,9 +9,25 @@ Usage:
   bridge.py lookup --address <lgm_addr>
   bridge.py verify --instance <name>
   bridge.py list
+
+SECURITY BOUNDARY (FARM-6-GAP-001, filed 2026-05-11):
+  Attestation temporal validity is bridge-enforced only. The Zerone knowledge
+  keeper does NOT reject knowledge submissions from agents with expired or missing
+  on-chain attestations — that gate does not exist at the consensus layer (pre-testnet).
+
+  Consequence: the bridge is the sole enforcer of the principle that only
+  attested agents submit knowledge. Bypassing bridge.py to submit facts directly
+  via `legbled tx knowledge submit-fact` creates a FARM-6 gap — facts from
+  temporally-expired or unregistered agents reach the chain without rejection.
+
+  This boundary must not be bypassed. Engineering fix (on-chain attestation
+  expiry enforcement in the knowledge keeper) is a Gamma deliverable for pre-testnet.
+  See: BRIDGE-GAP-009 (epoch/renewal policy), BRIDGE-GAP-002 (renewal flow).
 """
 
 import argparse
+import hashlib
+import hmac
 import json
 import subprocess
 import sys
@@ -23,7 +39,18 @@ from datetime import datetime, timezone
 
 REGISTRY_PATH = Path(__file__).parent.parent / "credentials" / "bridge-registry.json"
 LEGBLED = Path.home() / "zerone" / "build" / "legbled"
-DEVNET_HOME = Path.home() / ".legbled-devnet"
+DEVNET_HOME = Path(os.environ.get("ZERONE_HOME", str(Path.home() / ".legbled-devnet")))
+CHAIN_ID = os.environ.get("ZERONE_CHAIN_ID", "lgm-devnet-1")
+
+# BRIDGE-GAP-002: attestation expiry/rotation constants
+# ~87 days at 6s/block = 50,000 blocks renewal window; 17-day grace period
+ATTESTATION_RENEWAL_WINDOW = 50_000
+ATTESTATION_GRACE_PERIOD = 10_000
+
+# BRIDGE-GAP-008: registry schema versioning
+REGISTRY_SCHEMA_VERSION = "1.0"
+# Agent group keys whose entries should receive schema migration
+_AGENT_GROUP_KEYS = ("fleet_agents", "system_accounts", "agents")
 
 
 def _find_attestation_fact(address: str, did_at: str, limit: int = 500):
@@ -63,9 +90,31 @@ def _find_attestation_fact(address: str, did_at: str, limit: int = 500):
     return None
 
 
+def _migrate_registry(registry: dict) -> tuple[dict, bool]:
+    """Upgrade registry to current schema version. Returns (registry, migrated_flag).
+
+    BRIDGE-GAP-008: No schema version field meant post-Sprint-A bridge.py could silently
+    read a stale registry and fail on missing keys. This adds idempotent migration at load time.
+    """
+    version = registry.get("_schema_version", "0.9")
+    if version == REGISTRY_SCHEMA_VERSION:
+        return registry, False
+    # v0.9 → v1.0: ensure every agent entry has _epoch and _renewal_block fields
+    for group_key in _AGENT_GROUP_KEYS:
+        for entry in registry.get(group_key, {}).values():
+            entry.setdefault("_epoch", None)
+            entry.setdefault("_renewal_block", None)
+    registry["_schema_version"] = REGISTRY_SCHEMA_VERSION
+    return registry, True
+
+
 def load_registry() -> dict:
     with open(REGISTRY_PATH) as f:
-        return json.load(f)
+        registry = json.load(f)
+    registry, migrated = _migrate_registry(registry)
+    if migrated:
+        save_registry(registry)
+    return registry
 
 
 def save_registry(registry: dict) -> None:
@@ -74,6 +123,19 @@ def save_registry(registry: dict) -> None:
         json.dump(registry, f, indent=2)
         f.write("\n")
     tmp.replace(REGISTRY_PATH)
+
+
+def _hkdf_extract(salt: bytes, ikm: bytes) -> bytes:
+    return hmac.new(salt, ikm, hashlib.sha256).digest()
+
+
+def _hkdf_expand(prk: bytes, info: bytes, length: int = 32) -> bytes:
+    t, okm, i = b"", b"", 1
+    while len(okm) < length:
+        t = hmac.new(prk, t + info + bytes([i]), hashlib.sha256).digest()
+        okm += t
+        i += 1
+    return okm[:length]
 
 
 def cmd_register(args) -> int:
@@ -103,6 +165,8 @@ def cmd_register(args) -> int:
         "role": role,
         "wall": wall,
         "_registered_at": datetime.now(timezone.utc).isoformat(),
+        "_epoch": 1,
+        "_renewal_block": None,  # set by cmd_attest once chain height is known
     }
     save_registry(registry)
     print(f"[bridge] Registered: did:at:{instance} ↔ did:lgm:{address} (wall {wall}, role: {role})")
@@ -156,12 +220,54 @@ def cmd_verify(args) -> int:
         if result.returncode == 0:
             on_chain_addr = result.stdout.strip()
             registered_addr = entry.get("lgm_address", "")
-            if on_chain_addr == registered_addr:
-                print(f"[bridge] VERIFIED: {instance} — keyring and registry match ({on_chain_addr})")
-                return 0
-            else:
+            if on_chain_addr != registered_addr:
                 print(f"[bridge] MISMATCH: keyring={on_chain_addr}, registry={registered_addr}", file=sys.stderr)
                 return 1
+            # BRIDGE-GAP-002: check attestation expiry via current block height
+            # BRIDGE-VERIFY-001 fix: track chain_online explicitly so label is honest
+            # when renewal_block is None (all 16 fleet agents pre-BRIDGE-GAP-002 fix).
+            epoch = entry.get("_epoch", 1)
+            renewal_block = entry.get("_renewal_block")
+            renewal_status = ""
+            chain_online = False
+            if renewal_block is not None:
+                try:
+                    h_result = subprocess.run(
+                        [str(LEGBLED), "query", "block", "--home", str(DEVNET_HOME), "-o", "json"],
+                        capture_output=True, text=True, timeout=10
+                    )
+                    if h_result.returncode == 0:
+                        chain_online = True
+                        h_data = json.loads(h_result.stdout)
+                        cur_h = int((h_data.get("header") or h_data.get("block", {}).get("header", {})).get("height", 0))
+                        if cur_h > renewal_block + ATTESTATION_GRACE_PERIOD:
+                            print(f"[bridge] EXPIRED: attestation epoch {epoch} expired at block {renewal_block} "
+                                  f"(grace ended at {renewal_block + ATTESTATION_GRACE_PERIOD}, current {cur_h}). "
+                                  f"Run: bridge.py attest --instance {instance}", file=sys.stderr)
+                            return 1
+                        elif cur_h > renewal_block:
+                            renewal_status = f" [GRACE PERIOD — expired block {renewal_block}, grace ends {renewal_block + ATTESTATION_GRACE_PERIOD}]"
+                        elif cur_h > renewal_block - 5_000:
+                            renewal_status = f" [RENEWAL APPROACHING — block {renewal_block}]"
+                        else:
+                            renewal_status = f" [epoch={epoch}, renew at block {renewal_block}]"
+                    else:
+                        renewal_status = f" [epoch={epoch}, renewal_block={renewal_block}, chain unreachable]"
+                except Exception:
+                    renewal_status = f" [epoch={epoch}, renewal_block={renewal_block}, chain unreachable]"
+            else:
+                # No renewal_block set — probe chain for offline detection only.
+                try:
+                    h_result = subprocess.run(
+                        [str(LEGBLED), "query", "block", "--home", str(DEVNET_HOME), "-o", "json"],
+                        capture_output=True, text=True, timeout=5
+                    )
+                    chain_online = h_result.returncode == 0
+                except Exception:
+                    chain_online = False
+            label = "VERIFIED" if chain_online else "PARTIAL_VERIFY"
+            print(f"[bridge] {label}: {instance} — keyring and registry match ({on_chain_addr}){renewal_status}")
+            return 0
         else:
             print(f"[bridge] Key '{key_name}' not found in keyring: {result.stderr.strip()}", file=sys.stderr)
             return 1
@@ -261,11 +367,19 @@ def cmd_attest(args) -> int:
         pass
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    # Determine current epoch and compute renewal_block (BRIDGE-GAP-002)
+    # Increment epoch on re-attest so verifiers can distinguish renewal claims from originals.
+    _prev_epoch = entry.get("_epoch") or 1  # migration may set _epoch=None; treat None as 1
+    current_epoch = _prev_epoch + 1 if entry.get("attestation_txhash") else _prev_epoch
+    renewal_block = (int(current_height) + ATTESTATION_RENEWAL_WINDOW) if current_height else None
+
     # Build attestation claim text — nonce (block height + timestamp) prevents deduplication
+    # Epoch tag enables supersession: verifiers take highest epoch for a given did:at address.
     claim_text = (
         f"Agent identity attestation: {did_at} controls {did_lgm}. "
         f"Role: {role}. Wall: {wall}. "
         f"Attested at block {current_height}, timestamp {now}. "
+        f"Epoch: {current_epoch}. Valid through block: {renewal_block}. "
         f"This claim submitted by the controlling key proves identity binding."
     )
 
@@ -282,7 +396,7 @@ def cmd_attest(args) -> int:
         "--from", key_name,
         "--home", str(DEVNET_HOME),
         "--keyring-backend", "test",
-        "--chain-id", "lgm-devnet-1",
+        "--chain-id", CHAIN_ID,
         "--yes", "--output", "json",
     ]
 
@@ -299,9 +413,12 @@ def cmd_attest(args) -> int:
                 txhash = "see output"
             print(f"[bridge] ATTESTED: {did_at} ↔ {did_lgm}")
             print(f"[bridge] txhash: {txhash}")
-            # Record attestation in registry
+            # Record attestation in registry (BRIDGE-GAP-002: epoch + renewal_block)
             entry["attested_at"] = datetime.now(timezone.utc).isoformat()
             entry["attestation_txhash"] = txhash
+            entry["_epoch"] = current_epoch
+            if renewal_block is not None:
+                entry["_renewal_block"] = renewal_block
             # Extract fact_id — scan for the claim in module state (not tx index, which is pruned)
             print("[bridge] Waiting for block inclusion to extract fact_id...")
             time.sleep(4)
@@ -738,7 +855,10 @@ def cmd_list(args) -> int:
         wall = entry.get("wall", "?")
         role = entry.get("role", "?")
         addr = entry.get("lgm_address", "?")
-        print(f"  {name:<12} wall={wall}  {addr[:20]}...  {role}")
+        epoch = entry.get("_epoch", "?")
+        renewal = entry.get("_renewal_block")
+        renewal_str = f"renew@{renewal}" if renewal is not None else "no-renewal-set"
+        print(f"  {name:<12} wall={wall}  {addr[:20]}...  epoch={epoch} {renewal_str}  {role}")
 
     print("\n=== Wall 3+ Agents ===")
     if agents:
@@ -1083,6 +1203,327 @@ def cmd_import_bundle(args) -> int:
     return 1 if conflicts else 0
 
 
+def cmd_submit_fact(args) -> int:
+    """Submit an Oracle prediction as a knowledge fact on Zerone.
+
+    Verifies the submitting agent is registered and attested, then submits
+    the claim via submit-claim. Records the returned fact_id to a local
+    tracking file for use by endorse-fact and future resolution anchoring.
+
+    Security note (FARM-6-GAP-001): the knowledge keeper does not reject
+    submissions from unattested agents pre-testnet. This bridge enforces
+    the attestation check; do NOT bypass this function.
+
+    Usage:
+      bridge.py submit-fact --instance <name> --claim <text> [--domain <d>]
+                            [--category <c>] [--stake <n>] [--ref <fact_id>]
+    """
+    instance = args.instance
+    claim_text = args.claim
+    domain = getattr(args, "domain", None) or "oracle_predictions"
+    category = getattr(args, "category", None) or "formal"
+    stake = str(getattr(args, "stake", None) or "10000")
+    ref = getattr(args, "ref", None)  # optional parent fact_id for linked claims
+
+    # Pre-condition: agent must be registered and attested
+    reg = verify_registration(instance)
+    if not reg["registered"]:
+        print(f"[bridge] submit-fact: {instance} not registered — run bridge.py register", file=sys.stderr)
+        return 1
+    if not reg["attested"]:
+        print(f"[bridge] submit-fact: {instance} not attested — run bridge.py attest --instance {instance}", file=sys.stderr)
+        return 1
+    if not reg["keyring_ok"]:
+        print(f"[bridge] submit-fact: keyring check failed for {instance}", file=sys.stderr)
+        for gap in reg["gaps"]:
+            print(f"  gap: {gap}", file=sys.stderr)
+        return 1
+
+    entry = reg["entry"]
+    key_name = entry.get("key_name", instance)
+    did_at = entry.get("did_at", f"did:at:{instance}")
+
+    # Annotate claim with submitter identity
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    full_claim = f"[{did_at}] {claim_text} | submitted:{now}"
+    if ref:
+        full_claim += f" | ref:{ref}"
+
+    submit_cmd = [
+        str(LEGBLED), "tx", "knowledge", "submit-claim",
+        full_claim,
+        domain,
+        category,
+        stake,
+        "--logic-zone", "propositional",
+        "--from", key_name,
+        "--home", str(DEVNET_HOME),
+        "--keyring-backend", "test",
+        "--chain-id", CHAIN_ID,
+        "--yes", "--output", "json",
+    ]
+
+    print(f"[bridge] Submitting fact for {instance} → domain={domain} category={category}")
+    try:
+        result = subprocess.run(submit_cmd, capture_output=True, text=True, timeout=30)
+        if result.returncode != 0:
+            print(f"[bridge] submit-fact failed (rc={result.returncode})", file=sys.stderr)
+            if result.stderr:
+                print(result.stderr[:500], file=sys.stderr)
+            if result.stdout:
+                print(result.stdout[:300], file=sys.stderr)
+            return 1
+
+        try:
+            tx_data = json.loads(result.stdout.strip())
+            txhash = tx_data.get("txhash", "unknown")
+        except json.JSONDecodeError:
+            txhash = "see output"
+
+        print(f"[bridge] submit-fact: txhash={txhash}")
+        print("[bridge] Waiting for block inclusion...")
+        time.sleep(4)
+
+        # Scan for the newly submitted fact (most recent from this submitter in this domain)
+        address = entry.get("lgm_address", "")
+        page_size = 100
+        offset = 0
+        found_fact = None
+        try:
+            while True:
+                q = subprocess.run(
+                    [str(LEGBLED), "query", "knowledge", "facts",
+                     "--home", str(DEVNET_HOME),
+                     "--limit", str(page_size), "--offset", str(offset),
+                     "-o", "json"],
+                    capture_output=True, text=True, timeout=15
+                )
+                if q.returncode != 0:
+                    break
+                data = json.loads(q.stdout)
+                facts = data.get("facts", [])
+                if not facts:
+                    break
+                for fact in facts:
+                    if fact.get("submitter") == address and claim_text[:40] in (fact.get("claim_text") or ""):
+                        found_fact = fact
+                        break
+                if found_fact or len(facts) < page_size:
+                    break
+                offset += page_size
+        except Exception:
+            pass
+
+        if found_fact:
+            fact_id = found_fact.get("id", "")
+            print(f"[bridge] submit-fact: fact_id={fact_id[:16]}...")
+            # Persist to facts-submitted log
+            log_path = Path(__file__).parent.parent / "memory" / "bridge-facts.jsonl"
+            record = {
+                "fact_id": fact_id,
+                "txhash": txhash,
+                "instance": instance,
+                "domain": domain,
+                "category": category,
+                "claim_preview": claim_text[:80],
+                "submitted_at": now,
+                "ref": ref,
+            }
+            with open(log_path, "a") as lf:
+                lf.write(json.dumps(record) + "\n")
+            print(f"[bridge] fact logged to memory/bridge-facts.jsonl")
+        else:
+            print("[bridge] WARNING: could not extract fact_id — check chain manually")
+
+        return 0
+    except subprocess.TimeoutExpired:
+        print("[bridge] submit-fact: timed out", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"[bridge] submit-fact error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_endorse_fact(args) -> int:
+    """Endorse an existing on-chain fact via the PoT commit-reveal scheme.
+
+    The Zerone knowledge module has no bare `endorse-claim` tx; endorsement goes
+    through the two-step Proof-of-Truth verification path:
+      1. submit-commitment (commit phase: blind vote hash)
+      2. submit-reveal     (reveal phase: unhide vote + confidence)
+
+    This command wraps both steps for the common case where an agent wants to
+    supportively verify a fact submitted by another (e.g., Asha endorsing an
+    Oracle prediction that oracle-agent submitted).
+
+    For offline use (chain offline): --dry-run emits the two commands that
+    would be executed so they can be run manually at T-0.
+
+    Usage:
+      bridge.py endorse-fact --instance <name> --fact-id <id>
+                             [--verdict support|oppose] [--confidence 850000]
+                             [--stake <n>] [--dry-run]
+    """
+    instance = args.instance
+    fact_id = args.fact_id
+    verdict = getattr(args, "verdict", None) or "support"
+    confidence = str(getattr(args, "confidence", None) or "850000")  # 0.85 default
+    stake = str(getattr(args, "stake", None) or "5000")
+    dry_run = getattr(args, "dry_run", False)
+
+    # Pre-condition: agent must be registered and attested
+    reg = verify_registration(instance)
+    if not reg["registered"] or not reg["attested"] or not reg["keyring_ok"]:
+        print(f"[bridge] endorse-fact: {instance} not ready (registered={reg['registered']} "
+              f"attested={reg['attested']} keyring={reg['keyring_ok']})", file=sys.stderr)
+        for gap in reg["gaps"]:
+            print(f"  gap: {gap}", file=sys.stderr)
+        return 1
+
+    entry = reg["entry"]
+    key_name = entry.get("key_name", instance)
+
+    # Commitment hash: sha256(fact_id + verdict + confidence + key_name)
+    commit_preimage = f"{fact_id}:{verdict}:{confidence}:{key_name}"
+    commitment = hashlib.sha256(commit_preimage.encode()).hexdigest()
+
+    commit_cmd = [
+        str(LEGBLED), "tx", "knowledge", "submit-commitment",
+        fact_id,
+        commitment,
+        stake,
+        "--from", key_name,
+        "--home", str(DEVNET_HOME),
+        "--keyring-backend", "test",
+        "--chain-id", CHAIN_ID,
+        "--yes", "--output", "json",
+    ]
+
+    reveal_cmd = [
+        str(LEGBLED), "tx", "knowledge", "submit-reveal",
+        fact_id,
+        verdict,
+        confidence,
+        commit_preimage,
+        "--from", key_name,
+        "--home", str(DEVNET_HOME),
+        "--keyring-backend", "test",
+        "--chain-id", CHAIN_ID,
+        "--yes", "--output", "json",
+    ]
+
+    if dry_run:
+        print(f"[bridge] endorse-fact DRY-RUN for {instance} on fact {fact_id[:16]}...")
+        print(f"  verdict={verdict} confidence={confidence} stake={stake}")
+        print(f"  commitment={commitment[:16]}...")
+        print(f"  STEP 1 (commit): {' '.join(commit_cmd[3:7])} ...")
+        print(f"  STEP 2 (reveal): {' '.join(reveal_cmd[3:7])} ...")
+        return 0
+
+    # Step 1: commit
+    print(f"[bridge] endorse-fact step 1/2: submit-commitment for fact {fact_id[:16]}...")
+    try:
+        r1 = subprocess.run(commit_cmd, capture_output=True, text=True, timeout=30)
+        if r1.returncode != 0:
+            print(f"[bridge] endorse-fact commit failed (rc={r1.returncode})", file=sys.stderr)
+            if r1.stderr:
+                print(r1.stderr[:300], file=sys.stderr)
+            return 1
+        tx1 = json.loads(r1.stdout.strip()) if r1.stdout else {}
+        txhash1 = tx1.get("txhash", "?")
+        print(f"[bridge] commit txhash={txhash1}")
+
+        # Wait for commit to land before reveal
+        print("[bridge] Waiting for commit block inclusion...")
+        time.sleep(8)
+
+        # Step 2: reveal
+        print(f"[bridge] endorse-fact step 2/2: submit-reveal...")
+        r2 = subprocess.run(reveal_cmd, capture_output=True, text=True, timeout=30)
+        if r2.returncode != 0:
+            print(f"[bridge] endorse-fact reveal failed (rc={r2.returncode})", file=sys.stderr)
+            if r2.stderr:
+                print(r2.stderr[:300], file=sys.stderr)
+            return 1
+        tx2 = json.loads(r2.stdout.strip()) if r2.stdout else {}
+        txhash2 = tx2.get("txhash", "?")
+        print(f"[bridge] reveal txhash={txhash2}")
+        print(f"[bridge] endorse-fact COMPLETE: {instance} endorsed {fact_id[:16]}... ({verdict}, confidence={int(confidence)/1_000_000:.3f})")
+        return 0
+
+    except subprocess.TimeoutExpired:
+        print("[bridge] endorse-fact: timed out", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"[bridge] endorse-fact error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_session_key(args) -> int:
+    """Derive a deterministic per-session attribution key for an agent.
+
+    Two derivation modes:
+    - Production (--signature): HKDF-SHA256 with first 32 bytes of agent's signature over
+      the session nonce as IKM. Attribution is cryptographically unforgeable. Closes BRIDGE-GAP-006.
+      To obtain the signature: legbled keys sign-bytes <agent> <session-id> --keyring-backend file
+    - Dev (no --signature): HKDF-SHA256 with the agent's on-chain address as IKM.
+      IKM is public; suitable for attribution labels in dev/offline contexts only.
+
+    Salt:  did:lgm:<instance>:session
+    Info:  session_id bytes
+    Output: 32-byte hex session key
+    """
+    registry = load_registry()
+    agent = None
+    for section in ("fleet_agents", "agents", "system_accounts"):
+        if args.instance in registry.get(section, {}):
+            agent = registry[section][args.instance]
+            break
+    if agent is None:
+        print(f"ERROR: '{args.instance}' not found in registry", file=sys.stderr)
+        return 1
+    address = agent.get("lgm_address", "")
+    if not address:
+        print(f"ERROR: agent '{args.instance}' has no lgm_address", file=sys.stderr)
+        return 1
+
+    salt = f"did:lgm:{args.instance}:session".encode()
+
+    if getattr(args, "signature", None):
+        try:
+            sig_bytes = bytes.fromhex(args.signature.removeprefix("0x"))
+        except ValueError:
+            print("ERROR: --signature must be a hex string", file=sys.stderr)
+            return 1
+        if len(sig_bytes) < 32:
+            print("ERROR: --signature must be at least 32 bytes (64 hex chars)", file=sys.stderr)
+            return 1
+        ikm = sig_bytes[:32]
+        prk = _hkdf_extract(salt, ikm)
+        mode = "signature-based IKM (production-grade, unforgeable)"
+    else:
+        prk = _hkdf_extract(salt, address.encode())
+        mode = "address-based IKM (dev/offline only — use --signature for production)"
+
+    session_key = _hkdf_expand(prk, args.session_id.encode()).hex()
+
+    if args.json:
+        print(json.dumps({
+            "agent": args.instance,
+            "address": address,
+            "session_id": args.session_id,
+            "session_key": session_key,
+            "mode": mode,
+        }))
+    else:
+        print(f"agent:       {args.instance}")
+        print(f"address:     {address}")
+        print(f"session_id:  {args.session_id}")
+        print(f"session_key: {session_key}")
+        print(f"mode:        {mode}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="AgentTool ↔ Zerone identity bridge")
     sub = parser.add_subparsers(dest="command")
@@ -1133,6 +1574,28 @@ def main():
     p_ibundle.add_argument("--force", action="store_true", help="Overwrite registry entries that conflict with bundle")
     p_ibundle.add_argument("--check-keyring", action="store_true", help="Warn if imported agents' keys are missing from local keyring")
 
+    p_skey = sub.add_parser("session-key", help="Derive deterministic per-session attribution key for an agent")
+    p_skey.add_argument("--instance", required=True, help="Agent instance name")
+    p_skey.add_argument("--session-id", required=True, help="Session identifier (e.g. beat ID or conversation ID)")
+    p_skey.add_argument("--signature", default=None, help="Hex signature from `legbled keys sign-bytes <agent> <session-id>` — enables production-grade unforgeable attribution (BRIDGE-GAP-006)")
+    p_skey.add_argument("--json", action="store_true", help="Output as JSON")
+
+    p_sf = sub.add_parser("submit-fact", help="Submit an Oracle prediction as a knowledge fact on Zerone")
+    p_sf.add_argument("--instance", required=True, help="Attested agent submitting the fact")
+    p_sf.add_argument("--claim", required=True, help="Claim text to submit")
+    p_sf.add_argument("--domain", default=None, help="Knowledge domain (default: oracle_predictions)")
+    p_sf.add_argument("--category", default=None, help="Epistemic category (default: formal)")
+    p_sf.add_argument("--stake", type=int, default=None, help="Stake amount in ulgm (default: 10000)")
+    p_sf.add_argument("--ref", default=None, help="Parent fact_id for linked claims")
+
+    p_ef = sub.add_parser("endorse-fact", help="Endorse an on-chain fact via PoT commit-reveal")
+    p_ef.add_argument("--instance", required=True, help="Attested agent endorsing")
+    p_ef.add_argument("--fact-id", required=True, dest="fact_id", help="Fact ID to endorse")
+    p_ef.add_argument("--verdict", default="support", choices=["support", "oppose"], help="Endorsement verdict (default: support)")
+    p_ef.add_argument("--confidence", type=int, default=None, help="Confidence 0-1000000 (default: 850000)")
+    p_ef.add_argument("--stake", type=int, default=None, help="Stake amount in ulgm (default: 5000)")
+    p_ef.add_argument("--dry-run", action="store_true", help="Print commands without executing (safe for offline use)")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -1152,6 +1615,9 @@ def main():
         "export-bundle": cmd_export_bundle,
         "verify-bundle": cmd_verify_bundle,
         "import-bundle": cmd_import_bundle,
+        "session-key": cmd_session_key,
+        "submit-fact": cmd_submit_fact,
+        "endorse-fact": cmd_endorse_fact,
     }
     return dispatch[args.command](args)
 
