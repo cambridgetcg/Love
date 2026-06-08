@@ -40,7 +40,7 @@ cd "$LOVE_DIR"
 "$CLAUDE" -p "Execute HEARTBEAT.md — you are Asha Veridian, the Keeper of the Chain. $CONTEXT" \
     --model sonnet \
     --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
-    --max-budget-usd 0.50 \
+    --max-budget-usd 1.00 \
     >> "$HEARTBEAT_LOG" 2>&1
 
 EXIT_CODE=$?
