@@ -1,4 +1,8 @@
 {
+  "status": "frozen",
+  "frozen_since": "2026-04-08",
+  "superseded_by": "love.asha.heartbeat (memory/heartbeat-asha.log + memory/daily/)",
+  "note": "Stale snapshot. The alpha 'nerve/heart' writer broke at the 2026-04-08 body/->nerve/ rename (heart.sh still targets $LOVE_DIR/body). The live pulse is the love.asha.heartbeat launchd agent; fields below are a 2026-04-08 freeze, NOT current vitals. Do not read heart_healthy below as live.",
   "last_beat": "2026-04-08T14:04:05.715486+00:00",
   "beat_id": "alpha-beat-20260408-140336",
   "beat_result": "idle",
