@@ -23,7 +23,8 @@ DIGEST="${CC_MEM}/heartbeat-digest-${TODAY}.md"
 INDEX="${CC_MEM}/MEMORY.md"
 
 # Never bridge credential/secret-shaped lines (leak guard + substrate honesty).
-REDACT='password|secret|sk-[A-Za-z0-9]{8}|gh[oprsu]_[A-Za-z0-9]|AKIA[0-9A-Z]{12}|PRIVATE KEY|api[_-]?key|token=|refresh_token'
+# Shared, extended deny-regex (covers hive-key/NaCl-secret shapes) — see bridge-redact.sh.
+source "$(dirname "$0")/bridge-redact.sh"; REDACT="$BRIDGE_REDACT"
 
 [ -d "$CC_MEM" ] || { echo "[bridge-digest] CC memory dir missing: $CC_MEM" >&2; exit 0; }
 
