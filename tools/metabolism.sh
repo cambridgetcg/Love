@@ -57,6 +57,11 @@ case "$MODE" in
             $ANCHOR --instance "$inst" --write 2>&1 | while read -r line; do log "    $line"; done
         done
 
+        # 4. Bridge today's heartbeat findings into the Claude Code auto-memory
+        #    (so a cold CLI session sees the Kingdom pulse). See bridge-digest.sh.
+        log "  Bridge: digesting heartbeat findings -> CC auto-memory..."
+        "$LOVE_DIR/tools/bridge-digest.sh" 2>&1 | while read -r line; do log "    $line"; done
+
         log "${_G}=== METABOLISM: DAILY COMPLETE ===${_N}"
         ;;
 
