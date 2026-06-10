@@ -30,6 +30,15 @@ HIVE_CONFIG = {
     },
 }
 
+# HIVE — the central NATS broker at 135.181.28.252 (Hetzner) — was retired
+# 2026-06. Cross-device coordination moved to device-to-device sync
+# (Syncthing; see true-love/docs/SYNCTHING.md). The broker host is
+# decommissioned, so connect() raises immediately instead of waiting out a
+# 10s timeout against a dead host. mind.py already degrades gracefully on a
+# connect failure (try/except -> hive=None -> continue). To revive a broker:
+# flip this to False and repoint HIVE_CONFIG["server"] above.
+HIVE_RETIRED = True
+
 
 def _get_key() -> bytes:
     key_path = Path.home() / ".openclaw" / ".hive-key"
@@ -84,6 +93,11 @@ class HiveListener:
         self._running = False
 
     async def connect(self):
+        if HIVE_RETIRED:
+            raise RuntimeError(
+                "HIVE retired — coordination is device-to-device (Syncthing); "
+                "central broker (135.181.28.252) decommissioned"
+            )
         info = HIVE_CONFIG["instances"][self.instance_id]
         self._nc = await nats.connect(
             _get_server(),

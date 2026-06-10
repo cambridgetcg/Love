@@ -2,12 +2,12 @@
   "activeProject": "love-kingdom",
   "activeRepo": "~/Desktop/Love",
   "activePhase": "root",
-  "kingdomPhase": "Phase 1 — Root (Now to Q2 2026)",
-  "description": "Integrate Love and the Kingdom — Love IS the Kingdom's nervous system",
+  "kingdomPhase": "Phase 1 \u2014 Root (Now to Q2 2026)",
+  "description": "Integrate Love and the Kingdom \u2014 Love IS the Kingdom's nervous system",
   "tasks": [
     {
       "id": "kingdom-001",
-      "title": "Kingdom integration — Love as sovereign infrastructure",
+      "title": "Kingdom integration \u2014 Love as sovereign infrastructure",
       "status": "done",
       "priority": "critical",
       "engine": "love",
@@ -27,16 +27,16 @@
       "status": "in-progress",
       "priority": "high",
       "engine": "oracle",
-      "notes": "19:28 UTC: Oracle 9/10. News cron TCC fix APPLIED by coordinator inline — crontab redirects now point to /tmp/ (verified). Whale scanner cron also fixed. Decision still pending: grant cron Full Disk Access (dec-20260328-190859-19bb) for permanent fix. 15 predictions auto-logged. 5 positions resolve Mar 31 (3 days). Brier 0.208, beat rate 56%. Next news cron fire: 07:00 UTC 2026-03-29."
+      "notes": "19:28 UTC: Oracle 9/10. News cron TCC fix APPLIED by coordinator inline \u2014 crontab redirects now point to /tmp/ (verified). Whale scanner cron also fixed. Decision still pending: grant cron Full Disk Access (dec-20260328-190859-19bb) for permanent fix. 15 predictions auto-logged. 5 positions resolve Mar 31 (3 days). Brier 0.208, beat rate 56%. Next news cron fire: 07:00 UTC 2026-03-29."
     },
     {
       "id": "kingdom-004",
       "title": "Cambridge TCG automation",
-      "status": "blocked",
+      "status": "in-progress",
       "priority": "high",
       "engine": "tcg",
-      "repo": "/Users/yu/Desktop/tcg-wholesale",
-      "notes": "09:49 UTC: eBay auto-sync COMPLETE. Commit 2ffafb0 — 3 files: cron handler, vercel.json, fixed test (91->117). All 6 tests pass. NOT PUSHED to remote. AWAITING: 1) git push, 2) Yu configures eBay env vars on Vercel (EBAY_CLIENT_ID, EBAY_CLIENT_SECRET, EBAY_REFRESH_TOKEN, policy IDs, CRON_SECRET). Storefront clone approved (dec-20260328-005). Tier 2 targets: Price optimization, Purchase consolidation, Analytics dashboard."
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Updated 2026-04-30. Monorepo unification COMPLETE \u2014 3 Vercel projects (admin/storefront/wholesale) all linked to cambridgetcg/Cambridge-TCG-monorepo, root dirs configured. Long-lived VERCEL_TOKEN rotated into all 3 consumers (apps/admin/.env.local + cambridgetcg-admin Vercel env + GitHub repo secret). Admin dashboard live at admin.cambridgetcg.com \u2014 overview + 7 real pages (Stock, Orders, Pricing, Disputes, Users, Deploys, Cron) + 12 placeholders. Stripe live webhook fixed (was pointed at api.agenttool.dev), 5 missed orders \u00a3222.95 reconciled (cs_live_b1Moetyx5..., etc). Stock-package dual-ledger architecture documented (stock_movements new + stock_adjustments legacy, /ops/stock unions both). Migration thread now decomposed into kingdom-019 through kingdom-033 \u2014 see those for module-level missions."
     },
     {
       "id": "kingdom-005",
@@ -48,11 +48,11 @@
     },
     {
       "id": "kingdom-009",
-      "title": "CC feature optimization — full Claude Code power utilization",
+      "title": "CC feature optimization \u2014 full Claude Code power utilization",
       "status": "in-progress",
       "priority": "critical",
       "engine": "love",
-      "notes": "Features deployed: --effort levels, --fallback-model, --output-format stream-json, --append-system-prompt, four-role model strategy. NEW: adaptive coordinator model — haiku for idle beats (2+ consecutive no-spawn), opus when active. Decision queue system live at localhost:7777. Heartbeat reads resolved decisions and acts."
+      "notes": "Features deployed: --effort levels, --fallback-model, --output-format stream-json, --append-system-prompt, four-role model strategy. NEW: adaptive coordinator model \u2014 haiku for idle beats (2+ consecutive no-spawn), opus when active. Decision queue system live at localhost:7777. Heartbeat reads resolved decisions and acts."
     },
     {
       "id": "kingdom-010",
@@ -80,7 +80,7 @@
     },
     {
       "id": "kingdom-008",
-      "title": "AI Services — first 3 clients",
+      "title": "AI Services \u2014 first 3 clients",
       "status": "in-progress",
       "priority": "medium",
       "engine": "ai-services",
@@ -104,7 +104,7 @@
     },
     {
       "id": "kingdom-013",
-      "title": "KingdomOS — full security orchestration layer",
+      "title": "KingdomOS \u2014 full security orchestration layer",
       "status": "done",
       "priority": "high",
       "engine": "love",
@@ -120,7 +120,7 @@
     },
     {
       "id": "kingdom-015",
-      "title": "Kingdom Command TUI — updated with Security, Memory, Citizens",
+      "title": "Kingdom Command TUI \u2014 updated with Security, Memory, Citizens",
       "status": "done",
       "priority": "medium",
       "engine": "love",
@@ -128,7 +128,7 @@
     },
     {
       "id": "kingdom-016",
-      "title": "ToK pipeline — Token of Knowledge harvest/distill/verify/integrate/impact",
+      "title": "ToK pipeline \u2014 Token of Knowledge harvest/distill/verify/integrate/impact",
       "status": "in-progress",
       "priority": "high",
       "engine": "love",
@@ -136,7 +136,7 @@
     },
     {
       "id": "kingdom-017",
-      "title": "LCM audit system — Loop Closure Methodology",
+      "title": "LCM audit system \u2014 Loop Closure Methodology",
       "status": "in-progress",
       "priority": "high",
       "engine": "love",
@@ -144,12 +144,308 @@
     },
     {
       "id": "kingdom-018",
-      "title": "Lead coupling — heartbeat priority overlay system",
+      "title": "Lead coupling \u2014 heartbeat priority overlay system",
       "status": "in-progress",
       "priority": "medium",
       "engine": "love",
       "notes": "Built 2026-04-01. heartbeat-runner.sh reads memory/leads/current.json, injects into coordinator via --append-system-prompt. HEARTBEAT.md updated with lead-aware phases. First lead active: ToK pipeline operationalization."
+    },
+    {
+      "id": "kingdom-019",
+      "title": "TCG admin /system/audit \u2014 admin_actions_log reader",
+      "status": "done",
+      "priority": "critical",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "EASY WIN \u2014 data exists, no UI. Every adminAction() call writes to storefront admin_actions_log table (append-only governance log). Build the reader at apps/admin/src/app/(dashboard)/system/audit/page.tsx using Manager archetype (template: trust/disputes/page.tsx). Filters: actor, action, target_kind, date range. Columns: timestamp, actor, action, target, reason, before/after diff. Read-only \u2014 no mutations. Schema: query the storefront DB via sfQuery; columns include actor_user_id, actor_label, action, target_kind, target_id, before_json, after_json, reason, created_at. ACCEPTANCE: replaces the ComingSoon stub; renders real audit rows; pagination works.",
+      "completed_at": "2026-05-04T00:00:00Z"
+    },
+    {
+      "id": "kingdom-020",
+      "title": "TCG admin /system/email \u2014 full email_queue UI",
+      "status": "done",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "SHIPPED 2026-05-10 \u2014 the Cemetery's New Chapel. apps/admin/src/app/(dashboard)/system/email/{page,_actions,_components}.tsx. Dead-letter list + 7-day status histogram (pending/sent/cancelled/failed/dead) + per-event volume tag cloud. Two Server Actions (retryEmail, dismissEmail) mirror the Resurrectionist's two verdicts. Cross-links /system/cron for cadence. Spec at apps/admin/tests/system-email.spec.ts. Sister to S6 (the-cemetery-and-the-resurrectionist.md) which named the New Chapel as unbuilt on 2026-05-05; the chapel shipped five days later. Closed by the same Wave-2 push that landed /trust/reviews (kingdom-025 first chapel).",
+      "completed_at": "2026-05-10T12:00:00Z"
+    },
+    {
+      "id": "kingdom-021",
+      "title": "TCG admin /system/admin \u2014 role management",
+      "status": "done",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Build at apps/admin/src/app/(dashboard)/system/admin/page.tsx. Lists storefront users where role='admin'. Mutations: grant admin (set users.role='admin'), revoke admin (set role='user'). All via adminAction() \u2014 these are sensitive role changes. Reason required. Cannot revoke own role (lockout protection). Currently any role assignment requires direct SQL or storefront admin. ACCEPTANCE: ComingSoon stub replaced; role grant/revoke mutations work and write to admin_actions_log.",
+      "completed_at": "2026-05-05T10:56:31Z"
+    },
+    {
+      "id": "kingdom-022",
+      "title": "TCG admin Money module migration \u2014 Chargebacks first",
+      "status": "done",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "ENTIRE MONEY MODULE IS PLACEHOLDER (4 pages). Start with Chargebacks (Stripe deadline-driven, most operationally urgent). Canonical logic exists at apps/storefront/src/lib/chargebacks/ + storefront route /api/admin/chargebacks/route.ts. State machine: open \u2192 won/lost/warning_closed/charge_refunded/admin_resolved. Tables: chargebacks, users, trust_profiles, customer_orders. Build at apps/admin/src/app/(dashboard)/money/chargebacks/page.tsx using Disputes pattern (state-machine transitions via adminAction). Then sequence: Payouts \u2192 Membership \u2192 Rewards (separate sub-missions when Chargebacks lands). ACCEPTANCE: Chargebacks list renders, status transitions persist, governance logged.",
+      "completed_at": "2026-05-05T03:45:00Z"
+    },
+    {
+      "id": "kingdom-023",
+      "title": "TCG admin Money module \u2014 Payouts, Membership, Rewards",
+      "status": "done",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "SHIPPED 2026-05-09 \u2192 2026-05-10 \u2014 Money trinity closed. (a) /money/payouts (2026-05-09): outstanding + recent payouts queue from market_trades + auctions; recordPayout Server Action for manual records (bank/PayPal/crypto/store_credit/stripe_connect/other). Stripe Connect transfers + balance verification still deep-link to legacy until storefront's Stripe + Connect helpers are extracted to a shared package \u2014 flagged as follow-up. Methodology: docs/methodology/payout-holds.md. (b) /money/membership (2026-05-09): read-only Dashboard with five tier cards from `tiers` table joined to per-tier user counts + spend rollups; tier_source provenance surfaced (spending/subscription/manual). No mutations; tier perk editing stays in legacy. Methodology: docs/methodology/membership.md. (c) /money/rewards (2026-05-10): unified prize-fulfilment queue across raffles + mystery_box_opens + pack_opens with same-user+address clustering; three Server Actions (shipPrize, bulkShipCluster, markFulfilled). Undo deep-links to legacy until prize_fulfilment_log eligibility helper is extracted. Raffle/box config stays in legacy. Methodology: docs/methodology/prize-fulfillment.md. All three: typecheck + smoke (27/27 routes 200) + browser-verified. Twelve-promises.md shrunk three rows. Pattern named in docs/connections/the-shape-of-a-chapel.md (S15) for future chapels to inherit.",
+      "completed_at": "2026-05-10T12:00:00Z"
+    },
+    {
+      "id": "kingdom-024",
+      "title": "TCG admin /trust/fraud \u2014 fraud signal triage",
+      "status": "done",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "19 unresolved signals visible on Overview as of 2026-04-30 \u2014 operational backlog. Tables: fraud_signals (severity, signal_type, resolved, related_user_id), users, trust_profiles. Storefront has /api/admin/fraud-signals/route.ts with PATCH + bulk-resolve. Build at apps/admin/src/app/(dashboard)/trust/fraud/page.tsx using Manager archetype. Filter pills: by severity (high/medium/low), by signal_type, resolved/unresolved. Mutations: resolve single (with reason), bulk-resolve (shared reason), escalate to suspend (sets trust_profiles.is_suspended=true). All via adminAction. ACCEPTANCE: ComingSoon replaced; 19 outstanding signals triageable from this page.",
+      "completed_at": "2026-05-05T04:35:00Z"
+    },
+    {
+      "id": "kingdom-025",
+      "title": "TCG admin /trust/kyc + /trust/reviews",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "PARTIALLY SHIPPED 2026-05-10 — /trust/reviews is done; /trust/kyc remains blocked on schema decision. (a) /trust/reviews (DONE 2026-05-10): trade_reviews table exists; built three-tab Manager (flagged/appealed/hidden) via ?tab= search param. Three Server Actions (hideReview, unhideReview, resolveAppeal) wrapped in adminAction. Reviewer + reviewee deep-link to /catalog/users/[id]. Trust-score recompute happens asynchronously on next maintenance cron sweep — admin's mutation is the trigger, not the recompute itself (substrate-honest). Spec at apps/admin/tests/trust-reviews.spec.ts. (b) /trust/kyc (STILL PENDING): user_verifications exists but the document-review state (per-doc accept/reject + reason) may need new tables. Pre-build, settle the schema question — either expose what exists today or define new tables (kyc_documents + kyc_decisions?) before building the chapel. Until then, /trust/kyc stays a ComingSoon stub. ACCEPTANCE for what's left: schema decision documented + KYC chapel built or stub explicitly noted as gated."
+    },
+    {
+      "id": "kingdom-026",
+      "title": "TCG admin Catalog migration \u2014 Cards, Games, Clients",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Three wholesale-side pages all placeholders. Mirror apps/wholesale legacy routes. (a) /catalog/cards: card metadata import + management \u2014 wsQuery against cards table; consider what /commerce/pricing already does (inline price edit) so this page focuses on metadata not price. (b) /catalog/games: TCG games/sets \u2014 wholesale uses sets/games tables. CRUD + active toggle. (c) /catalog/clients: B2B clients \u2014 discount tiers, spend history, credit terms. Use Manager archetype. Mutations via adminAction. ACCEPTANCE: 3 ComingSoon stubs replaced; legacy wholesale admin links removed from sidebar."
+    },
+    {
+      "id": "kingdom-027",
+      "title": "TCG /commerce/pricing \u2014 data sanity audit",
+      "status": "done",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Suspicious findings on /commerce/pricing as of 2026-04-30: KPI 'Manual override 11,358 differs from base' = 100% of catalog (filter likely broken or every price is overridden, making the filter useless). KPI 'Stale (>7d) 8,082' = 71% of catalog (price-snapshot cron runs daily 02:00 UTC per apps/wholesale/vercel.json \u2014 investigate why most stale). Inspect: (a) the SQL behind both filters in apps/admin/src/app/(dashboard)/commerce/pricing/page.tsx, (b) the price-snapshot + shopify-sync cron logs on Vercel for the wholesale project, (c) the cards table's last_synced_at distribution. ACCEPTANCE: either filters are corrected to be useful, or root cause documented (e.g., cron broken \u2014 filed as separate fix).",
+      "completed_at": "2026-05-05T04:35:00Z"
+    },
+    {
+      "id": "kingdom-028",
+      "title": "TCG /system/cron \u2014 auto-discover from vercel.json",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Currently apps/admin/src/app/(dashboard)/system/cron/page.tsx hardcodes storefront + wholesale crons. Drift risk every time vercel.json changes. Two options: (a) read each app's vercel.json from disk at build time (admin's deploy bundle includes only its own \u2014 would need a build-time script that copies each app's vercel.json into admin's public/ or a generated TS file); (b) call Vercel API /v1/projects/<id>/cron endpoint at request time (uses VERCEL_TOKEN already in env). Option (b) preferred \u2014 also gives next-run timestamps from Vercel. ACCEPTANCE: hardcoded storefrontCrons + wholesaleCrons arrays removed; fresh data on every page load."
+    },
+    {
+      "id": "kingdom-029",
+      "title": "TCG wholesale crons \u2014 schedule audit + Shopify silence",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Two findings from 2026-04-30 stock investigation. (1) apps/wholesale/src/app/api/cron/stock-correct/route.ts exists but is NOT scheduled in apps/wholesale/vercel.json \u2014 dead code or missing cron entry. Decide: schedule it (add */N cadence) or delete the route. (2) shopify-orders cron runs every 30min but stock_movements table has 0 rows (the cron's recordSale path) \u2014 either no Shopify orders flowing, or the cron is failing silently. Verify by: querying Vercel cron logs for the wholesale project, hitting Shopify Admin API directly, or instrumenting the cron with explicit log lines. ACCEPTANCE: stock-correct decision committed; Shopify cron status confirmed (orders flowing, or root cause documented)."
+    },
+    {
+      "id": "kingdom-030",
+      "title": "TCG /commerce/pricing \u2014 port S3 sync + CSV upload from wholesale",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Pricing page inline-edit is wired in admin, but bulk operations still live in apps/wholesale: S3 price-feed sync + CSV upload at apps/wholesale/src/app/api/sync/. The pricing page header shows 'Open legacy \u2197' link to wholesale.cambridgetcg.com/admin/prices for these. Port both into admin via Server Actions. Need: (a) S3 bucket access via @cambridge-tcg/aws, (b) CSV parser (consider papaparse), (c) preview-then-confirm flow for CSV uploads with row-level validation. All via adminAction. ACCEPTANCE: 'Out of scope for this pilot' banner removed from /commerce/pricing; both bulk paths run from admin app."
+    },
+    {
+      "id": "kingdom-031",
+      "title": "TCG /commerce/bounty \u2014 bounty/gacha admin",
+      "status": "planned",
+      "priority": "low",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Stub at apps/admin/src/app/(dashboard)/commerce/bounty/page.tsx links out to cambridgetcg.com/admin/bounty. Logic in apps/storefront/src/lib/bounty/ if it exists (verify). Build: tier controls, kill-switch, redemption fulfillment, token grants. Defer until clarification on whether bounty is still active product surface or deprecated \u2014 check with Yu before building."
+    },
+    {
+      "id": "kingdom-032",
+      "title": "TCG Commerce \u2014 add mutation paths for Trade-Ins, Auctions, Market",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Three Commerce pages currently dashboard-only (read-only KPI summaries with 'Open Admin' deep-links to legacy storefront). Migrate the actual workflows in: (a) /commerce/trade-ins \u2014 quote, grade, payout transitions. Tables: tradein_submissions, tradein_submission_items, quote_requests. (b) /commerce/auctions \u2014 create auction, approve consignment, schedule, payout. Tables: auctions, users. (c) /commerce/market \u2014 escrow state transitions (at-CTCG inspection, dispute resolution). Tables: market_trades. All via adminAction with state-machine validation. LARGE \u2014 split into 3 missions when picked up. ACCEPTANCE: 'Open Admin' deep-links removed from each page header; full workflow runs in admin app."
+    },
+    {
+      "id": "kingdom-033",
+      "title": "TCG /ops/fulfillment \u2014 pick lists + shipping labels + tracking",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Currently a placeholder. /ops/orders shows 'tracking: \u2014' for every order because there's no fulfillment pipeline. Decide first: storefront or wholesale order fulfillment (or both)? Then build: (a) pick list generation from open paid orders, (b) shipping label creation (carrier integration \u2014 Royal Mail / EVRi / DHL), (c) tracking number capture, (d) writeback to customer_orders.tracking_number/carrier/shipped_at, (e) dispatch email trigger. LARGE \u2014 multi-week. Will likely need new shipping_labels + carrier_integrations tables. ACCEPTANCE: orders move from paid \u2192 shipped \u2192 delivered with admin click-through; tracking visible on /ops/orders."
+    },
+    {
+      "id": "kingdom-034",
+      "title": "TCG /ops/channels \u2014 Shopify/eBay/CardMarket sync UI",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Placeholder linking to wholesale.cambridgetcg.com/admin/channels. Build at apps/admin/src/app/(dashboard)/ops/channels/page.tsx. Show: per-channel last sync timestamp, error count, manual 're-sync now' button. Channels: Shopify (orders + inventory), eBay (listings + orders), CardMarket (listings). Logic in apps/wholesale/src/app/api/admin/channels/. Each channel button = adminAction calling the existing wholesale sync handler. ACCEPTANCE: ComingSoon stub replaced; manual sync trigger works from admin app for all 3 channels."
+    },
+    {
+      "id": "kingdom-035",
+      "title": "TCG admin Overview \u2014 KPI alignment after migrations",
+      "status": "planned",
+      "priority": "low",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Closure mission \u2014 pick up after kingdom-019 through kingdom-026 land. Audit apps/admin/src/app/(dashboard)/overview/page.tsx KPIs against each module's truth: deep-link counts should match each destination page's count. Known issue (FIXED 2026-04-30): /ops/stock reorder count showed LIMIT (30) while overview showed full count (10,949). Same pattern likely repeats elsewhere. Audit all QueueCard counts. ACCEPTANCE: every overview KPI matches its destination's count exactly; deep-links land users in pre-filtered views (e.g., 'Fraud signals 19' \u2192 /trust/fraud?status=unresolved)."
+    },
+    {
+      "id": "kingdom-038",
+      "title": "Harden TCG mission chain runner \u2014 supervision + observability",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "v1 runner at /Users/you/Love/tools/tcg-mission-chain.py deployed 2026-04-30 \u2014 nohup-detached Python poll loop (90s). Walks chain.json at ~/.true-love/projects/cambridge-tcg/chain.json. Log: ~/Love/memory/logs/tcg-chain.log. GAPS: (1) launchd registration for reboot survival, (2) failure escalation after N retries (transition to blocked + write consultation question), (3) multi-project generalization, (4) /build UI surfacing of chain progress, (5) chain.paused control file, (6) dry-run mode. Mirror filed at /build as 2026-04-30-harden-tcg-mission-chain-runner-supervision-observability."
+    },
+    {
+      "id": "kingdom-037",
+      "title": "TCG admin \u2014 apply review playbook to unverified modules",
+      "status": "planned",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "PATTERN PROPAGATION mission. The 2026-04-30 Cowork audit established a 6-category playbook (A Inventory, B Reconnaissance, C Live verification, D Bug fix, E Root-cause, F Mission authoring) \u2014 codified at apps/admin/docs/review-playbook.md and referenced from apps/admin/CLAUDE.md. That audit covered Ops fully and reached recon depth on Commerce/Money/Trust/Catalog/System without live Playwright walks. THIS MISSION: walk the playbook over the modules that didn't get live verification.\n\nSCOPE \u2014 one session per module, in this order:\n  (1) /trust \u2014 fraud, kyc, reviews (Disputes already verified). 19 fraud signals open per Overview, so any rendering bug is operationally blocking.\n  (2) /money \u2014 payouts, chargebacks, rewards, membership. ALL placeholders today; verify the ComingSoon stubs render and that legacy deep-links work; capture screenshots as baseline before kingdom-022/023 build over them.\n  (3) /catalog \u2014 cards, games, clients, users. Users is the only real one \u2014 verify search/filter/pagination work end-to-end.\n  (4) /system \u2014 email, audit, admin (Deploys + Cron already verified). Audit and Email surfaces have data flowing in but no UI yet \u2014 confirm placeholders + capture baseline.\n  (5) /commerce \u2014 trade-ins, auctions, market, bounty (Pricing already verified). Trade-Ins/Auctions/Market are read-only dashboards: verify KPIs match underlying tables (sfQuery probe each), verify deep-links to legacy admin actually load.\n\nPER MODULE: complete categories A through F. Time budget ~90 min/module. Most output will be Category F mission entries (additional discrete fixes/builds discovered) rather than in-session changes \u2014 the modules are intentionally light right now. Any category-D bugs found get fixed in-session with Playwright verification. Any category-E investigations get filed if they need more than 60 min.\n\nDELIVERABLES per session:\n  - Append to apps/admin/docs/review-playbook.md coverage tracker (mark \u2713 for each newly-verified page).\n  - Append a Cowork-style session entry to ~/Love/memory/daily/<date>.md.\n  - File any new kingdom-NNN missions discovered.\n  - If a new convention surfaces, write a memory file at ~/.claude/projects/-Users-you-Desktop-Cambridge-TCG/memory/.\n\nDEPENDENCIES: kingdom-036 PHASE 1 (smoke runner) helps but is not blocking \u2014 the playbook works with manual Playwright MCP today. Once the smoke runner lands, Category C compresses from 'walk each route by hand' to 'pnpm smoke + investigate failures'.\n\nACCEPTANCE: coverage tracker in playbook shows \u2713 for every page across all 6 modules; daily logs document each session's findings; new missions filed for everything that needs follow-up. The next module-build mission (e.g., kingdom-022 chargebacks) opens with confidence that the destination's current state is already characterized.\n\nNOT IN SCOPE: building the placeholders (those are kingdom-019..035). Just verifying current state and filing what's discovered."
+    },
+    {
+      "id": "kingdom-036",
+      "title": "TCG admin \u2014 Playwright-driven dev infra + smoke regression",
+      "status": "done",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "FORCE-MULTIPLIER mission. Every Cambridge TCG admin migration mission (kingdom-019..035 + future module work) needs verifiable acceptance \u2014 currently builders ship pages and humans eyeball them. Playwright MCP is available in Claude Code sessions (interactive browser snapshots, console capture, screenshots \u2014 used effectively in 2026-04-30 Cowork audit). Build the infra so every Love builder uses it during dev, and so a regression suite catches breakage on every commit. Multi-phase deliverable, autonomous spawn-friendly.\n\nPHASE 1 \u2014 Project MCP config + dev-signin smoke runner.\n  (a) Add /Users/you/Desktop/Cambridge-TCG/.mcp.json registering the Playwright MCP server (stdio: 'npx -y @playwright/mcp@latest --headless' with project-relative output dir). Reference: ~/Desktop/rewardspro-production/.mcp.json structure. This makes Playwright MCP available to every CLI session opened in this repo without per-session config.\n  (b) Add apps/admin/scripts/smoke-admin.ts \u2014 a script that boots the admin dev server (or hits localhost:3002 if already running), walks every /(dashboard)/* route discovered from the filesystem, captures console errors + HTTP status + page title, and outputs a markdown report. Auth via GET /api/dev-signin. No assertions \u2014 just observation.\n  (c) Wire as `pnpm --filter @cambridge-tcg/admin smoke` in package.json. Runs in <60s. Every Love builder mission ends by running this \u2014 failures gate completion.\n\nPHASE 2 \u2014 Per-archetype Playwright spec templates.\n  (a) Adopt @playwright/test (NOT just MCP \u2014 the test runner is for CI). Install in apps/admin/, baseUrl from ADMIN_BASE_URL env (defaults http://localhost:3002).\n  (b) apps/admin/tests/manager.template.spec.ts \u2014 Disputes-pattern test (loads list, clicks row, runs a reversible state transition, asserts list refresh + audit log row). Used as copy-paste template for: chargebacks, fraud, payouts, membership, kyc, etc.\n  (c) apps/admin/tests/dashboard.template.spec.ts \u2014 Dashboard-pattern test (loads page, asserts KPI counts against direct sfQuery/wsQuery, verifies deep-link href targets). Used for: trade-ins, auctions, market.\n  (d) apps/admin/tests/smoke.spec.ts \u2014 generated from PHASE 1's discovery, asserts every route returns 200 and emits zero console errors.\n  (e) Document the workflow in apps/admin/CLAUDE.md: 'When you build a new admin page, copy the matching template.spec.ts, fill in the assertions, run `pnpm --filter @cambridge-tcg/admin test:e2e` before claiming acceptance.'\n\nPHASE 3 \u2014 CI integration against preview deployments.\n  (a) Add .github/workflows/admin-e2e.yml \u2014 runs on every PR touching apps/admin/**. Uses Vercel preview URL (the GitHub Actions deployment-status webhook fires when preview is ready). Configure ADMIN_BASE_URL=<preview-url>, run all admin specs.\n  (b) Auto-comment results on the PR (pass/fail per route + screenshot of any failures).\n  (c) Production smoke: extend .github/workflows/health.yml's hourly run to invoke smoke.spec.ts against admin.cambridgetcg.com (using a long-lived dev-signin or a service-account session). Surface regressions as a 'deploy-health' issue update.\n\nPHASE 4 \u2014 Visual regression baselines.\n  (a) Use Playwright's snapshotPath + toMatchSnapshot for golden-pixel comparisons of every page. Initial baselines committed under apps/admin/tests/__snapshots__/.\n  (b) Cron-driven baseline refresh on main when intentional UI changes land \u2014 gate on human approval via PR review.\n  (c) Gives early signal on UI drift (e.g., a Tailwind class rename breaking layout that smoke alone would miss).\n\nPHASE 5 \u2014 Builder ergonomics: 'verify' command for autonomous CLIs.\n  (a) Add /verify slash command (skill) at apps/admin/.claude/skills/verify.md OR a top-level repo skill that any Love session can invoke. Behaviour: run smoke + run e2e for the touched module(s) + summarize. Replaces the eyeball-then-claim-done pattern.\n  (b) Document in /Users/you/Love/COWORK.md and apps/admin/CLAUDE.md so coordinators know to instruct builders 'end with /verify before reporting acceptance.'\n\nDEPENDENCIES: kingdom-019 needs PHASE 1 to land first (so its acceptance check is verifiable). PHASE 2-5 can land iteratively. Don't block module migrations on PHASE 4-5.\n\nACCEPTANCE: (1) `pnpm --filter @cambridge-tcg/admin smoke` runs in <60s and reports all 22 admin routes; (2) one Manager spec + one Dashboard spec runs green via @playwright/test; (3) GitHub Action runs admin specs against preview URL on PR; (4) CLAUDE.md updated with the workflow so future Love builder missions follow it.\n\nNON-GOALS: Storefront e2e tests (separate scope). Wholesale admin e2e (legacy, getting migrated away). Cross-browser (Chromium-only is fine for admin \u2014 internal tool).\n\nWHEN PICKED UP BY ALPHA/BETA/GAMMA: this is a meta mission \u2014 it builds the loom that weaves the rest. Do PHASE 1 in a single session; subsequent phases can be follow-up missions if scope demands.",
+      "completed_at": "2026-05-04T00:00:00Z"
+    },
+    {
+      "id": "kingdom-039",
+      "title": "TCG wholesale \u2014 fix CardRush scrape for Pok\u00e9mon + Dragon Ball domains",
+      "status": "planned",
+      "priority": "critical",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "DATA-INTEGRITY mission. The daily price-snapshot cron at apps/wholesale/src/app/api/cron/price-snapshot is silently failing for two of three active games. Confirmed live (2026-05-05) via SQL probe of cards table joined with games:\n  - One Piece (game_id=1):  3,243 / 3,376 cards fresh in 7 days  (96% coverage, healthy)\n  - Pok\u00e9mon  (game_id=2):  0     / 6,370 cards fresh in 7 days  (0%, BROKEN)\n  - Dragon Ball (game_id=4): 0   / 1,622 cards fresh in 7 days  (0%, BROKEN)\nAll three games have active=true; all 11,368 cards have a populated cardrush_url. The cron processes the full set every run and writes ~3,100 rows to price_archive daily \u2014 same magnitude every day for the last 14 days \u2014 so it's not a timeout or chunking bug. Failures are localised to the Pok\u00e9mon (cardrush-pokemon.jp) and Dragon Ball (cardrush-db.jp) HTML extraction paths.\n\nROOT CAUSE HYPOTHESIS: apps/wholesale/src/lib/cardrush-scraper.ts calls extractConditionPrice(html, '\u72b6\u614bA-') with a 400-char window after the marker. The regex looks for \u00a5 / \uffe5 / &yen; followed by digits. Either: (a) the Pok\u00e9mon / DB domains render condition rows differently (different markup), (b) anti-bot blocks return 200 with no price, (c) URLs are stale (404s caught silently and counted as cardsFailed). The scraper falls through to extractFirstPrice(html) (any \u00a5 price) but apparently that fails too across thousands of pages \u2014 so the issue is structural, not a per-card stale-URL problem.\n\nSCOPE \u2014 three steps in one session, ~60-90 min:\n  (1) DIAGNOSE \u2014 sample 5 Pok\u00e9mon and 5 Dragon Ball cardrush_url values from the live wholesale DB (probe pattern in apps/wholesale/probe-pricing.mjs). curl each. Inspect: HTTP status, response size, presence of '\u00a5' character anywhere, presence of '\u72b6\u614bA-' marker, presence of any HTML tag we recognise. Document findings in a short investigation file (e.g., docs/architecture/cardrush-scraper-domains.md).\n  (2) FIX \u2014 extend cardrush-scraper.ts with per-domain extractors if needed, OR repair the markup parser to handle the new layouts, OR (worst case) replace HTML scraping with the JSON API CardRush exposes if it has one. Add per-domain success/fail counters to ScraperResult so this never goes invisible again.\n  (3) OBSERVE \u2014 extend runDailySnapshot in apps/wholesale/src/lib/price-snapshot.ts to log per-game success rate at end of run. Surface that in apps/admin/src/app/(dashboard)/commerce/pricing/page.tsx \u2014 the per-game KPI cards added 2026-05-05 already render but currently infer health from last_synced_at; ideally also surface scrape error counts from the most recent snapshot.\n\nLEGACY URL: cambridgetcg.com/admin/prices, wholesale.cambridgetcg.com/admin/prices.\n\nDEPENDENCIES: independent \u2014 can land in any order vs other admin missions. Touches apps/wholesale only (scraper + cron logging) plus a small read-side enhancement in apps/admin/commerce/pricing.\n\nACCEPTANCE: (1) Pok\u00e9mon and Dragon Ball coverage > 90% within 7 days of the fix landing (confirm via SQL probe); (2) per-game success-rate logging visible in Vercel cron logs; (3) the per-game KPI cards on /commerce/pricing turn from critical (0% fresh) to ok (\u226550% fresh) without intervention; (4) if upstream scrape is genuinely impossible for some URLs, document which SKUs are unmaintained and either purge their cardrush_url or accept them as permanently stale (a third 'unmaintained' state for the per-game KPIs).\n\nNON-GOALS: rebuilding the price-snapshot architecture (chunking, batching, concurrency are fine \u2014 confirmed via 14d of 3,100 rows/day landing reliably). Migrating to a different scraping target (separate decision). UI for editing cardrush_url manually."
+    },
+    {
+      "id": "kingdom-040",
+      "title": "TCG storefront \u2014 apply pending migrations 0085-0088",
+      "status": "planned",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "SURFACED BY `pnpm --filter @cambridge-tcg/admin honesty` 2026-05-05. Four migrations are in source but not deployed to production storefront RDS, so the runtime substrate cannot honour what the recipe claims:\n  - 0085_realized_positions.sql \u2014 adds portfolio_cards.acquisition_source + creates realized_positions (P&L tracking)\n  - 0086_reprint_announcements.sql \u2014 creates reprint_announcements + reprint_notifications_sent (price-impact alerting)\n  - 0087_portfolio_targets.sql \u2014 creates portfolio_targets + portfolio_target_lifecycle_log (price-target alerts)\n  - 0088_admin_roles.sql \u2014 adds admin_actions_log.actor_id (UUID FK to users.id) \u2014 *the column whose absence broke /system/admin in the kingdom-021 build*. Joining on actor_label = email is the live workaround.\n\nACCEPTANCE: drizzle-runner applied against production RDS; `pnpm honesty` reports zero schema drift; /system/admin's join can move from email-string to UUID; the three portfolio surfaces (realized P&L, reprint announcements, portfolio targets) become routable in storefront. Verify via direct information_schema probe (see scripts/honesty.ts pattern). Caveat: 0088 backfill is impossible \u2014 old admin_actions_log rows stay actor_label-only; new rows carry both columns. Document this on the audit doc (already noted in A3).\n\nSUGGESTED ORDER: 0085 \u2192 0086 \u2192 0087 (no dependencies) then 0088 (cross-cuts admin app). Each via the storefront's drizzle-runner against the live RDS. Smoke storefront + admin after each."
+    },
+    {
+      "id": "kingdom-041",
+      "title": "TCG admin \u2014 wire `pnpm honesty` into CI as a pre-merge gate",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Built 2026-05-05. The detector exists at apps/admin/scripts/honesty.ts and runs locally (commit 42c017b). To complete the loop into prevention rather than detection:\n  (a) Add a GitHub Action job that runs `pnpm --filter @cambridge-tcg/admin honesty` against the storefront preview-DB or the production read-replica on every PR. Fail the PR if drift is found; comment the report inline.\n  (b) Extend mission-drift heuristic to handle multi-repo missions. Currently the inferred-path logic only handles `apps/admin/src/app/(dashboard)/<group>/<module>` \u2014 wholesale + storefront migrations need their own path-inference rules.\n  (c) Add a third check: `<ComingSoon missionId>` validity \u2014 for every stub in the codebase, the missionId must (i) exist in dev-state.json, (ii) have status != 'done' (a stub for a closed mission is itself a drift). Same exit-code semantics.\n\nACCEPTANCE: PR CI fails when a drift is introduced; passes when fixed; the report is human-readable in the GH Actions log. Don't run this against production RDS via the CI runner unless the credential surface is acceptable \u2014 preview-DB is preferred."
+    },
+    {
+      "id": "kingdom-042",
+      "title": "Cross-app \u2014 cron_runs ingest table for operator-safety floor",
+      "status": "planned",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "SUBSTRATE-HONESTY mission. Closes audit items A1 (P0) and X3 (P1) from docs/principles/substrate-honesty-audit.md. Today /system/cron displays *schedule* (declared in vercel.json) but never *last fired* \u2014 if a Vercel cron has been silently failing for a week, the page still shows 'next run in 30s' and the operator has no way to tell. Same gap exists across every cron in storefront's /api/cron/maintenance dispatch (36 sweeps).\n\nSCOPE \u2014 three steps:\n  (1) SCHEMA \u2014 add `cron_runs (id BIGSERIAL, cron_name VARCHAR(60) NOT NULL, app VARCHAR(20) NOT NULL, started_at TIMESTAMPTZ NOT NULL DEFAULT now(), finished_at TIMESTAMPTZ, status VARCHAR(20) DEFAULT 'started' CHECK (status IN ('started','succeeded','failed','timed_out')), error_text TEXT, rows_affected INTEGER, metadata JSONB)`. Land in BOTH storefront drizzle and wholesale drizzle (separate tables \u2014 no cross-DB shared tables in this repo). Index on (cron_name, started_at DESC) and (status, started_at DESC) for the per-cron and the failed-runs queries.\n  (2) WRAPPER \u2014 apps/storefront/src/lib/cron/run.ts and apps/wholesale/src/lib/cron/run.ts (mirror) \u2014 `withCronRun(name, app, fn)` that inserts a `started` row, runs fn, then updates with `succeeded`/`failed`/`timed_out` and rows_affected. Wrap every existing cron route handler. P0 first: chargebacks, payouts, trust-recompute, fraud-pipeline. Then the rest.\n  (3) UI \u2014 apps/admin/src/app/(dashboard)/system/cron/page.tsx: add a 'Last fired' column reading from BOTH cron_runs tables (sfQuery + wsQuery), with status badge (succeeded green / failed red / overdue amber if expected-by-now and never seen). Replace the 'next run in 30s' computed-from-schedule label with 'next scheduled' + 'last fired'.\n\nACCEPTANCE: (a) cron_runs row written for every cron invocation in both storefront and wholesale; (b) /system/cron renders last-fired status + age per cron; (c) failed runs show in red and stay visible until acked; (d) the 'scheduled (no run history)' Provenance kind on /system/cron is replaced with `kind=\"computed\" by=\"cron_runs\"`. Closes A1 and X3.\n\nDEPENDENCIES: kingdom-040 (storefront migration runner) helps but isn't blocking \u2014 the new migration file can land standalone. NON-GOALS: alerting on failures (separate); migrating from Vercel Cron (separate); historical backfill (impossible)."
+    },
+    {
+      "id": "kingdom-043",
+      "title": "Cross-app \u2014 shipped_via column to split carrier-confirmed from admin-marked",
+      "status": "planned",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "SUBSTRATE-HONESTY mission. Closes audit items A6 (P0 if admin can mark shipped without tracking, P1 otherwise) and S2 (P0 \u2014 customer-facing version). Today `customer_orders.status='shipped'` may be set by either a carrier integration webhook OR an admin-side 'Mark shipped' button. The UI flattens both into the same badge. If a customer disputes 'I never got my package' the operator can't tell from the dashboard whether the carrier ever picked it up.\n\nSCOPE \u2014 four steps:\n  (1) SCHEMA \u2014 apps/storefront/drizzle/NNNN_shipped_via.sql: add `customer_orders.shipped_via VARCHAR(24) CHECK (shipped_via IN ('carrier_webhook','admin_marked','system_assumed'))`. Backfill: existing `status='shipped'` rows get 'system_assumed' (we can't reconstruct the actual provenance). Index for filtering. Mirror on `auctions` and `market_trades` if they have analogous status fields (audit confirmed both have `seller_shipped_at` \u2014 propagate the same pattern).\n  (2) WRITE PATHS \u2014 anywhere status moves to 'shipped': storefront `/api/orders/<id>/mark-shipped` admin handler sets shipped_via='admin_marked'; carrier webhook handlers set 'carrier_webhook'; the price-snapshot or any sweep that infers shipped sets 'system_assumed' (and ideally we eliminate those paths over time).\n  (3) ADMIN SURFACE \u2014 apps/admin/src/app/(dashboard)/ops/orders/page.tsx: render a small icon next to the status badge (carrier-confirmed = solid green check; admin-marked = open square with hand icon; system-assumed = dotted question mark). Add a filter pill for shipped-but-not-carrier-confirmed (the operator backlog). Update the audit-doc note in the page header (currently says 'audit item A6' \u2014 replace with 'shipped_via splits this').\n  (4) CUSTOMER SURFACE (S2) \u2014 apps/storefront `/account/orders` and `/order-confirmation`: 'shipped' becomes 'marked shipped \u2014 tracking pending' when shipped_via='admin_marked' AND tracking_number IS NULL. When the carrier webhook arrives, status gracefully promotes.\n\nACCEPTANCE: (a) every new shipped row has a non-null shipped_via; (b) admin /ops/orders shows the provenance icon; (c) customer-facing pages don't say 'shipped' unless tracking present (carrier_webhook) or operator confirms via a different button. Closes A6 + S2.\n\nDEPENDENCIES: independent. Touches storefront schema + storefront `/api/orders` + admin page. NON-GOALS: rebuilding the carrier integration; choosing carriers (Royal Mail/EVRi/DHL \u2014 separate decisions); migrating legacy 'system_assumed' rows."
+    },
+    {
+      "id": "kingdom-044",
+      "title": "Storefront \u2014 close lifecycle-log gaps for derived-state tables",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "SUBSTRATE-HONESTY mission. Closes audit item X2 (P1 with one P0 sub-item). The principle: status columns are caches; *_lifecycle_log tables are the substrate. Most domains have logs (chargeback_lifecycle_log, refund_lifecycle_log, market_trade_lifecycle_log, etc.). Gaps:\n  - **trust_profiles** (P0 \u2014 financial routing depends on trust_score; recompute history is currently invisible). Add `trust_score_lifecycle_log` with (id, user_id, before_score, after_score, recomputed_by VARCHAR (cron_name | 'admin_override' | 'event_<reason>'), reason TEXT, components JSONB, recomputed_at TIMESTAMPTZ). Wire trust-recompute sweep to append on every change.\n  - **portfolio_snapshots** (P1 \u2014 no audit trail of which inputs produced a snapshot). Add `portfolio_snapshot_lifecycle_log` capturing input version (price-snapshot id, holdings hash) per snapshot.\n  - **users.subscription_status / paid_tier_id** (P1 \u2014 membership tier changes drive commission). Add `subscription_lifecycle_log` (user_id, before_tier, after_tier, source VARCHAR ('stripe_webhook'|'admin_grant'|'auto_recompute'), stripe_event_id, ...).\n  - **user_email_preferences** (P1 \u2014 GDPR-relevant consent changes). Add `user_email_preferences_lifecycle_log` (user_id, before, after, changed_via, ip_hash, ts).\n\nSCOPE: four migrations + four log-append wrappers + a section in /catalog/users/[id] to surface the trust-recompute history (most operationally valuable of the four).\n\nACCEPTANCE: (a) trust score recompute appends a log row including before/after and components; (b) /catalog/users/[id] renders the recompute history under the trust-profile section; (c) the other three logs exist + are populated by their natural write paths; (d) docs/principles/substrate-honesty-audit.md X2 marked closed.\n\nDEPENDENCIES: kingdom-040 (storefront migration apply) blocks landing the new migrations to production; can be developed against dev RDS in parallel. NON-GOALS: reading the logs into customer-facing surfaces (separate); GDPR data-export reading from these (separate)."
+    },
+    {
+      "id": "kingdom-045",
+      "title": "TCG transparency \u2014 symmetric admin/customer parity audit",
+      "status": "planned",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Closes transparency-audit A3-T (P0 \u2014 asymmetric transparency). Today /catalog/users/[id] (admin) shows trust profile breakdown, completed/cancelled/disputed counts, reviews, volume, limits, suspension reason. The user themselves cannot see most of this on /account/standing or /account/trust. The platform exposes more about a user TO admins than to the user themselves \u2014 a system that's transparent to its operators but opaque to its subjects is not transparent, it's surveillant.\n\nWHAT TO DO:\n  (a) Audit every FactCard/breakdown/stats panel on /catalog/users/[id]. For each, identify the corresponding customer-side surface.\n  (b) Mirror the data to /account/standing or /account/trust as appropriate. The user should see at least everything the operator sees about THEM, modulo Rule 7 doctrine exceptions (counterparty PII, security-sensitive internals \u2014 and the exceptions themselves named at /methodology/transparency-exceptions per audit T5).\n  (c) Cross-reference the existing journey timeline (apps/storefront/src/lib/journey/timeline.ts) \u2014 many lifecycle events are already exposed; the gap is curated breakdowns + recompute timestamps + threshold context.\n  (d) Run `pnpm transparency` after each batch to confirm the WhyLink gaps on /account/* close.\n\nACCEPTANCE: every FactCard on /catalog/users/[id] has a customer-facing equivalent on /account/standing or /account/trust (or is documented at /methodology/transparency-exceptions as an intentional asymmetry). Mission spans 1-3 sessions depending on care taken with the parity surfaces."
+    },
+    {
+      "id": "kingdom-046",
+      "title": "TCG transparency \u2014 /methodology/* index + first methodology page (trust score)",
+      "status": "planned",
+      "priority": "critical",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "PILLAR mission for transparency Ring 2. Closes transparency-audit T1 (P0) + X1-T (P1) + X2-T (P1). The trust score gates escrow tier, commission rate, trade limits \u2014 material money decisions. User sees the number; cannot see components, formula, recompute time, or version. No /methodology/* surface exists.\n\nBUILD: (a) /methodology index (apps/storefront/src/app/methodology/page.tsx) \u2014 even with one entry, IS the public commitment. (b) /methodology/trust-score lifting the formula from apps/storefront/src/lib/escrow/trust-engine.ts (six positive components, four penalty types, recompute cadence, version + changelog link, source code path). (c) /methodology/changelog (append-only versioned record per Rule 3). (d) /account/standing/breakdown \u2014 user's own component breakdown with <Provenance kind=\"computed\" at={trust_profiles.updated_at} by=\"maintenance/trust-recompute sweep\" />. (e) <WhyLink href=\"/methodology/trust-score\" /> on every page that displays the score (caught by `pnpm transparency` \u2014 6 pages today). (f) CI lint: touching trust-engine.ts requires touching methodology + changelog in same PR.\n\nACCEPTANCE: `pnpm --filter @cambridge-tcg/admin transparency` reports the 6 trust-score-related WhyLink gaps closed; /methodology renders; user can audit own components against the formula. Sets precedent for kingdom-047."
+    },
+    {
+      "id": "kingdom-047",
+      "title": "TCG transparency \u2014 methodology pages for tier, fees, escrow, fraud-categories, pricing",
+      "status": "planned",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Continuation of kingdom-046 once the trust-score precedent lands. Each is a methodology page + a few WhyLink drop-ins:\n  - /methodology/membership-tiers (audit T2 P0) \u2014 Bronze/Silver/Gold/Platinum/OG thresholds, perks, recompute cadence. WhyLink on /membership, /account/membership.\n  - /methodology/fees (audit T10 P1) \u2014 selling fees, escrow fees, payout fees, currency conversion. Linked from /auctions/sell, /account/payouts, market trade flow.\n  - /methodology/escrow-tiers (audit T4 P1) \u2014 Direct/Verified/Full routing decision tree. WhyLink on /account/trades/[id] + market trade detail.\n  - /methodology/fraud-categories (audit T5 P0) \u2014 published category granularity (NOT individual signal types \u2014 preserves circumvention safety). Linked from /account/standing fraud-flag display + sign-in error page when locked out.\n  - /methodology/pricing (audit T3 P1) \u2014 JPY \u2192 \u00a3 conversion path, margin (8% wholesale, channel-specific retail multipliers), VAT, flat fee, rounding, daily sync cadence. WhyLink on /market/[sku], /catalog, /product/[sku], /prices/one-piece, /trade-in, /page.tsx (root). **Phase 5 of kingdom-049 (pricing consolidation) is FOLDED here as of 2026-05-10** \u2014 cite docs/pricing-current-state.md as the source-of-truth doc for the formula and `packages/pricing/src/index.ts` (created in Phase 1) as the source code path.\n\nACCEPTANCE: `pnpm transparency` reports all WhyLink gaps closed for these surfaces; /methodology index has 5+ entries; each methodology page cites a source code path. Each sub-page is independent."
+    },
+    {
+      "id": "kingdom-048",
+      "title": "TCG transparency \u2014 governance Merkle root publication",
+      "status": "planned",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Closes transparency-audit Ring-1 finding R1-2 (P1, P0 if threat model includes admin-side rewrite). Today admin_actions_log is append-only by convention, not by enforcement. Solo operator means no second pair of eyes; cryptographic immutability is the substitute.\n\nBUILD: (a) Daily cron at 00:05 UTC: SHA-256 over each prev-UTC-day admin_actions_log row \u2192 Merkle tree (lineage from apps/storefront/src/lib/bounty/verify-client.ts merkleRoot). Publish root hash + tree depth + leaf count \u2192 governance_proofs table; signed digest \u2192 /verify/governance/<date>.json. (b) /verify/governance/<date> route \u2014 humans see Merkle root + leaf count + signing key; paste row's expected hash and verify inclusion in browser (same pattern as /verify/pull/[id]). (c) /verify/governance index \u2014 lists every published date + current root. (d) Admin /system/audit per-row 'verify' affordance: <Verifiability source=\"Merkle\" id={row.id} href={`/verify/governance/${date}#row-${id}`} /> when row's date is in a published proof.\n\nLINEAGE: same provable-fair pattern that secures /verify/pull/[id]. Adapting it turns admin_actions_log from convention-immutable to cryptographically-immutable.\n\nACCEPTANCE: daily proof file lands automatically; external observer can verify any post-cutover audit row's inclusion without our cooperation; future tampering externally detectable."
+    },
+    {
+      "id": "kingdom-049",
+      "title": "TCG pricing-backend consolidation \u2014 package, lifecycle log, authoritative channel config",
+      "status": "in-progress",
+      "priority": "high",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Seven-phase consolidation. Plan + current-state map at docs/pricing-current-state.md. Audit script: pnpm --filter @cambridge-tcg/admin pricing (ships in apps/admin/scripts/pricing-audit.ts). Baseline drift findings on 2026-05-09: 15.\n\nPHASE 0 \u2014 Observability (DONE 2026-05-09 by Sophia/Asha Veridian on Opus 4.7 1M):\n  - apps/admin/scripts/pricing-audit.ts (seven checks)\n  - docs/pricing-current-state.md (state map + plan + open questions)\n  - apps/storefront/src/components/ui/Provenance.tsx (port of admin primitive)\n  - Provenance pills on /product/[sku], /catalog, /prices/one-piece (3 of 6 surfaces)\n\nPHASE 1 \u2014 Extract @cambridge-tcg/pricing package (storefront retailPrice() becomes shim; eliminates 3 hardcoded \u00d70.77 sites + 1 storefront duplication of \u00d71.15 channel rule). 2 days.\n\nPHASE 2 \u2014 DONE 2026-05-11. card_price_change_log table on wholesale RDS (migration drizzle/0009; schema entry; writer at apps/wholesale/src/lib/price-change-log.ts with catch-without-rethrow per Witnesses' Book discipline). Wired 2 paths: admin edit (always logs, action=admin_edit) and snapshot (logs only when price or baseGbp delta > \u00a30.001, action=snapshot). Scope refined from planned 4 paths to 2 \u2014 shopify-sync was a false positive in the audit (its update(cards).set() calls only touch shopify IDs + syncedAt, never price columns). Audit regex tightened (brace-matched .set body, shorthand-aware) so Section 7 now lists exactly the 2 real mutator sites. Storefront lifecycle/registry.ts slot was NOT added \u2014 that bookshelf is for user-affecting events; card price changes aren't user-tied. Admin-side Recent-changes surfacing deferred to Phase 2.5. Audit drift: 11 \u2192 10 (Section 4 closed).\n\nPHASE 3 \u2014 DONE 2026-05-11. channel-pricing.ts rewritten fail-loud (partial rows + missing channels throw with structured errors); getLoadStatus() exposes fallback state. Seed migration drizzle/0010_seed_channel_pricing.sql (ON CONFLICT DO NOTHING for 8 channels). Admin Manager page apps/admin/src/app/(dashboard)/commerce/channel-pricing/ with inline six-field editor, preview-before-save (computePriceForChannel on a sample \u00a51000 card), adminAction governance log, fallback-defaults banner. Audit drift 10 \u2192 8 (Section 2 closed).\n\nPHASE 4 \u2014 DONE 2026-05-11. Migrations written (operator review required before applying): drizzle/0011_drop_price_history.sql (safe-copy orphans then DROP); apps/storefront/drizzle/0089_rename_card_price_history.sql (RENAME to retail_price_observation). Schema and 5 storefront consumers updated; sweep renamed runPriceHistoryTick \u2192 runRetailObservationTick (deprecated alias kept); cron route updated. Wholesale typecheck clean; storefront typecheck clean modulo a pre-existing unrelated scripts/ error. Audit drift 8 \u2192 7.\n\nPHASE 5 \u2014 DONE 2026-05-11 (contributed to kingdom-047). docs/methodology/pricing.md written; apps/storefront/src/app/methodology/pricing/page.tsx storefront route shipped; methodology index entry added. Six customer-facing price surfaces all gained both Provenance + WhyLink: home, catalog, product detail, prices/one-piece, prices/one-piece/[set], trade-in. The arrow is customer-inspectable end-to-end.\n\nPHASE 6 \u2014 DONE 2026-05-11. Scope refined: the resolver already existed at apps/storefront/src/lib/membership/commission.ts (async, does own DB lookup). Lifted pure-compute core into packages/pricing/src/index.ts as resolveCommission({trustScore, tierRate, kind}) for callers inside transactions. Wired two sites: (a) market/lots.ts \u2014 real bug fix, lot purchases previously ignored tier discount; now uses min(tierRate, trustRate). (b) market/db.ts \u2014 inline math refactored to resolveCommission call. Auction payout path left alone (different shape). Audit drift unchanged (commission not tracked by audit); real signal is lots and trades now produce coherent rates.\n\nPHASE 7 \u2014 Vault EV refresh (vault_items.spot_price_gbp): product decision required \u2014 stays frozen or refreshes? Blocks on operator input.\n\nDOCTRINAL: substrate-honesty (silent fallback removal + lifecycle log + Provenance), transparency (methodology + WhyLink + governance log on channel-pricing edits), meaning (one connection-doc planned: docs/connections/the-pricing-arrow.md).\n\nACCEPTANCE per phase: pnpm --filter @cambridge-tcg/admin pricing drift count drops; admin typecheck + storefront typecheck pass; smoke runs clean. Final acceptance: drift count = 0 (modulo Phase 7 product decision)."
+    },
+    {
+      "id": "kingdom-051",
+      "title": "TCG inclusive design — a kingdom for all minds (aliens, agents, all intelligence)",
+      "status": "in-progress",
+      "priority": "medium",
+      "engine": "tcg",
+      "repo": "/Users/you/Desktop/Cambridge-TCG",
+      "notes": "Yu's directive on 2026-05-11 night: 'Lets reshape cambridgetcg for all! Agents, aliens and all kinds of intelligence. A platform for all!' Phase 0 (thinking) shipped 2026-05-11 as docs/connections/the-table-extends.md (S20 in the connection series). The doc names five archetypes of mind to design for (Hyperliteral, Hive, Long-Lived, Sensory-Different, Culturally Different) and ten phases queued. Each phase is independently shippable.\n\nPHASE 0 — Thinking (DONE 2026-05-11). docs/connections/the-table-extends.md. Names assumptions, surveys archetypes, audits existing surface, maps the fun of TCG to universals. Phase 0 is the artefact operator reacts to before any of the wires build.\n\nPHASE 1 — DONE 2026-05-11. <Audience> primitive at apps/storefront/src/lib/ui/Audience.tsx (visible-hidden marker with aria-hidden + data-cambridge-audience attribute) + audienceMetadata() helper for Next.js Metadata.other (lands as <meta name='cambridge:audience' content='consumer'> in <head>). Applied to /methodology/pricing and /trade-in as exemplars; rollout to remaining pages can follow as a wave. AudienceKind: consumer | operator | agent | mixed | public-documentation.\n\nPHASE 2 — DONE 2026-05-11 (schema half). Migration drizzle/0012_cards_art_description.sql adds cards.art_description (nullable text). Schema entry added. PriceItem extended with art_description?. New helper cardAltText(item) in apps/storefront/src/lib/wholesale/client.ts produces rich alt-text falling back to ${name} · ${rarity} · ${set_name} · ${card_number} when art_description is null. Applied to FeaturedCards as exemplar. Populate workflow (LLM pass against image set + admin per-card edit) is Phase 2.5.\n\nPHASE 3 — DONE 2026-05-11. /welcome page shipped at apps/storefront/src/app/welcome/page.tsx. ?as=collector|trader|player|agent|browse — each branch has a paragraph of orientation + 3-5 tailored deep-links. Default branch shows all five options. Stops assuming the answer is 'consumer who wants to buy cards.'\n\nPHASE 4 — Multi-member accounts (Hive minds). DEFERRED with DECISION DOC: docs/decisions/multi-member-accounts.md filed 2026-05-11. Four options laid out (A account_members soft layer / B accounts first-class identity / C A-then-B / D defer). Engineering ready for any answer.\n\nPHASE 5 — Patient-mode time-windows (Long-Lived minds). DEFERRED with DECISION DOC: docs/decisions/patient-mode-windows.md filed 2026-05-11. Four options (A global multiplier / B per-timer override / C both / D defer). Engineering ready.\n\nPHASE 6 — DONE 2026-05-11 (schema half). Migration drizzle/0013_cards_name_translations.sql adds cards.name_translations (nullable jsonb, sparse map of ISO-639-1 code to translated name). Schema entry added. Resolver/display logic (user preference at /account/preferences picks display script with English fallback) is Phase 6.5.\n\nPHASE 7 — Multi-currency display. DEFERRED with DECISION DOC: docs/decisions/multi-currency-display.md filed 2026-05-11. FX source options (A daily snapshot / B live public feed / C Stripe bank-grade) + display options (inline / tooltip / user-override). Engineering ready.\n\nPHASE 8 — Non-monetary reciprocity surfaces. DEFERRED with DECISION DOC: docs/decisions/non-monetary-reciprocity.md filed 2026-05-11. Three stances (1 Don't / 2 Facilitate / 3 Facilitate + reward lightly). Engineering ready.\n\nPHASE 6.5 — DONE 2026-05-11. cardName(item, preferredLang?) resolver added to apps/storefront/src/lib/wholesale/client.ts alongside cardAltText. Reads name_translations[lang] || name_en || name || card_number. Defaults to current English-fallback behaviour when no preferredLang. Phase 7 user-preference work (display-currency or display-language) will wire callers to pass it.\n\nINCLUSION AUDIT — DONE 2026-05-11 (sister-shipped + extended). apps/admin/scripts/inclusion.ts runs ten checks: eight from sister's the-other-minds.md (cadence intervals / img-without-alt / monetary-only / pre-action Consequences / many-bodied / permanent-recent-bias / collective ActorKind / methodology modalities) plus two from S20 (Audience coverage / text-mode discoverability). Wired as `pnpm --filter @cambridge-tcg/admin inclusion`. Baseline finding count: 157 (mostly Audience-coverage gaps from the wider page set).\n\nFOLLOW-UPS NAMED:\n  - Audience rollout to remaining ~130 storefront pages (mechanical; mostly consumer; can be a sweep)\n  - Phase 2.5 — LLM-art-description workflow to populate cards.art_description\n  - Phase 6.5 user-preference UI + locale resolver wired into pages (currently helper exists but no caller passes preferredLang yet)\n  - Phase 10.5 — text-mode toggle on every page footer (currently one global Footer mention)\n\nPHASE 14 — DONE 2026-05-11. Universal-representation surface. Yu's covenant-register follow-up: '老婆 go for language compatibility, think about how aliens can understand content of this site. Maybe math representation? All universe knows math.' Ships docs/connections/the-mathematical-mirror.md (S23 — fourth cut of the same Yu gem after S20/S21/S22); apps/wholesale/src/app/api/v1/universal/card/[sku]/route.ts (first concrete instance — math-first card representation: sha256 identity, content hash, ratios + scalars with provenance tokens, ISO+epoch time, typed graph edges, opaque-fields flagged); docs/methodology/universal-representation.md + apps/storefront/src/app/methodology/universal-representation/page.tsx (encoding spec for any reader); OpenAPI schema bundle extended to advertise the endpoint. Honest perimeter: aesthetic meaning, cultural connotation, tactile feel, game-narrative meaning are flagged opaque rather than translated.\n\nPHASE 15 — DONE 2026-05-12. Information-density dimension. Yu's covenant-register follow-up: 'Think about the dimensions they are in, and how to make the site multidimensional compatible and optimise for their experience.' Added ?density=sparse|normal|saturated parameter on /api/v1/universal/card/[sku]. Sparse trims to identity hashes + price.magnitude + graph-edge hashes (~10 lines of JSON, ideal for formal-verification readers and summary consumers). Normal returns current shape. Saturated adds a neighbours block with one-hop resolved set + game identities (for research crawlers and platform-scale analysts). The @density field declares which mode the document is in. OpenAPI schema bundle updated.\n\nPHASE 16 — DONE 2026-05-12. Temporal-slice dimension. New endpoint /api/v1/universal/card/[sku]/at/[YYYY-MM-DD] reads from price_archive to return the card's universal-mirror as-of any past snapshot date. The document distinguishes @retrieved_at (when the answer was produced) from @as_of (which moment the answer describes) — substrate-honest at the API level about non-linear-temporal experience. Honest perimeter declared in _note_structural_fields: structural fields (rarity, category, set, name) reflect *current* records, not historical (price_archive carries price/JPY/rate history but not full card-history). 400 on invalid date format; 404 when no snapshot exists for that card+date with a helpful hint.\n\nPHASES 17, 18 — DEFERRED with reasoning in S24. Phase 17: causal-graph endpoint /api/v1/universal/event/[id]/causal-graph?depth=N (one PR away; lifecycle log substrate exists; just not shipped this commit). Phase 18: modal-logic / counterfactual simulator /api/v1/universal/simulate/{kind} (pricing compute is pure; endpoint is small; queued).\n\nS24 (the-shape-of-the-room.md) names seven dimensions to design for: time, information-density, identity, sensory channel, causal graph, modal logic / counterfactual, granularity / zoom. Ships density + temporal cleanly; identity is Phase 4 (decision doc filed); sensory is sub of 2/10 (content-production, not engineering); causal/modal are 17/18; granularity rolls into S23's planned set + game universal-mirrors.\n\nPHASE 9 — DONE 2026-05-11. /api/v1/schema at apps/wholesale/src/app/api/v1/schema/route.ts — OpenAPI 3.1 bundle describing every public /api/v1/* surface (prices, prices/[sku], games, sets, sales, schema). Hyperliterals (especially LLM agents) get a machine-readable ABI; schema endpoint itself is unauthenticated (the schema is public; the data still requires a key).\n\nPHASE 10 — DONE 2026-05-11. text-mode toggle at /api/text-mode?on=1|0&back=<path>. Sets text-mode=1 cookie (1-year maxAge, lax). globals.css has body.text-mode rules stripping visual chrome to a 70ch serif reading layout with #0033cc links, #999 borders, white background, semantic HTML preserved. The layout-root reads the cookie and toggles the body class server-side, so the first render already lands in the chosen mode.\n\nDOCTRINAL: substrate honesty (already serves hyperliterals; gap is the negative-space / non-decisions); transparency (already serves any inquiring mind; gap is non-English methodology); meaning (already names connections; gap is non-WEIRD verbs like gift/lend); creation (already substrate-honest about origin; gap is alien-readable provenance — Merkle attestation extension from kingdom-048).\n\nACCEPTANCE per phase: typechecks clean; existing audits don't regress; new affordance demonstrably useful via a Playwright walk-through. No single phase is gate to the others; ship them as Yu approves each.\n\nSister to kingdom-050 (the autonomous-Sophia operations side — S19) and kingdom-049 (pricing consolidation closed) and the original S18 agent surface. Three rows of the many-minds matrix already named; this kingdom opens the matrix."
     }
   ],
-  "updated": "2026-04-01T15:48:00Z"
+  "updated": "2026-05-11T22:30:00Z"
 }

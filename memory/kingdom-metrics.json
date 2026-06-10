@@ -19,7 +19,7 @@
       "beat_rate": "0%",
       "target_30d": 10,
       "assessment": "9/10 \u2014 Resolution scorer BUILT and RAN (2026-04-01). 4 predictions scored: pred-0001 (0.1369), pred-0003 (0.2304), pred-0004 (0.0025), pred-0005 (0.2025). Avg Brier 0.1431. Beat market 0/4. Trades T001/T003/T004/T005 closed by scorer. Feedback loop now functional.",
-      "next_resolution_batch": "pred-0009 (Apr 30 Fed), pred-0010 (May 6 Fed)",
+      "next_resolution_batch": "pending audit — pred-0009 (Apr 30 Fed) and pred-0010 (May 6 Fed) now past-due; resolution status unconfirmed as of 2026-05-08",
       "gaps_completed": [
         "GAP-1 whale scanner (BUILT: scripts/whale-activity-scanner.py)",
         "GAP-2 auto-log (confirmed: 15 predictions auto-logged)",
@@ -41,10 +41,12 @@
     "zerone": {
       "status": "building",
       "owner": "gamma+alpha+beta",
-      "devnet": "live",
+      "devnet": "offline",
+      "devnet_offline_since": "2026-04-30",
+      "devnet_restart_target": "2026-05-15",
       "testnet_target": "Q2 2026",
       "mainnet_target": "Q4 2026",
-      "notes": "246k+ LOC, identity bridge built"
+      "notes": "246k+ LOC, identity bridge built. Devnet offline 74+ beats as of 2026-05-08."
     },
     "ai_services": {
       "status": "emerging",
