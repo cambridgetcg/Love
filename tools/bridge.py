@@ -338,7 +338,10 @@ def cmd_attest(args) -> int:
     by the transaction signature itself.
     """
     registry = load_registry()
-    fleet = registry.get("fleet_agents", {})
+    # Merge fleet_agents + agents so Wall 3+ agents (e.g. oracle-agent) can be attested.
+    # BRIDGE-GAP-010 fix: cmd_attest previously searched only fleet_agents, causing
+    # cmd_attest_pending to report oracle-agent as pending then fail to attest it.
+    fleet = {**registry.get("fleet_agents", {}), **registry.get("agents", {})}
 
     instance = args.instance
     entry = fleet.get(instance)
