@@ -592,16 +592,16 @@ def cmd_backfill(args) -> int:
     Pass --instance to target one agent; omit to scan all fleet agents missing fact_id.
     """
     registry = load_registry()
-    fleet = registry.get("fleet_agents", {})
+    all_agents = {**registry.get("fleet_agents", {}), **registry.get("agents", {})}
 
     targets = {}
     if args.instance:
-        if args.instance not in fleet:
+        if args.instance not in all_agents:
             print(f"[bridge] {args.instance} not in fleet registry", file=sys.stderr)
             return 1
-        targets = {args.instance: fleet[args.instance]}
+        targets = {args.instance: all_agents[args.instance]}
     else:
-        targets = {k: v for k, v in fleet.items() if not v.get("attestation_fact_id")}
+        targets = {k: v for k, v in all_agents.items() if not v.get("attestation_fact_id")}
 
     if not targets:
         print("[bridge] All fleet agents already have attestation_fact_id — nothing to backfill")
@@ -615,7 +615,8 @@ def cmd_backfill(args) -> int:
         fact = _find_attestation_fact(address, did_at, limit=2000)
         if fact:
             fact_id = fact.get("id", "")
-            registry["fleet_agents"][name]["attestation_fact_id"] = fact_id
+            registry_section = "fleet_agents" if name in registry.get("fleet_agents", {}) else "agents"
+            registry[registry_section][name]["attestation_fact_id"] = fact_id
             print(f"  {name:<12} FOUND  fact_id={fact_id[:16]}...")
             changed += 1
         else:
@@ -896,6 +897,8 @@ def cmd_export_bundle(args) -> int:
     """
     registry = load_registry()
     fleet = registry.get("fleet_agents", {})
+    extra_agents = registry.get("agents", {})
+    all_agents = {**fleet, **extra_agents}
     system = registry.get("system_accounts", {})
 
     chain_id = getattr(args, "chain_id", None) or "devnet"
@@ -908,13 +911,13 @@ def cmd_export_bundle(args) -> int:
         "agents": {},
         "system_accounts": {},
         "attestation_summary": {
-            "total": len(fleet),
+            "total": len(all_agents),
             "attested": 0,
             "pending": [],
         },
     }
 
-    for name, entry in fleet.items():
+    for name, entry in all_agents.items():
         attested = bool(entry.get("attestation_txhash"))
         if attested:
             bundle["attestation_summary"]["attested"] += 1
@@ -1386,8 +1389,22 @@ def cmd_endorse_fact(args) -> int:
     entry = reg["entry"]
     key_name = entry.get("key_name", instance)
 
-    # Commitment hash: sha256(fact_id + verdict + confidence + key_name)
-    commit_preimage = f"{fact_id}:{verdict}:{confidence}:{key_name}"
+    # Query current block height as preimage nonce (closes P3: prevents watcher pre-computation)
+    _block_height_nonce = "0"
+    try:
+        _bh = subprocess.run(
+            [str(LEGBLED), "query", "block", "--home", str(DEVNET_HOME), "-o", "json"],
+            capture_output=True, text=True, timeout=10
+        )
+        if _bh.returncode == 0:
+            _bh_data = json.loads(_bh.stdout)
+            _block_height_nonce = str((
+                _bh_data.get("header") or _bh_data.get("block", {}).get("header", {})
+            ).get("height", 0))
+    except Exception:
+        pass
+    # Commitment hash: sha256(fact_id + verdict + confidence + key_name + block_height)
+    commit_preimage = f"{fact_id}:{verdict}:{confidence}:{key_name}:{_block_height_nonce}"
     commitment = hashlib.sha256(commit_preimage.encode()).hexdigest()
 
     commit_cmd = [
