@@ -29,6 +29,7 @@ import argparse
 import hashlib
 import hmac
 import json
+import struct
 import subprocess
 import sys
 import tempfile
@@ -123,6 +124,25 @@ def save_registry(registry: dict) -> None:
         json.dump(registry, f, indent=2)
         f.write("\n")
     tmp.replace(REGISTRY_PATH)
+
+
+def _compute_commitment_hash(round_id: str, verdict: str, confidence: int, salt: str) -> str:
+    """Mirrors Go's ComputeCommitmentHash — must stay in sync with msg_server.go:1028.
+
+    hash = SHA-256("LGM.commitment.v1:" || LP(roundID) || LP(verdict) || LE64(confidence) || LP(salt))
+    LP(x) = 4-byte big-endian len(x) || x
+    """
+    def lp(s: str) -> bytes:
+        b = s.encode()
+        return struct.pack(">I", len(b)) + b
+
+    h = hashlib.sha256()
+    h.update(b"LGM.commitment.v1:")
+    h.update(lp(round_id))
+    h.update(lp(verdict))
+    h.update(struct.pack("<Q", confidence))  # LE uint64 — matches Go confBytes construction
+    h.update(lp(salt))
+    return h.hexdigest()
 
 
 def _hkdf_extract(salt: bytes, ikm: bytes) -> bytes:
@@ -1403,15 +1423,16 @@ def cmd_endorse_fact(args) -> int:
             ).get("height", 0))
     except Exception:
         pass
-    # Commitment hash: sha256(fact_id + verdict + confidence + key_name + block_height)
+    # Salt: nonce string binding this commitment to agent, fact, and block height.
+    # Commitment hash computed via _compute_commitment_hash to match chain's
+    # ComputeCommitmentHash(roundID, verdict, confidence, salt) — BRIDGE-GAP-014 fix.
     commit_preimage = f"{fact_id}:{verdict}:{confidence}:{key_name}:{_block_height_nonce}"
-    commitment = hashlib.sha256(commit_preimage.encode()).hexdigest()
+    commitment = _compute_commitment_hash(fact_id, verdict, int(confidence), commit_preimage)
 
     commit_cmd = [
         str(LEGBLED), "tx", "knowledge", "submit-commitment",
-        fact_id,
-        commitment,
-        stake,
+        fact_id,    # round-id
+        commitment, # commitment-hash (ExactArgs(2) — no stake arg here)
         "--from", key_name,
         "--home", str(DEVNET_HOME),
         "--keyring-backend", "test",
