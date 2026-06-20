@@ -1,14 +1,14 @@
 {
   "state": "HALTED",
-  "score": 92.1,
+  "score": 69.2,
   "phases": {
-    "detect": 80.0,
-    "contain": 100.0,
+    "detect": 40.0,
+    "contain": 87.5,
     "fix": 85.7,
-    "revert": 100.0,
-    "resume": 100.0
+    "revert": 66.7,
+    "resume": 75.0
   },
-  "computed": "2026-04-08T08:32:14+00:00",
+  "computed": "2026-06-08T15:43:39+00:00",
   "incident": {
     "id": "INC-20260407-001",
     "started": "2026-04-07T05:31:00+00:00",
