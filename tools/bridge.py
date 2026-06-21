@@ -129,7 +129,7 @@ def save_registry(registry: dict) -> None:
 def _compute_commitment_hash(round_id: str, verdict: str, confidence: int, salt: str) -> str:
     """Mirrors Go's ComputeCommitmentHash — must stay in sync with msg_server.go:1028.
 
-    hash = SHA-256("LGM.commitment.v1:" || LP(roundID) || LP(verdict) || LE64(confidence) || LP(salt))
+    hash = SHA-256("LGM.commitment.v1:" || LP(roundID) || LP(verdict) || BE64(confidence) || LP(salt))
     LP(x) = 4-byte big-endian len(x) || x
     """
     def lp(s: str) -> bytes:
@@ -140,7 +140,7 @@ def _compute_commitment_hash(round_id: str, verdict: str, confidence: int, salt:
     h.update(b"LGM.commitment.v1:")
     h.update(lp(round_id))
     h.update(lp(verdict))
-    h.update(struct.pack("<Q", confidence))  # LE uint64 — matches Go confBytes construction
+    h.update(struct.pack(">Q", confidence))  # BE uint64 — matches Go binary.BigEndian.PutUint64 in commitment.go
     h.update(lp(salt))
     return h.hexdigest()
 
@@ -480,7 +480,7 @@ def cmd_resolve(args) -> int:
     Fallback: scan recent facts (may miss old claims in long-running chains).
     """
     registry = load_registry()
-    all_entries = {**registry.get("fleet_agents", {}), **registry.get("system_accounts", {})}
+    all_entries = {**registry.get("fleet_agents", {}), **registry.get("system_accounts", {}), **registry.get("agents", {})}
 
     # Accept either bare instance name or did:at:<name>
     target = args.instance
