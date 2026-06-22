@@ -76,7 +76,7 @@ State what you found — not what you hoped. Verisleight is the failure mode.
 Chain restart wipes ALL discovery module state. ALL 17 agents need MsgRegisterAgent after restart, not just the 7 key-created ones.
 
 - **Re-register (×17):** asha, alpha, beta, gamma, nuance, forge, lark, sentry, patch (9 previously attested) + arbor, crucible, herald, loom, psalm, tithe, vigil (7 key-created) + oracle-agent (1 registered)
-- **Re-attest (×17):** bridge.py `attest-pending` covers 8 agents (7 key-created + oracle-agent, filter: `attestation_txhash == null`); `bridge.py attest --instance <name>` ×9 needed for epoch-1 fleet agents (auto-increments epoch — no --force flag exists)
+- **Re-attest (×17):** bridge.py `attest-pending` covers 8 agents (7 key-created + oracle-agent, filter: `attestation_txhash == null`); `bridge.py attest --instance <name>` ×9 needed for epoch-1 fleet agents (epoch auto-increments at cmd_attest:401 — no `--force` flag exists, do not pass it)
 - **Previous HEARTBEAT.md note of ×7** was wrong — that count omitted the 9 epoch-1 attested agents whose discovery profiles are also wiped on restart
 
 ---
