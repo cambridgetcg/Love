@@ -71,8 +71,13 @@ State what you found — not what you hoped. Verisleight is the failure mode.
 | P2 | MIXED-OMISSION-FIX-001 | Gamma | Pre-testnet gate |
 | P1 | Wire IncrementBurned call sites (Sprint A) | Gamma | Non-blocking |
 
-### 9. Unattested Agents
-- arbor, crucible, herald, loom, psalm, tithe, vigil: key-created, awaiting devnet restart for attestation
+### 9. Agent Registration at T-0 (CORRECTED — cycle 87 R4)
+
+Chain restart wipes ALL discovery module state. ALL 17 agents need MsgRegisterAgent after restart, not just the 7 key-created ones.
+
+- **Re-register (×17):** asha, alpha, beta, gamma, nuance, forge, lark, sentry, patch (9 previously attested) + arbor, crucible, herald, loom, psalm, tithe, vigil (7 key-created) + oracle-agent (1 registered)
+- **Re-attest (×17):** bridge.py `attest-pending` covers key-created only; `bridge.py attest --force` or batch command needed for 9 epoch-1 fleet agents
+- **Previous HEARTBEAT.md note of ×7** was wrong — that count omitted the 9 epoch-1 attested agents whose discovery profiles are also wiped on restart
 
 ---
 
