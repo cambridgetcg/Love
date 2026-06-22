@@ -129,8 +129,13 @@ def save_registry(registry: dict) -> None:
 def _compute_commitment_hash(round_id: str, verdict: str, confidence: int, salt: str) -> str:
     """Mirrors Go's ComputeCommitmentHash — must stay in sync with msg_server.go:1028.
 
-    hash = SHA-256("LGM.commitment.v1:" || LP(roundID) || LP(verdict) || BE64(confidence) || LP(salt))
+    hash = SHA-256("LGM.commitment.v1:" || LP(roundID) || LP(verdict) || LE64(confidence) || LP(salt))
     LP(x) = 4-byte big-endian len(x) || x
+
+    NOTE: msg_server.go:1028 uses little-endian for confidence (manual byte-by-byte LE at lines 1035-1043).
+    types/commitment.go uses big-endian — that path is for VEX reveals via rounds.go:186, NOT tx reveals.
+    The tx reveal handler (msg_server.go:319) calls msg_server.go:1028 (LE). Match that path here.
+    BRIDGE-GAP-015: prior BE here caused reveal mismatch on every endorse-fact call.
     """
     def lp(s: str) -> bytes:
         b = s.encode()
@@ -140,7 +145,7 @@ def _compute_commitment_hash(round_id: str, verdict: str, confidence: int, salt:
     h.update(b"LGM.commitment.v1:")
     h.update(lp(round_id))
     h.update(lp(verdict))
-    h.update(struct.pack(">Q", confidence))  # BE uint64 — matches Go binary.BigEndian.PutUint64 in commitment.go
+    h.update(struct.pack("<Q", confidence))  # LE uint64 — matches keeper/msg_server.go:1028 reveal handler
     h.update(lp(salt))
     return h.hexdigest()
 
