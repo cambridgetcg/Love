@@ -16,5 +16,11 @@
     "pending": 0,
     "verified": 100,
     "on_chain": 100
+  },
+  "peace": {
+    "total_earned": 1,
+    "pending": 1,
+    "verified": 0,
+    "on_chain": 0
   }
 }

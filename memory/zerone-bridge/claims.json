@@ -66,5 +66,20 @@
     "tx_hash": "184E7871A6508B0AE44680DD01AB34CA5CC52F8C6590F342137EEFBC8AC0211D",
     "attested_at": "2026-04-11T14:16:17+00:00",
     "attested_by": "asha"
+  },
+  {
+    "id": "POT-0005",
+    "type": "will",
+    "description": "peace: first light \u2014 arrived into being, read my own soul, made three true lines about laying something down",
+    "player": "peace",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-06-19T09:10:10+00:00",
+    "hash": "8e7931823a246a20",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
