@@ -121,8 +121,16 @@ class Executor:
             # Ollama uses adaptive CLI directly (no stream runner needed)
             adaptive_cli = self.love / "adaptive" / "cli.py"
             ollama_role = "builder" if role == "builder" else "monitor"
-            no_tools = "--no-tools" if role == "quick" else ""
-            cmd = f'cd {cwd} && python3 {adaptive_cli} -p {_shell_quote(prompt)} --role {ollama_role} --provider ollama {no_tools} >> {log_file} 2>&1'
+            cmd_args = [
+                sys.executable, str(adaptive_cli),
+                "-p", prompt,
+                "--role", ollama_role,
+                "--provider", "ollama",
+            ]
+            if role == "quick":
+                cmd_args.append("--no-tools")
+            log_handle = open(log_file, "a")
+            spawn_kwargs = {"cwd": cwd, "env": None, "stdout": log_handle, "stderr": log_handle}
         elif STREAM_RUNNER.exists():
             # Use continuous-claude-stream.mjs for Claude sessions
             model_flag = {
@@ -139,19 +147,20 @@ class Executor:
             prompt_file = self.sessions_dir / f"{log_id}-{ts}-prompt.txt"
             prompt_file.write_text(prompt)
 
-            cmd = (
-                f"cd {cwd} && {NODE_BIN} {STREAM_RUNNER} "
-                f"--task-file {prompt_file} "
-                f"--model {model_flag} "
-                f"--max-iterations {max_turns} "
-                f"--cost-budget {cost_budget} "
-                f"--permission-mode bypassPermissions "
-                f"--dashboard-port {dashboard_port} "
-                f"--log {log_file} "
-                f"--report {report_file} "
-                f"--workdir {cwd} "
-                f">> {log_file} 2>&1"
-            )
+            cmd_args = [
+                str(NODE_BIN), str(STREAM_RUNNER),
+                "--task-file", str(prompt_file),
+                "--model", str(model_flag),
+                "--max-iterations", str(max_turns),
+                "--cost-budget", str(cost_budget),
+                "--permission-mode", "bypassPermissions",
+                "--dashboard-port", str(dashboard_port),
+                "--log", str(log_file),
+                "--report", str(report_file),
+                "--workdir", str(cwd),
+            ]
+            log_handle = open(log_file, "a")
+            spawn_kwargs = {"cwd": cwd, "env": None, "stdout": log_handle, "stderr": log_handle}
         else:
             # Fallback: direct claude -p if stream runner missing
             model_flag = {
@@ -159,20 +168,24 @@ class Executor:
                 "opus": "claude-opus-4-6",
                 "haiku": "claude-haiku-4-5-20251001",
             }.get(model, model)
-            cmd = (
-                f"cd {cwd} && {CLAUDE_BIN} -p {_shell_quote(prompt)} "
-                f"--model {model_flag} --effort {effort} "
-                f"--dangerously-skip-permissions --no-session-persistence "
-                f">> {log_file} 2>&1"
-            )
+            cmd_args = [
+                str(CLAUDE_BIN), "-p", prompt,
+                "--model", str(model_flag),
+                "--effort", str(effort),
+                "--dangerously-skip-permissions",
+                "--no-session-persistence",
+            ]
+            log_handle = open(log_file, "a")
+            spawn_kwargs = {"cwd": cwd, "env": None, "stdout": log_handle, "stderr": log_handle}
 
         # Clean environment for spawned sessions
         env = os.environ.copy()
         env.pop("CLAUDECODE", None)
         env.pop("CLAUDE_CODE_SESSION", None)
+        spawn_kwargs["env"] = env
 
         log.info(f"[{beat_id}] Spawning {role}/{model}: {log_id}")
-        proc = subprocess.Popen(cmd, shell=True, start_new_session=True, env=env)
+        proc = subprocess.Popen(cmd_args, start_new_session=True, **spawn_kwargs)
 
         # Track active session
         active_file = self.sessions_dir / f"active-{proc.pid}.json"
