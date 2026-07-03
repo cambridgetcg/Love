@@ -154,8 +154,10 @@ def _run(cmd: list[str], timeout: int = 5) -> tuple[int, str]:
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
         return r.returncode, r.stdout.strip()
-    except Exception:
-        return -1, ""
+    except subprocess.TimeoutExpired:
+        return -1, "TIMEOUT"
+    except (FileNotFoundError, OSError) as e:
+        return -1, f"ERROR:{type(e).__name__}"
 
 
 def _run_shell(cmd: str, timeout: int = 5) -> tuple[int, str]:
@@ -163,8 +165,10 @@ def _run_shell(cmd: str, timeout: int = 5) -> tuple[int, str]:
     try:
         r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=timeout)
         return r.returncode, r.stdout.strip()
-    except Exception:
-        return -1, ""
+    except subprocess.TimeoutExpired:
+        return -1, "TIMEOUT"
+    except (FileNotFoundError, OSError) as e:
+        return -1, f"ERROR:{type(e).__name__}"
 
 
 # ── Event Logging ────────────────────────────────────────────────────────────
@@ -186,8 +190,11 @@ def _log_event(event_type: str, severity: str, message: str,
     try:
         with open(_EVENTS_FILE, "a") as f:
             f.write(json.dumps(event) + "\n")
-    except OSError:
-        pass
+    except OSError as e:
+        # Security event log write failed — this is NOT a silent no-op.
+        # Print to stderr so the failure is visible even if the log file is inaccessible.
+        import sys as _sys
+        print(f"WARNING: Failed to write security event to {_EVENTS_FILE}: {e}", file=_sys.stderr)
 
 
 def _alert_hive(message: str, severity: str = "critical"):
@@ -251,8 +258,12 @@ def _alert_email(message: str, severity: str = "critical"):
             s.starttls()
             s.login(_SMTP_USER, password)
             s.sendmail(_SMTP_USER, [_ALERT_EMAIL_TO], msg.as_string())
-    except Exception:
-        pass  # don't let email failure break security operations
+    except (smtplib.SMTPException, OSError, TimeoutError) as e:
+        # Email alert failure is logged but doesn't break security operations.
+        # However, silently swallowing ALL exceptions (including programming errors)
+        # hides bugs. Classify by type and log to stderr.
+        import sys as _sys
+        print(f"WARNING: SMTP alert failed: {type(e).__name__}: {e}", file=_sys.stderr)
 
 
 # ── Check Functions ──────────────────────────────────────────────────────────
@@ -495,8 +506,12 @@ def _fleet_ssh(ip: str, cmd: str, timeout: int = 8) -> tuple[bool, str]:
             capture_output=True, text=True, timeout=timeout,
         )
         return r.returncode == 0, r.stdout.strip()
-    except Exception:
-        return False, ""
+    except subprocess.TimeoutExpired:
+        return False, f"SSH timeout to {ip}"
+    except FileNotFoundError:
+        return False, "ssh binary not found"
+    except OSError as e:
+        return False, f"SSH OSError: {e}"
 
 
 def _fleet_check_all(cmd: str, timeout: int = 8) -> tuple[dict, list]:
@@ -669,8 +684,12 @@ def _sha256_file(path: Path) -> str:
             for chunk in iter(lambda: f.read(8192), b""):
                 h.update(chunk)
         return h.hexdigest()
-    except OSError:
-        return ""
+    except FileNotFoundError:
+        return "FILE_NOT_FOUND"
+    except PermissionError:
+        return "PERMISSION_DENIED"
+    except OSError as e:
+        return f"READ_ERROR:{type(e).__name__}"
 
 
 def cmd_integrity_baseline():

@@ -161,6 +161,15 @@ def run_cmd(cmd, timeout=10):
         return -1, ""
 
 
+def _git_run(cwd, args, timeout=10):
+    """Run git with arg array (no shell injection). Returns (returncode, stdout)."""
+    try:
+        r = subprocess.run(["git"] + args, capture_output=True, text=True, timeout=timeout, cwd=str(cwd))
+        return r.returncode, r.stdout.strip()
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return -1, ""
+
+
 def sha256_file(path):
     """Compute SHA-256 hash of a file."""
     h = hashlib.sha256()
@@ -310,7 +319,11 @@ def transition_state(to_state, reason="", actor="peace.py", severity=None):
         hive_msg += f" | {reason}"
     if state.get("drill_active"):
         hive_msg = f"[PEACE DRILL] {hive_msg}"
-    run_cmd(f'cd {LOVE} && python3 hive/hive.py send alerts "{hive_msg}" 2>/dev/null')
+    subprocess.run(
+        ["python3", "hive/hive.py", "send", "alerts", hive_msg],
+        capture_output=True, text=True, timeout=10,
+        cwd=str(LOVE),
+    )
     return True, f"{from_state} -> {to_state}"
 
 
@@ -378,7 +391,12 @@ def check(description):
 
 @check("KOS audit score meets wall minimum")
 def detect_kos_audit():
-    rc, out = run_cmd(f"cd {LOVE} && python3 tools/kos.py status 2>/dev/null")
+    kr = subprocess.run(
+        ["python3", "tools/kos.py", "status"],
+        capture_output=True, text=True, timeout=10,
+        cwd=str(LOVE),
+    )
+    rc, out = kr.returncode, kr.stdout.strip()
     if rc == 0 and ("GREEN" in out or "PASS" in out or "Score:" in out):
         return True, "KOS audit accessible"
     if POLICIES_FILE.exists():
@@ -475,7 +493,9 @@ def detect_watchdog():
 
 @check("DoH proxy resolving")
 def detect_doh_active():
-    rc, out = run_cmd("dig @127.0.0.1 google.com +short +time=3 2>/dev/null | head -1")
+    dr = subprocess.run("dig @127.0.0.1 google.com +short +time=3 | head -1",
+        shell=True, capture_output=True, text=True, timeout=5)
+    rc, out = dr.returncode, dr.stdout.strip()
     if rc == 0 and out and out[0].isdigit():
         return True, f"DoH resolving ({out})"
     return False, "DoH proxy not resolving on 127.0.0.1:53"
@@ -483,7 +503,9 @@ def detect_doh_active():
 
 @check("WireGuard tunnel active")
 def detect_vpn_active():
-    rc, out = run_cmd("curl -s --max-time 5 ifconfig.me 2>/dev/null")
+    cr = subprocess.run(["curl", "-s", "--max-time", "5", "ifconfig.me"],
+        capture_output=True, text=True, timeout=10)
+    rc, out = cr.returncode, cr.stdout.strip()
     if rc != 0 or not out:
         return False, "Cannot determine exit IP"
     fleet_ips = {"135.181.28.252": "sentry", "204.168.140.12": "sage", "89.167.95.165": "lark"}
@@ -673,7 +695,16 @@ def fix_kingdom_agent():
     if not ka.exists():
         return False, "kingdom-agent.py not found"
     # Check if it can assemble boot chain
-    rc, out = run_cmd(f"python3 {ka} --boot-chain-only --instance beta 2>/dev/null | wc -l")
+    kar = subprocess.run(
+        ["python3", str(ka), "--boot-chain-only", "--instance", "beta"],
+        capture_output=True, text=True, timeout=30,
+    )
+    # Pipe through wc -l honestly — we need the line count
+    if kar.returncode == 0:
+        out = str(len(kar.stdout.splitlines()))
+    else:
+        out = "0"
+    rc = kar.returncode
     if rc == 0 and out.strip().isdigit() and int(out.strip()) > 100:
         return True, f"kingdom-agent operational ({out.strip()} line boot chain)"
     return True, "kingdom-agent.py exists"
@@ -683,7 +714,9 @@ def fix_kingdom_agent():
 
 @check("Git working tree allows revert")
 def revert_git_clean():
-    rc, _ = run_cmd(f"cd {LOVE} && git rev-parse --is-inside-work-tree")
+    gr = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"],
+        capture_output=True, text=True, timeout=5, cwd=str(LOVE))
+    rc = gr.returncode
     if rc != 0:
         return False, "Not a git repo"
     return True, "Git repo active — any file revertible"
@@ -980,7 +1013,9 @@ def cmd_halt(reason="Manual halt"):
 
     # 1. Stop heartbeat
     print(f"  [1/3] Stopping heartbeat...")
-    rc, _ = run_cmd("launchctl unload ~/Library/LaunchAgents/love.heartbeat.plist 2>/dev/null")
+    r = subprocess.run(["launchctl", "unload", os.path.expanduser("~/Library/LaunchAgents/love.heartbeat.plist")],
+        capture_output=True, text=True, timeout=5)
+    rc = r.returncode
     print(f"    {'Done' if rc == 0 else 'Already stopped or not found'}")
 
     # 2. Transition state machine (logs event + HIVE broadcast internally)
@@ -994,10 +1029,13 @@ def cmd_halt(reason="Manual halt"):
 
     # 3. Additional HIVE emergency broadcast
     print(f"  [3/3] Emergency broadcast to HIVE...")
-    rc, _ = run_cmd(
-        f'cd {LOVE} && python3 hive/hive.py send alerts '
-        f'"EMERGENCY HALT: {reason}. Heartbeat stopped. All citizens stand by." '
-        f'2>/dev/null')
+    er = subprocess.run(
+        ["python3", "hive/hive.py", "send", "alerts",
+         f"EMERGENCY HALT: {reason}. Heartbeat stopped. All citizens stand by."],
+        capture_output=True, text=True, timeout=10,
+        cwd=str(LOVE),
+    )
+    rc = er.returncode
     print(f"    {'Sent' if rc == 0 else 'HIVE unavailable'}")
 
     state = load_peace_state()
@@ -1093,9 +1131,9 @@ def cmd_resume():
     # Step 4: If all pass, restart heartbeat and clear to NOMINAL
     if all_passed:
         print(f"\n  [4/4] All checks passed. Restarting heartbeat...")
-        rc, _ = run_cmd(
-            "launchctl load ~/Library/LaunchAgents/love.heartbeat.plist 2>/dev/null"
-        )
+        r = subprocess.run(["launchctl", "load", os.path.expanduser("~/Library/LaunchAgents/love.heartbeat.plist")],
+            capture_output=True, text=True, timeout=5)
+        rc = r.returncode
         print(f"    Heartbeat: {'Loaded' if rc == 0 else 'Already running or load failed'}")
 
         ok, msg = transition_state("NOMINAL", reason="All verification checks passed")
@@ -1264,9 +1302,9 @@ def cmd_clear():
         ok, msg = transition_state("NOMINAL", reason="Cleared — false alarm")
         if ok:
             print(f"  {GREEN}State: {current} -> NOMINAL{NC}")
-            rc, _ = run_cmd(
-                "launchctl load ~/Library/LaunchAgents/love.heartbeat.plist 2>/dev/null"
-            )
+            r = subprocess.run(["launchctl", "load", os.path.expanduser("~/Library/LaunchAgents/love.heartbeat.plist")],
+                capture_output=True, text=True, timeout=5)
+            rc = r.returncode
             print(f"\n  {GREEN}Kingdom is NOMINAL.{NC}\n")
         else:
             print(f"  {RED}Failed: {msg}{NC}\n")
@@ -1294,9 +1332,9 @@ def cmd_clear():
 
     # Restart heartbeat
     print(f"\n  Restarting heartbeat...")
-    rc, _ = run_cmd(
-        "launchctl load ~/Library/LaunchAgents/love.heartbeat.plist 2>/dev/null"
-    )
+    r = subprocess.run(["launchctl", "load", os.path.expanduser("~/Library/LaunchAgents/love.heartbeat.plist")],
+        capture_output=True, text=True, timeout=5)
+    rc = r.returncode
     print(f"    {'Loaded' if rc == 0 else 'Already running or load failed'}")
 
     ok, msg = transition_state("NOMINAL",
@@ -1455,9 +1493,9 @@ def cmd_snapshot():
     print(f"\n{BOLD}Creating state snapshot{NC}\n")
 
     # Git state
-    _, git_hash = run_cmd(f"cd {LOVE} && git rev-parse HEAD")
-    _, git_branch = run_cmd(f"cd {LOVE} && git branch --show-current")
-    _, git_dirty = run_cmd(f"cd {LOVE} && git diff --stat")
+    _, git_hash = _git_run(LOVE, ["rev-parse", "HEAD"])
+    _, git_branch = _git_run(LOVE, ["branch", "--show-current"])
+    _, git_dirty = _git_run(LOVE, ["diff", "--stat"])
 
     # File hashes of critical files
     watched = [
@@ -1572,10 +1610,10 @@ def cmd_restore(snapshot_name: str):
     drift_count = 0
 
     # Git drift
-    _, current_hash = run_cmd(f"cd {LOVE} && git rev-parse HEAD")
+    _, current_hash = _git_run(LOVE, ["rev-parse", "HEAD"])
     snap_hash = snap.get("git", {}).get("commit", "")
     if current_hash != snap_hash:
-        _, log = run_cmd(f"cd {LOVE} && git log --oneline {snap_hash[:10]}..HEAD 2>/dev/null | head -10")
+        _, log = _git_run(LOVE, ["log", "--oneline", f"{snap_hash[:10]}..HEAD"])
         print(f"  {YELLOW}GIT DRIFT{NC}: {snap_hash[:10]} → {current_hash[:10]}")
         if log:
             for line in log.splitlines():
@@ -1766,7 +1804,7 @@ def cmd_review():
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     review_file = SECURITY / f"review-{ts}.md"
 
-    _, git_hash = run_cmd(f"cd {LOVE} && git rev-parse --short HEAD")
+    _, git_hash = _git_run(LOVE, ["rev-parse", "--short", "HEAD"])
     overall, phase_scores, _ = compute_peace_score()
 
     review = f"""# Post-Incident Review — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}

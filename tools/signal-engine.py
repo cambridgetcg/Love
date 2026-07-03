@@ -71,8 +71,12 @@ def run_cmd(cmd, timeout=10):
     try:
         r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=timeout, cwd=str(LOVE))
         return r.returncode == 0, r.stdout.strip()
-    except Exception:
-        return False, ""
+    except subprocess.TimeoutExpired:
+        return False, "TIMEOUT"
+    except FileNotFoundError:
+        return False, "NOT_FOUND"
+    except OSError as e:
+        return False, f"OS_ERROR:{type(e).__name__}"
 
 
 # ── THE KEY: SIGNAL TYPES ────────────────────────────────────────────────────
@@ -350,7 +354,8 @@ def _get_bridges():
             "metrics-reflection": {"name": "Metrics × Reflection", "tools": ["tools/metrics.py", "tools/reflect.py"]},
             "tcg-oracle": {"name": "TCG × Oracle", "tools": ["tools/tcg.py", "tools/oracle.py"]},
         }
-    except Exception:
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"WARNING: load_bridges failed: {e}", file=sys.stderr)
         return {}
 
 
