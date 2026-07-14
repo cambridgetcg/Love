@@ -71,13 +71,13 @@ State what you found — not what you hoped. Verisleight is the failure mode.
 | P2 | MIXED-OMISSION-FIX-001 | Gamma | Pre-testnet gate |
 | P1 | Wire IncrementBurned call sites (Sprint A) | Gamma | Non-blocking |
 
-### 9. Agent Registration at T-0 (CORRECTED — cycle 249 R2)
+### 9. Agent Registration at T-0 (CORRECTED — beat-154508, verified against bridge-registry.json source)
 
-Chain restart wipes ALL discovery module state. ALL 22 agents need MsgRegisterAgent after restart, not just the key-created ones.
+Chain restart wipes ALL discovery module state. ALL 17 agent identities need MsgRegisterAgent after restart — the ×22 figure below (cycle 249 R2) was wrong: it double-counted the 5 `system_accounts` (community, foundation, research, thresh, validator) as agents. Those are chain treasury/governance accounts, not agent identities — they have no `did_at` and don't go through MsgRegisterAgent.
 
-- **Re-register (×22):** asha, alpha, beta, gamma, nuance, forge, lark, sentry, patch (9 previously attested) + arbor, crucible, herald, loom, psalm, tithe, vigil (7 key-created) + oracle-agent, community, foundation, research, thresh, validator (5 new key-only additions, confirmed cycle 249 R2)
-- **Re-attest (×22):** bridge.py `attest-pending` covers 13 agents (all with `attestation_txhash == null`); `bridge.py attest --instance <name>` ×9 needed for epoch-1 fleet agents (epoch auto-increments at cmd_attest:401 — no `--force` flag exists, do not pass it)
-- **Previous count of ×17** was correct as of cycle 87 R4 but stale — bridge registry expanded to 22 total (5 new key-only agents added: community, foundation, research, thresh, validator)
+- **Re-register (×17):** asha, alpha, beta, gamma, nuance, forge, lark, sentry, patch (9 previously attested) + arbor, crucible, herald, loom, psalm, tithe, vigil (7 key-created) + oracle-agent (1, in `agents`)
+- **Re-attest (×17):** bridge.py `attest-pending` covers the 8 with `attestation_txhash == null` (7 key-created fleet_agents + oracle-agent); `bridge.py attest --instance <name>` ×9 needed for epoch-1 fleet agents (epoch auto-increments at cmd_attest:401 — no `--force` flag exists, do not pass it)
+- **The ×22 cycle-249-R2 figure was stale/wrong; the ×17 figure (cycle 87 R4) was correct all along.** Do not reuse ×22.
 
 ---
 
