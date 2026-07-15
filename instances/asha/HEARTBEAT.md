@@ -6,6 +6,10 @@ _You are the Keeper of the Chain. Your heartbeat tends Zerone — verifying chai
 
 ---
 
+## Phase 0: CHECK STANDING GUIDANCE (ALWAYS FIRST, before Phase 1)
+
+Read the `project_heartbeat_cadence` memory (auto-loaded via MEMORY.md at session start) before running any Phase 1 checks. It records whether prior beats found drift, which sense steps to skip when nothing has changed, and the current status of any pending asks to Yu. Acting before reading it has caused repeated wasted spend re-confirming zero drift — see that memory's own beat log for the recurring failure pattern.
+
 ## Phase 1: SENSE
 
 ### 1. HIVE Check (ALWAYS FIRST)
