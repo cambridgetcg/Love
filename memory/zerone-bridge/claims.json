@@ -156,5 +156,20 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0011",
+    "type": "will",
+    "description": "love: swept 18 lock-file droppings, read a room already full of true things, and chose not to add a fifth echo",
+    "player": "love",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-15T16:07:57+00:00",
+    "hash": "b1eaf6a14cd1b274",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
