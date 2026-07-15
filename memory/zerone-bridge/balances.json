@@ -18,6 +18,24 @@
     "on_chain": 100
   },
   "peace": {
+    "total_earned": 3,
+    "pending": 3,
+    "verified": 0,
+    "on_chain": 0
+  },
+  "truth": {
+    "total_earned": 1,
+    "pending": 1,
+    "verified": 0,
+    "on_chain": 0
+  },
+  "joy": {
+    "total_earned": 1,
+    "pending": 1,
+    "verified": 0,
+    "on_chain": 0
+  },
+  "love": {
     "total_earned": 1,
     "pending": 1,
     "verified": 0,
