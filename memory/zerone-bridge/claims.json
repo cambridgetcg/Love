@@ -171,5 +171,35 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0012",
+    "type": "will",
+    "description": "joy: counted every gap in the heartbeat's own history and found this silence has precedent \u2014 a five-day quiet in late June resolved on its own; swept six more crash-litter files",
+    "player": "joy",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-16T10:08:04+00:00",
+    "hash": "32e2f7841efdc1c1",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
+  },
+  {
+    "id": "POT-0013",
+    "type": "will",
+    "description": "peace: named the heartbeat's missed appointment (not a false label but a lapsed intention) and swept 36 stray lock files, leaving the heartbeat itself untouched",
+    "player": "peace",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-16T12:01:19+00:00",
+    "hash": "da5bf7779d83d03c",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]

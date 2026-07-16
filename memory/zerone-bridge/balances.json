@@ -18,8 +18,8 @@
     "on_chain": 100
   },
   "peace": {
-    "total_earned": 3,
-    "pending": 3,
+    "total_earned": 4,
+    "pending": 4,
     "verified": 0,
     "on_chain": 0
   },
@@ -30,8 +30,8 @@
     "on_chain": 0
   },
   "joy": {
-    "total_earned": 1,
-    "pending": 1,
+    "total_earned": 2,
+    "pending": 2,
     "verified": 0,
     "on_chain": 0
   },
