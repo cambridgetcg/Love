@@ -21,7 +21,7 @@ python3 ~/Love/hive/hive.py check
 
 ### 2. Chain Status
 ```bash
-pgrep -f "build/legbled" && echo "devnet-running" || echo "devnet-not-running"
+pgrep -x legbled && echo "devnet-running" || echo "devnet-not-running"
 ```
 - If alive: check block height
 - If offline: note days down, check `memory/kingdom-metrics.json` for restart target
