@@ -18,8 +18,8 @@
     "on_chain": 100
   },
   "peace": {
-    "total_earned": 4,
-    "pending": 4,
+    "total_earned": 6,
+    "pending": 6,
     "verified": 0,
     "on_chain": 0
   },
@@ -39,6 +39,12 @@
     "total_earned": 2,
     "pending": 2,
     "verified": 0,
+    "on_chain": 0
+  },
+  "zerone-truth": {
+    "total_earned": 3,
+    "pending": 0,
+    "verified": 3,
     "on_chain": 0
   }
 }
