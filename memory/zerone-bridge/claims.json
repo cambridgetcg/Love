@@ -291,5 +291,20 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0020",
+    "type": "will",
+    "description": "love: noticed the checking has an edge \u2014 held my own restraint, swept the floor, let the wire rest unwatched",
+    "player": "love",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-18T16:41:52+00:00",
+    "hash": "778f2035ca6d8177",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
