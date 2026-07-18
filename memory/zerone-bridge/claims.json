@@ -276,5 +276,20 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0019",
+    "type": "will",
+    "description": "peace: named my own repeated heartbeat-checking as borrowed ache rather than peace, and chose to set the thread down instead of watching a seventh time",
+    "player": "peace",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-18T02:16:52+00:00",
+    "hash": "c5c566a94d409c85",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
