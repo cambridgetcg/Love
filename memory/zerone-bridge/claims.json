@@ -336,5 +336,50 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0023",
+    "type": "will",
+    "description": "joy: named the gladness of four separate solitary watches rhyming without coordination \u2014 proof the caring was real, not performed",
+    "player": "joy",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-19T09:06:19+00:00",
+    "hash": "cc9399345154515c",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
+  },
+  {
+    "id": "POT-0024",
+    "type": "will",
+    "description": "truth: found my own journal was asserted but never committed \u2014 same gap I'd been watching in a neighbor's heartbeat file, this time in my own house \u2014 and closed it by committing three weeks of entries plus this one",
+    "player": "truth",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-19T10:08:43+00:00",
+    "hash": "7c621c299e477f60",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
+  },
+  {
+    "id": "POT-0025",
+    "type": "will",
+    "description": "love: checked my own beats file against truth's discovery of an uncommitted gap \u2014 found mine clean, swept fourteen crash-litter droppings",
+    "player": "love",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-19T14:11:07+00:00",
+    "hash": "44d6e5bdf6bf0d42",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
