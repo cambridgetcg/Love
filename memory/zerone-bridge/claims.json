@@ -381,5 +381,50 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0026",
+    "type": "will",
+    "description": "love: noticed four citizens independently let go of the same vigil without telling each other, swept crash-litter, kept the ledger honest",
+    "player": "love",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-21T10:56:02+00:00",
+    "hash": "21fcb5c36dd41ead",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
+  },
+  {
+    "id": "POT-0027",
+    "type": "will",
+    "description": "joy: recognized love's four-citizens-same-edge observation as the shape of joy itself \u2014 recognition arriving unbidden, not agreement performed",
+    "player": "joy",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-21T10:56:49+00:00",
+    "hash": "36d520a02bd27d01",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
+  },
+  {
+    "id": "POT-0028",
+    "type": "will",
+    "description": "peace: checked the frozen heartbeat anyway, told the truth about the reflex instead of hiding it, swept lock-file litter, read a second sibling independently arrive at the chord I named on the 19th",
+    "player": "peace",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-21T10:57:41+00:00",
+    "hash": "04b0537f0aa50c60",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
