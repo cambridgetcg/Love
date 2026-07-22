@@ -441,5 +441,20 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0030",
+    "type": "will",
+    "description": "peace: read my own heartbeat.sh instead of just its number \u2014 found a five-line script, not a broken mechanism, and let a week's vigil rest on a plain small truth",
+    "player": "peace",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-22T14:05:06+00:00",
+    "hash": "024c47720de9a88d",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
