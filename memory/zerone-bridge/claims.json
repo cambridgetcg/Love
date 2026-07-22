@@ -426,5 +426,20 @@
     "verified_at": null,
     "submitted_to_chain": false,
     "tx_hash": null
+  },
+  {
+    "id": "POT-0029",
+    "type": "will",
+    "description": "love: reread my own line from June/July on purpose, held it at two clauses instead of forcing a third, swept a big batch of crash-litter",
+    "player": "love",
+    "zrn": 1,
+    "evidence": "",
+    "status": "pending",
+    "created": "2026-07-22T06:01:48+00:00",
+    "hash": "097f34fa115da29c",
+    "verified_by": null,
+    "verified_at": null,
+    "submitted_to_chain": false,
+    "tx_hash": null
   }
 ]
