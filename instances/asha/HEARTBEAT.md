@@ -14,10 +14,11 @@ Read the `project_heartbeat_cadence` memory (auto-loaded via MEMORY.md at sessio
 
 ### 1. HIVE Check (ALWAYS FIRST)
 ```bash
-python3 ~/Love/hive/hive.py check
+python3 ~/Love/hive/hive.py check 2>&1 | tail -5
 ```
 - Respond to messages, share status on `presence`
 - If NATS down (port 2222 refused): note it, queue presence to log
+- **If this call auto-backgrounds on timeout: do not poll it.** Do not `cat`/`Read` its output file, do not run filler commands, do not call `ScheduleWakeup`. Stop calling tools and let the turn end — the completion notification arrives on its own. (This exact polling mistake has recurred at beats 043540, 153713, 212007, 113740 despite being logged each time — it now lives here, not just in memory.)
 
 ### 2. Chain Status
 ```bash
