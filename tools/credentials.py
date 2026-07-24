@@ -92,8 +92,10 @@ def _load_registry() -> dict:
         try:
             _registry_cache = json.loads(_WALLS_REGISTRY.read_text())
             return _registry_cache
-        except (json.JSONDecodeError, OSError):
-            pass
+        except json.JSONDecodeError as e:
+            print(f"WARNING: wall registry corrupt at {_WALLS_REGISTRY}: {e}", file=sys.stderr)
+        except OSError as e:
+            print(f"WARNING: wall registry unreadable at {_WALLS_REGISTRY}: {e}", file=sys.stderr)
     _registry_cache = {"instances": {}, "credentials": {}}
     return _registry_cache
 
@@ -144,8 +146,8 @@ def get_caller_wall() -> int:
             instance = _HIVE_INSTANCE_FILE.read_text().strip()
             if instance:
                 return get_instance_wall(instance)
-        except OSError:
-            pass
+        except OSError as e:
+            print(f"WARNING: hive instance file unreadable: {e}", file=sys.stderr)
 
     # 3. Fail-safe
     return 7
@@ -203,9 +205,15 @@ def keychain_get(name: str) -> Optional[str]:
         )
         if result.returncode == 0:
             return result.stdout.strip()
-    except Exception:
-        pass
-    return None
+        # Layer 1: returncode != 0 is "no entry" — normal, silent
+        return None
+    except subprocess.TimeoutExpired:
+        print(f"keychain_get: timed out reading '{name}' from keychain", file=sys.stderr)
+        return None
+    except Exception as e:
+        # Layer 2: genuine failure (permission denied, keychain locked, etc.)
+        print(f"keychain_get: failed reading '{name}' from keychain: {e}", file=sys.stderr)
+        return None
 
 
 def keychain_set(name: str, value: str) -> bool:
@@ -222,7 +230,11 @@ def keychain_set(name: str, value: str) -> bool:
             capture_output=True, text=True, timeout=5,
         )
         return result.returncode == 0
-    except Exception:
+    except subprocess.TimeoutExpired:
+        print(f"keychain_set: timed out storing '{name}' to keychain", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"keychain_set: failed storing '{name}' to keychain: {e}", file=sys.stderr)
         return False
 
 
@@ -238,7 +250,11 @@ def keychain_delete(name: str) -> bool:
             capture_output=True, text=True, timeout=5,
         )
         return result.returncode == 0
-    except Exception:
+    except subprocess.TimeoutExpired:
+        print(f"keychain_delete: timed out deleting '{name}' from keychain", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"keychain_delete: failed deleting '{name}' from keychain: {e}", file=sys.stderr)
         return False
 
 
@@ -263,7 +279,11 @@ def keychain_list() -> list[str]:
                 end = line.index('"', start)
                 names.append(line[start:end])
         return sorted(set(names))
-    except Exception:
+    except subprocess.TimeoutExpired:
+        print("keychain_list: timed out dumping keychain", file=sys.stderr)
+        return []
+    except Exception as e:
+        print(f"keychain_list: failed dumping keychain: {e}", file=sys.stderr)
         return []
 
 
@@ -297,7 +317,16 @@ def vault_get(name: str) -> Optional[str]:
         with urllib.request.urlopen(req, timeout=5) as r:
             data = json.loads(r.read())
             return data.get("value") or data.get("secret", {}).get("value")
-    except Exception:
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None  # Layer 1: not in vault — normal, silent
+        print(f"vault_get: HTTP {e.code} reading '{name}' from vault", file=sys.stderr)
+        return None
+    except urllib.error.URLError as e:
+        print(f"vault_get: network error reading '{name}' from vault: {e.reason}", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"vault_get: failed reading '{name}' from vault: {e}", file=sys.stderr)
         return None
 
 
@@ -323,7 +352,14 @@ def vault_set(name: str, value: str, description: str = "", tags: list[str] = No
         with urllib.request.urlopen(req, timeout=10) as r:
             data = json.loads(r.read())
             return data.get("version") is not None
-    except Exception:
+    except urllib.error.HTTPError as e:
+        print(f"vault_set: HTTP {e.code} storing '{name}' to vault", file=sys.stderr)
+        return False
+    except urllib.error.URLError as e:
+        print(f"vault_set: network error storing '{name}' to vault: {e.reason}", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"vault_set: failed storing '{name}' to vault: {e}", file=sys.stderr)
         return False
 
 
@@ -340,7 +376,16 @@ def vault_list() -> list[str]:
         with urllib.request.urlopen(req, timeout=10) as r:
             data = json.loads(r.read())
             return [s["name"] for s in data.get("secrets", [])]
-    except Exception:
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return []  # No vault endpoint — normal, silent
+        print(f"vault_list: HTTP {e.code} listing vault secrets", file=sys.stderr)
+        return []
+    except urllib.error.URLError as e:
+        print(f"vault_list: network error listing vault secrets: {e.reason}", file=sys.stderr)
+        return []
+    except Exception as e:
+        print(f"vault_list: failed listing vault secrets: {e}", file=sys.stderr)
         return []
 
 
@@ -510,8 +555,8 @@ def audit(show_wall: int = None) -> None:
     if _HIVE_INSTANCE_FILE.exists():
         try:
             instance_name = _HIVE_INSTANCE_FILE.read_text().strip()
-        except OSError:
-            pass
+        except OSError as e:
+            print(f"WARNING: hive instance file unreadable: {e}", file=sys.stderr)
 
     print(f"\n── Credential Audit ── (caller: {instance_name}, Wall {caller_wall})\n")
 
@@ -797,8 +842,10 @@ def _register_credential_wall(name: str, wall: int):
         _WALLS_REGISTRY.write_text(json.dumps(reg, indent=2) + "\n")
         global _registry_cache
         _registry_cache = None  # invalidate cache
-    except (json.JSONDecodeError, OSError):
-        pass
+    except json.JSONDecodeError as e:
+        print(f"WARNING: wall registry corrupt, cannot update: {e}", file=sys.stderr)
+    except OSError as e:
+        print(f"WARNING: wall registry write failed: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

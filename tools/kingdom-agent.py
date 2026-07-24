@@ -58,7 +58,7 @@ def _get_instance_wall(instance_dir: Path) -> int:
         cfg = json.loads((LOVE_DIR / "love.json").read_text())
         name = instance_dir.name
         return cfg.get("instances", {}).get(name, {}).get("wall", 1)
-    except Exception:
+    except (json.JSONDecodeError, OSError, KeyError):
         return 1
 
 
@@ -523,8 +523,12 @@ class OpenAIBackend:
                         "message": f"OPENAI_BASE_URL rejected: {url}",
                         "source": "kingdom-agent",
                     }) + "\n")
-        except Exception:
-            pass
+        except (OSError, json.JSONDecodeError) as e:
+            # Security event log write failed — print to stderr as fallback.
+            # Silently swallowing this would hide a backend hijack attempt
+            # when the log is inaccessible (which itself could be an attack).
+            print(f"CRITICAL: Failed to log backend_hijack_attempt for '{url}': {e}",
+                  file=sys.stderr)
         return "https://api.openai.com/v1"
 
     def _chat(self, messages: list, tools: list = None) -> dict:

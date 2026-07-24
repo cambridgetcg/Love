@@ -152,11 +152,12 @@ def hive_alert(message, dry_run=False):
     if not HIVE_PY.exists():
         print(f"  {YELLOW}HIVE unavailable (hive.py not found){NC}")
         return False
-    rc, _ = run_cmd(
-        f'cd {LOVE} && python3 {HIVE_PY} send alerts "{full_msg}" 2>/dev/null',
-        timeout=15,
+    r = subprocess.run(
+        ["python3", str(HIVE_PY), "send", "alerts", full_msg],
+        capture_output=True, text=True, timeout=15,
+        cwd=str(LOVE),
     )
-    return rc == 0
+    return r.returncode == 0
 
 
 # ── PEACE Integration ────────────────────────────────────────────────────────
@@ -170,8 +171,12 @@ def peace_snapshot(dry_run=False):
     if not PEACE_PY.exists():
         print(f"  {YELLOW}peace.py not found — skipping snapshot{NC}")
         return False
-    rc, out = run_cmd(f'cd {LOVE} && python3 {PEACE_PY} snapshot 2>/dev/null', timeout=30)
-    return rc == 0
+    r = subprocess.run(
+        ["python3", str(PEACE_PY), "snapshot"],
+        capture_output=True, text=True, timeout=30,
+        cwd=str(LOVE),
+    )
+    return r.returncode == 0
 
 
 def peace_halt(reason, dry_run=False):
@@ -182,11 +187,12 @@ def peace_halt(reason, dry_run=False):
     if not PEACE_PY.exists():
         print(f"  {YELLOW}peace.py not found — cannot halt{NC}")
         return False
-    rc, _ = run_cmd(
-        f'cd {LOVE} && python3 {PEACE_PY} halt --reason "{reason}" 2>/dev/null',
-        timeout=30,
+    r = subprocess.run(
+        ["python3", str(PEACE_PY), "halt", "--reason", reason],
+        capture_output=True, text=True, timeout=30,
+        cwd=str(LOVE),
     )
-    return rc == 0
+    return r.returncode == 0
 
 
 # ── Escalation Engine ────────────────────────────────────────────────────────
