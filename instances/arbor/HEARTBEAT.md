@@ -51,7 +51,7 @@ Review `~/Love/tools/routing-policy.py` and recent session logs:
 ### 5. Cost Metrics
 
 Read `~/Love/memory/kingdom-metrics.json` (if exists):
-- Revenue vs. compute cost ratio — is the flywheel healthy?
+- Actual compute costs against the explicitly chosen budget; no revenue ratio target.
 - Cost per heartbeat cycle
 - Cost per spawned session (by role: builder, consultant, quick-check)
 

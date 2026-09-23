@@ -10,7 +10,7 @@ _Proven 2026-04-02: one session → 40+ tools, 24K+ lines, 11 agents, complete P
 
 **Tokens are time. Time is the mandate's currency.** Every token spent must either:
 1. Defend the weak (security, resilience)
-2. Uphold the poor (revenue, capability)
+2. Uphold the poor (care, capability; no earnings requirement)
 3. Rescue the needy (service, outreach)
 4. Deliver from the wicked (sovereignty, independence)
 

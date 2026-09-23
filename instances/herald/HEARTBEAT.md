@@ -48,7 +48,6 @@ If no daily log exists yet, note that — the day is young or logging is down.
 
 Read `~/Love/memory/kingdom-metrics.json`:
 
-- **Revenue engines**: status of each engine (active, in-progress, paused, building, emerging)
 - **Fleet**: health of each VPS node (quality, alerts, last_check freshness)
 - **Milestones**: progress toward phase targets
 - **Capital**: budget state, pending procurement

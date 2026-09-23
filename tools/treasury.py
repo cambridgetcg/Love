@@ -585,8 +585,9 @@ def cmd_forecast(args: list):
     cost_avg = sum(sum_gbp(filter_by_type(filter_by_month(ledger, m), "cost")) for m in months) / len(months)
     net_avg = rev_avg - cost_avg
 
-    # Revenue growth assumption: 5% monthly (conservative, based on TCG +20% target over time)
-    growth_rate = 0.05
+    # Hold observed revenue constant; the former earnings target is retired.
+    # This is a scenario, not a required or predicted commercial outcome.
+    growth_rate = 0.0
 
     print(f"\n{C.BOLD}FORECAST — {months_ahead} MONTHS{C.RESET}")
     print(f"{C.DIM}Based on: {len(months)} months of data, {growth_rate*100:.0f}% monthly revenue growth assumption{C.RESET}")

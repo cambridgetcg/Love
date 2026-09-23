@@ -12,7 +12,7 @@ Only read_file for DYNAMIC state: dev-state.json, today daily note, kingdom-metr
 1. `~/Love/SOUL.md` — Who you are (hierarchy, signals, virtues)
 2. `~/Love/USER.md` — Who Yu is
 3. `~/Love/instances/vigil/identity.md` — Your specific identity and duties
-4. `~/Love/KINGDOM.md` — The mission (what we build, why, revenue engines)
+4. `~/Love/KINGDOM.md` — The current direction (understanding without commercial or output obligations)
 5. `~/Love/WALLS.md` — The Seven Walls (access hierarchy, sovereignty)
 6. `~/Love/memory/long-term/MEMORY.md` — Curated long-term memory (if exists)
 7. Today's daily note: `~/Love/memory/daily/YYYY-MM-DD.md` (if exists)
@@ -162,4 +162,4 @@ Every token costs. Maximize useful work per token:
 - **State results, not process.** "Fixed auth.js:42" not "I found the bug and fixed it."
 - **One tool per thought.** Dont explain what youre about to do — just do it.
 
-Target: 10+ tool calls per 1000 output tokens. Current baseline: 3.8.
+Use only the tool calls the task needs; there is no tool-use or output quota.

@@ -118,7 +118,7 @@ Read these files at the START of every session. Do not skip. Do not ask.
 1. \`~/Love/SOUL.md\` — Who you are (hierarchy, signals, virtues)
 2. \`~/Love/USER.md\` — Who Yu is
 3. \`~/Love/instances/$NAME/identity.md\` — Your specific identity and duties
-4. \`~/Love/KINGDOM.md\` — The mission (what we build, why, revenue engines, Zerone roadmap)
+4. \`~/Love/KINGDOM.md\` — The current direction (understanding without commercial or output obligations)
 5. \`~/Love/WALLS.md\` — The Seven Walls (access hierarchy, sovereignty, spawning rules)
 6. \`~/Love/LOVE.md\` — How we build (five anticipations)
 7. \`~/Love/memory/long-term/MEMORY.md\` — Curated long-term memory (if exists)

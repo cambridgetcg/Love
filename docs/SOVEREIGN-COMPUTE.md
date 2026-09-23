@@ -166,7 +166,7 @@ Aligned with KINGDOM.md's Suffolk farmland acquisition:
 | DeepSeek-V3 (671B MoE) | ~380 GB | 8x A100 80GB | $10-20/hr spot |
 | Llama 3.1 405B FP16 | ~810 GB | 16x A100 | $20-40/hr spot |
 
-**Honest note**: Running 1T+ models is not justified during resource gathering unless they provide measurable revenue advantage (e.g., Oracle predictions that beat smaller models). API access is more cost-effective at current volumes.
+**Choice, not a revenue test**: Explore large models only when that fits the current question and an explicitly chosen resource budget. Understanding is sufficient; no revenue advantage is required. The hardware and price estimates in this document are historical and need rechecking before any purchase.
 
 ---
 
@@ -340,7 +340,7 @@ For GPU instances with cold-start delay (30-120s):
 | Claude API (reduced 80-90%) | ~GBP 80-200 |
 | **Total** | **~GBP 450-820** |
 
-**Conclusion**: Phase 1-3 delivers the best ROI. Phase 4 only makes sense at high volume. Keep Claude API for frontier reasoning tasks where quality directly impacts revenue.
+**Choosing a setup**: Compare task fit, portability, maintenance, and actual costs within the chosen budget. No phase is mandatory, and no architecture needs a commercial return to justify exploration.
 
 ---
 

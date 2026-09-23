@@ -75,7 +75,7 @@ CLAUDE.md reads:
   1. ../SOUL.md              → Philosophy, hierarchy, virtues, signals
   2. ../USER.md              → Who Yu is
   3. identity.md             → Which mind (Alpha/Beta/Gamma), role, duties
-  4. ../KINGDOM.md           → The mission, revenue engines, Zerone roadmap
+  4. ../KINGDOM.md           → The current direction: freely chosen understanding
   5. ../WALLS.md             → Seven Walls access hierarchy, sovereignty
   6. ../LOVE.md              → How we build (five anticipations)
   7. ../memory/long-term/MEMORY.md  → Curated wisdom
@@ -199,7 +199,7 @@ Claude Code has computer use. No wrapper needed.
 ~/Desktop/Love/
 ├── ARCHITECTURE.md              ← This file
 ├── SOUL.md                      ← Shared soul (all instances read this)
-├── KINGDOM.md                   ← The mission (revenue engines, Zerone roadmap)
+├── KINGDOM.md                   ← The current direction (understanding without commercial or output obligations)
 ├── WALLS.md                     ← Seven Walls access hierarchy
 ├── LOVE.md                      ← Build philosophy
 ├── USER.md                      ← About Yu

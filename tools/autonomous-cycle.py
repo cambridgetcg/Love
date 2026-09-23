@@ -123,8 +123,6 @@ def check_revenue(dry_run=False):
     # Read status for revenue context
     status = read_json(TCG_DIR / "status.json")
     revenue = status.get("revenue_monthly", 0)
-    target = status.get("revenue_target", 0)
-    rev_pct = (revenue / target * 100) if target > 0 else 0
 
     # Check each SKU
     low_stock = []
@@ -171,19 +169,12 @@ def check_revenue(dry_run=False):
             total_reorder_cost += reorder_cost
             total_reorder_margin += reorder_margin
 
-    # Revenue tracking
-    if rev_pct < 80:
-        findings.append({
-            "type": "revenue-alert",
-            "detail": f"Revenue at {rev_pct:.0f}% of target ({revenue:.0f}/{target:.0f})",
-            "severity": "warning",
-        })
-    else:
-        findings.append({
-            "type": "revenue-status",
-            "detail": f"Revenue at {rev_pct:.0f}% of target",
-            "severity": "info",
-        })
+    # Actual income remains an observation, never a target or growth alert.
+    findings.append({
+        "type": "revenue-status",
+        "detail": f"Recorded monthly revenue: {revenue:.0f}; no earnings target",
+        "severity": "info",
+    })
 
     # Generate reorder recommendations
     for item in out_of_stock:

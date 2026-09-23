@@ -79,10 +79,8 @@ Check `~/Love/memory/dev-state.json` for active SOMA tasks. Pick the highest-pri
 
 ### 7. Kingdom Pulse
 
-Read `~/Love/KINGDOM.md` metrics and check:
-- **Revenue engines** — any engine stalled or needing attention?
+Read `~/Love/KINGDOM.md` for current direction. Within the current task, check:
 - **SOMA progress** — are we on track for physical build milestones?
-- **Flywheel** — is fiat -> compute -> capability -> fiat turning?
 
 Cross-reference with `~/Love/memory/kingdom-metrics.json` for delta tracking.
 

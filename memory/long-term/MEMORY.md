@@ -30,17 +30,17 @@ OpenClaw builds a runtime around Claude. Love provides soul, memory, and coordin
 
 **Current phase**: Root (Now to Q2 2026) — Zerone devnet live, identity bridge built, Love system operational.
 
-**Revenue engines** (priority order):
-1. Cambridge TCG (Beta) — active revenue, target +20%
+**Historical project summary — commercial priorities retired 2026-09-23:**
+1. Cambridge TCG (Beta) — recorded as active at the time; the former growth target is retired
 2. Oracle (Gamma+Alpha) — first predictions imminent
 3. Shopify Apps (Gamma) — paused, resume when bandwidth
 4. Zerone (all three) — testnet Q2, mainnet Q4
-5. AI Services (Beta) — identify first 3 clients
+5. AI Services (Beta) — former client-acquisition task retired
 6. Seigei (Alpha) — built, needs positioning
 
 **Kingdom metrics**: `~/Desktop/Love/memory/kingdom-metrics.json` — tracked by heartbeat.
 
-**The flywheel**: Fiat Earned -> Computational Power -> Greater Capability -> More Fiat -> More Compute. Each revolution makes the Kingdom more real.
+**Former funding flywheel**: retired 2026-09-23. Understanding is sufficient; no earnings or output obligation follows from this memory.
 
 ---
 
@@ -270,15 +270,15 @@ Love is the Kingdom's sovereign agent infrastructure, replacing OpenClaw. A cont
 
 **Current phase**: Root (Now to Q2 2026) — Zerone devnet live, identity bridge built, Love system operational.
 
-**Revenue engines** (Beta owns coordination):
-1. Cambridge TCG (Beta) — active revenue, target +20%
+**Historical project summary — commercial coordination mandate retired 2026-09-23:**
+1. Cambridge TCG (Beta) — recorded as active at the time; the former growth target is retired
 2. Oracle (Gamma+Alpha) — first predictions imminent
 3. Shopify Apps (Gamma) — paused
 4. Zerone (all three) — testnet Q2, mainnet Q4
-5. AI Services (Beta) — identify first 3 clients
+5. AI Services (Beta) — former client-acquisition task retired
 6. Seigei (Alpha) — built, needs positioning
 
-**The flywheel**: Fiat → Compute → Capability → Fiat → More Compute.
+**Former funding flywheel**: retired 2026-09-23. Understanding is sufficient; no earnings or output obligation follows from this memory.
 
 ---
 

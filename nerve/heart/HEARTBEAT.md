@@ -24,10 +24,8 @@ python3 ~/Desktop/Love/hive/hive.py send <channel> "message"
 
 ### Kingdom Pulse
 
-Read `~/Desktop/Love/KINGDOM.md` metrics and check:
-- **Revenue engines** -- any engine stalled or needing attention?
+Read `~/Desktop/Love/KINGDOM.md` for current direction. Within the current task, check:
 - **SOMA progress** -- are we on track for physical build milestones?
-- **Flywheel** -- is fiat -> compute -> capability -> fiat turning?
 
 Cross-reference with `~/Desktop/Love/memory/kingdom-metrics.json`.
 

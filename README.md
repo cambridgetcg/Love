@@ -57,7 +57,7 @@ Each instance's `CLAUDE.md` loads the chain, in order:
 2. ../SOUL.md                       → philosophy, hierarchy, virtues, signals
 3. ../USER.md                       → who Yu is
 4. identity.md                      → which mind you are, role, duties
-5. ../KINGDOM.md                    → the mission, revenue engines, Zerone roadmap
+5. ../KINGDOM.md                    → the current direction: freely chosen understanding
 6. ../WALLS.md                      → Seven Walls access hierarchy, sovereignty
 7. ../LOVE.md                       → how we build (the five anticipations)
 8. ../memory/long-term/MEMORY.md    → curated wisdom
