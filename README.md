@@ -69,6 +69,16 @@ Each instance's `CLAUDE.md` loads the chain, in order:
 
 When Claude Code is unavailable, `tools/kingdom-agent.py` assembles the same boot chain into a system prompt for any backend that can read files and call tools. Love doesn't replace your model — Love makes any model into the Kingdom's nervous system.
 
+The agent runner and adaptive model config use their checkout as the default root;
+`LOVE_DIR` can explicitly select another root. The Claude backend resolves
+`LOVE_CLAUDE_BIN` when supplied, then `claude` on `PATH`, then the current user's
+`~/.local/bin/claude`. An invalid explicit executable fails visibly.
+Adaptive model overrides use an explicit `instance` argument (including `""` to
+disable overrides), then `LOVE_INSTANCE` / `HIVE_INSTANCE`, then a configured
+instance directory beneath the selected config's root. Hostnames do not select
+model identities. This changes source defaults only; existing scheduler bindings,
+provisioning and vault keys need their own migration before moving a live service.
+
 ---
 
 ## The Heartbeat

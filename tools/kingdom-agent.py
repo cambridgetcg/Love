@@ -36,13 +36,15 @@ import subprocess
 import sys
 import hashlib
 import tempfile
+import shlex
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
-LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Love"))
+LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path(__file__).resolve().parents[1])).expanduser().resolve()
 TOOLS_DIR = LOVE_DIR / "tools"
 MEMORY_DIR = LOVE_DIR / "memory"
 
@@ -450,9 +452,16 @@ class ClaudeBackend:
         self.claude_bin = self._find_claude()
 
     def _find_claude(self) -> str:
-        for p in ["/Users/yu/.local/bin/claude", "claude"]:
-            if subprocess.run(["which", p], capture_output=True).returncode == 0 or Path(p).exists():
-                return p
+        override = os.environ.get("LOVE_CLAUDE_BIN")
+        if override:
+            executable = shutil.which(os.path.expanduser(override))
+            if executable:
+                return str(Path(executable).absolute())
+            raise FileNotFoundError("LOVE_CLAUDE_BIN must name an executable file or command")
+        for candidate in ("claude", str(Path.home() / ".local" / "bin" / "claude")):
+            executable = shutil.which(candidate)
+            if executable:
+                return str(Path(executable).absolute())
         return "claude"
 
     def run(self, prompt: str, instance_dir: Path, system_append: str = "",
@@ -687,11 +696,17 @@ To read a file: CALL the read_file tool. Do NOT describe reading it.
 After each tool result, call the next tool. Do NOT narrate your plan.
 
 WRONG: Writing ```bash\\npython3 script.py\\n``` in your response
-RIGHT: Calling the bash tool with command="python3 /Users/yu/Love/script.py"
+RIGHT: Calling the bash tool with command={script_command}
 
-Always use absolute paths starting with /Users/yu/Love/
+The current Love repository root is {love_root}. Use absolute paths under this root for repository files.
 
 """
+
+    def _tool_directive(self) -> str:
+        return self.TOOL_DIRECTIVE.format(
+            script_command=json.dumps(shlex.join(["python3", str(LOVE_DIR / "script.py")])),
+            love_root=json.dumps(str(LOVE_DIR)),
+        )
 
     def _extract_heartbeat_commands(self, heartbeat_file: Path) -> list:
         """Extract executable bash commands from a HEARTBEAT.md file."""
@@ -718,7 +733,7 @@ Always use absolute paths starting with /Users/yu/Love/
         # Ollama models have limited context — use compressed boot chain
         # Use the same num_ctx values as the API payload so tiering matches reality
         max_ctx = self.num_ctx
-        system_prompt = self.TOOL_DIRECTIVE + load_boot_chain(instance_dir, max_tokens=max_ctx)
+        system_prompt = self._tool_directive() + load_boot_chain(instance_dir, max_tokens=max_ctx)
         if system_append:
             system_prompt += f"\n\n---\n\n# [RUNTIME CONTEXT]\n\n{system_append}"
 
@@ -731,7 +746,10 @@ Always use absolute paths starting with /Users/yu/Love/
                 commands = self._extract_heartbeat_commands(heartbeat_file)
                 name = instance_dir.name
                 today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-                love_dir = str(LOVE_DIR)
+                presence_command = shlex.join([
+                    "python3", str(LOVE_DIR / "hive" / "hive.py"), "send", "presence",
+                    f"{name} heartbeat -- <one line summary of findings>",
+                ])
 
                 cmd_list = "\n".join(
                     f"{i+1}. Call bash tool with command: {cmd}"
@@ -742,9 +760,8 @@ Always use absolute paths starting with /Users/yu/Love/
                     f"Execute your heartbeat. Call the bash tool for each command:\n\n"
                     f"{cmd_list}\n\n"
                     f"After running all commands, do these two final steps:\n"
-                    f"7. Call bash tool with command: python3 {love_dir}/hive/hive.py send presence "
-                    f"\"{name} heartbeat -- <one line summary of findings>\"\n"
-                    f"8. Call write_file tool with path: {love_dir}/memory/daily/{today}.md "
+                    f"7. Call bash tool with command: {presence_command}\n"
+                    f"8. Call write_file tool with path: {json.dumps(str(LOVE_DIR / 'memory' / 'daily' / (today + '.md')))} "
                     f"and content: a 3-line summary of what you found\n\n"
                     f"Start now. Call the first bash tool."
                 )

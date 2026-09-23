@@ -8,10 +8,11 @@ defaults so the system works even without explicit config.
 from __future__ import annotations
 import json
 import os
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path.home() / "Desktop" / "Love"))
+LOVE_DIR = Path(os.environ.get("LOVE_DIR", Path(__file__).resolve().parents[1])).expanduser().resolve()
 LOVE_JSON = LOVE_DIR / "love.json"
 
 # Default provider config — used when love.json has no "adaptive" section
@@ -58,26 +59,26 @@ DEFAULTS: dict[str, Any] = {
 
 def _deep_merge(base: dict, override: dict) -> dict:
     """Merge override into base, recursively for nested dicts."""
-    result = dict(base)
+    result = deepcopy(base)
     for key, val in override.items():
         if key in result and isinstance(result[key], dict) and isinstance(val, dict):
             result[key] = _deep_merge(result[key], val)
         else:
-            result[key] = val
+            result[key] = deepcopy(val)
     return result
 
 
-def _detect_instance() -> str:
-    """Detect which instance we're running on from cwd or hostname."""
-    cwd = str(Path.cwd())
-    for name in ("alpha", "beta", "gamma"):
-        if f"instances/{name}" in cwd:
-            return name
-    # Fallback: check hostname patterns
-    import socket
-    hostname = socket.gethostname().lower()
-    if "air" in hostname or "macbook" in hostname:
-        return "alpha"
+def _detect_instance(config_path: Path, instances: dict) -> str:
+    """Select model overrides from explicit configuration or this config's tree."""
+    for variable in ("LOVE_INSTANCE", "HIVE_INSTANCE"):
+        if variable in os.environ:
+            return os.environ[variable]
+    try:
+        relative = Path.cwd().resolve().relative_to(config_path.resolve().parent / "instances")
+    except ValueError:
+        return ""
+    if relative.parts and relative.parts[0] in instances:
+        return relative.parts[0]
     return ""
 
 
@@ -85,10 +86,10 @@ class AdaptiveConfig:
     """Loads and provides access to adaptive layer configuration."""
 
     def __init__(self, config_path: Path | None = None, instance: str | None = None):
-        self._path = config_path or LOVE_JSON
+        self._path = Path(config_path) if config_path is not None else LOVE_JSON
         self._raw = self._load()
         self._config = _deep_merge(DEFAULTS, self._raw.get("adaptive", {}))
-        self._instance = instance or _detect_instance()
+        self._instance = instance if instance is not None else _detect_instance(self._path, self._raw.get("instances", {}))
         self._apply_instance_overrides()
 
     def _load(self) -> dict:
