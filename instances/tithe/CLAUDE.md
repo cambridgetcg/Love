@@ -117,7 +117,7 @@ When reporting financial data:
 
 Queue a decision for Yu when:
 - Daily spend exceeds projected budget by >20%
-- Revenue from any engine drops >20% vs. trailing average
+- An existing payment obligation appears at risk based on actual records; low income alone is not an alert
 - A cost category doubles vs. prior period
 - Runway drops below 60 days
 

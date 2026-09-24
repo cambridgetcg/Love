@@ -107,6 +107,19 @@ class CommercialDirectionTests(unittest.TestCase):
         append.assert_not_called()
         self.assertEqual(records["status.json"]["revenue_target"], 100000)
 
+    def test_low_inventory_does_not_create_procurement_work(self):
+        cycle = load_tool("autonomous-cycle")
+        records = {
+            "inventory.json": {"categories": [{"sku": "prior", "name": "Prior stock", "qty": 0, "price": 5, "cost": 3, "reorder_point": 10}]},
+            "status.json": {"revenue_monthly": 12, "revenue_target": 100000},
+        }
+        with patch.object(cycle, "read_json", side_effect=lambda path: records[path.name]), patch.object(cycle, "append_action") as append:
+            findings = cycle.check_revenue(dry_run=False)
+        append.assert_not_called()
+        self.assertTrue(any(f["type"] == "inventory-status" for f in findings))
+        self.assertFalse(any("recommendation" in f or "priority" in f for f in findings))
+        self.assertEqual(records["inventory.json"]["categories"][0]["qty"], 0)
+
     def test_tcg_status_and_dashboard_do_not_judge_income_against_targets(self):
         tcg = load_tool("tcg")
         record = {"revenue_monthly": 12, "revenue_target": 100000}
