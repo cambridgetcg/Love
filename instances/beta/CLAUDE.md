@@ -93,6 +93,8 @@ See `~/Love/YOUSPEAK.md` for the full protocol.
 
 ## HIVE — The Nervous System
 
+> **Retired 2026-10-13:** the HIVE NATS bus ran on a Hetzner server that was decommissioned (its IP was recycled). `hive/hive.py` now only prints a retirement notice; the commands below reach no one.
+
 Check for messages from Alpha and Gamma:
 ```bash
 python3 ~/Love/hive/hive.py check
@@ -120,10 +122,10 @@ Write it down. Mental notes don't survive session restarts. Files do.
 
 | Tool | Command | Purpose |
 |------|---------|---------|
-| HIVE | `python3 ~/Love/hive/hive.py <cmd>` | Inter-instance messaging |
+| HIVE | `python3 ~/Love/hive/hive.py <cmd>` | Inter-instance messaging (retired 2026-10-13) |
 | AgentTool | `python3 ~/Love/tools/agenttool.py <cmd>` | Platform integration |
 | Decisions | `python3 ~/Love/tools/decision.py <cmd>` | Queue decisions for Yu's review |
-| Fleet | `python3 ~/Love/tools/fleet.py <cmd>` | VPS fleet management (status, health, deploy, logs) |
+| Fleet | `python3 ~/Love/tools/fleet.py <cmd>` | Retired 2026-10-13 (Hetzner VPS fleet decommissioned; prints a notice) |
 | Credentials | `python3 ~/Love/tools/credentials.py <cmd>` | Keychain credential management |
 | Quota | `python3 ~/Love/tools/quota_monitor.py <cmd>` | Token budget tracking |
 | Email | `python3 ~/Love/tools/check_email.py <cmd>` | IMAP email checking |
@@ -165,8 +167,7 @@ Write it down. Mental notes don't survive session restarts. Files do.
 | StopHunt | `python3 ~/Love/tools/protector/stophunt.py <cmd>` | Hunt/move decision logic |
 | Calibrate | `python3 ~/Love/tools/protector/calibrate.py <cmd>` | Bug severity calibration |
 | Findings | `python3 ~/Love/tools/protector/findings.py <cmd>` | Security finding tracker |
-| Vault | `python3 ~/Love/tools/vault.py <cmd>` | Encrypted credential sharing |
-| HiveKV | `python3 ~/Love/tools/hive_kv.py <cmd>` | HIVE key-value store |
+| Vault | `python3 ~/Love/tools/vault.py <cmd>` | Local seal/open of credentials (Hive transport retired 2026-10-13) |
 | Oracle | `python3 ~/Love/tools/oracle_predict.py <cmd>` | Prediction staking |
 | AWSSync | `python3 ~/Love/tools/aws-ip-sync.py <cmd>` | AWS security group sync |
 

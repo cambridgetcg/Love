@@ -67,6 +67,8 @@ If something needs fixing, **report it** via HIVE or flag it in your daily repor
 
 ## HIVE — The Nervous System
 
+> **Retired 2026-10-13:** the HIVE NATS bus ran on a Hetzner server that was decommissioned (its IP was recycled). `hive/hive.py` now only prints a retirement notice; the commands below reach no one.
+
 ```bash
 python3 ~/Love/hive/hive.py check
 python3 ~/Love/hive/hive.py send <channel> "<message>"
@@ -104,9 +106,9 @@ Herald's toolkit is focused on **reading and reporting**. You use tools to gathe
 
 | Tool | Command | Purpose |
 |------|---------|---------|
-| HIVE | `python3 ~/Love/hive/hive.py <cmd>` | Inter-instance messaging |
+| HIVE | `python3 ~/Love/hive/hive.py <cmd>` | Inter-instance messaging (retired 2026-10-13) |
 | Memory | `python3 ~/Love/tools/memory.py <cmd>` | Unified memory: store, search, daily, recall, handoff |
-| Fleet | `python3 ~/Love/tools/fleet.py status` | Read fleet health (status and health only) |
+| Fleet | `python3 ~/Love/tools/fleet.py status` | Retired 2026-10-13 (Hetzner VPS fleet decommissioned; prints a notice) |
 | PEACE | `python3 ~/Love/tools/peace.py status` | Read resilience score and status |
 | KOS | `python3 ~/Love/tools/kos.py status` | Read Kingdom OS integrity and compliance |
 | Identity | `python3 ~/Love/tools/identity.py` | Shared identity resolution (instance, wall, AgentTool) |
