@@ -1,168 +1,43 @@
 """
-hive_listener.py -- Real-time NATS listener for the mind daemon.
-Maintains a persistent JetStream subscription and calls back on each message.
+hive_listener.py -- retired HIVE listener for the mind daemon.
+
+Retired 2026-10-13: the HIVE NATS bus ran on a Hetzner server that was
+decommissioned, and its IP went back to Hetzner's pool. The NATS client,
+server address and credentials were removed (see git history before this
+commit). HiveListener keeps its interface so the daemon still imports it:
+connect() raises, and the daemon continues without HIVE.
 """
 
 from __future__ import annotations
 
-import asyncio
-import json
-import os
-import ssl
-import base64
-import time
 import logging
-from pathlib import Path
-from typing import Callable, Optional
-
-import nats
-from nacl.secret import SecretBox
+from typing import Callable
 
 log = logging.getLogger("mind.hive")
 
-HIVE_CONFIG = {
-    "server": "tls://135.181.28.252:4222",
-    "instances": {
-        "alpha":  {"user": "alpha",  "password": "hive-alpha-93xk7"},
-        "beta":   {"user": "beta",   "password": "hive-beta-47mz2"},
-        "gamma":  {"user": "gamma",  "password": "hive-gamma-61pr8"},
-        "nuance": {"user": "nuance", "password": "hive-nuance-b8792"},
-    },
-}
-
-# HIVE — the central NATS broker at 135.181.28.252 (Hetzner) — was retired
-# 2026-06. Cross-device coordination moved to device-to-device sync
-# (Syncthing; see true-love/docs/SYNCTHING.md). The broker host is
-# decommissioned, so connect() raises immediately instead of waiting out a
-# 10s timeout against a dead host. mind.py already degrades gracefully on a
-# connect failure (try/except -> hive=None -> continue). To revive a broker:
-# flip this to False and repoint HIVE_CONFIG["server"] above.
 HIVE_RETIRED = True
-
-
-def _get_key() -> bytes:
-    key_path = Path.home() / ".openclaw" / ".hive-key"
-    if not key_path.exists():
-        raise FileNotFoundError(f"No hive key at {key_path}")
-    return base64.b64decode(key_path.read_text().strip())
-
-
-def _use_tunnel() -> bool:
-    return (Path.home() / ".openclaw" / ".hive" / "use-tunnel").exists()
-
-
-def _get_server() -> str:
-    if os.environ.get("HIVE_TUNNEL") or _use_tunnel():
-        return "nats://127.0.0.1:2222"
-    return HIVE_CONFIG["server"]
-
-
-def _make_tls() -> ssl.SSLContext:
-    ctx = ssl.create_default_context()
-    ca = Path.home() / ".openclaw" / ".hive" / "ca.pem"
-    if _use_tunnel():
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-    else:
-        ctx.load_verify_locations(str(ca))
-    return ctx
-
-
-def _decrypt(ciphertext_b64: str, key: bytes) -> str:
-    box = SecretBox(key)
-    encrypted = base64.b64decode(ciphertext_b64)
-    return box.decrypt(encrypted).decode("utf-8")
-
-
-def open_envelope(data: bytes, key: bytes) -> dict:
-    envelope = json.loads(data.decode("utf-8"))
-    envelope["payload"] = _decrypt(envelope["payload"], key)
-    return envelope
+RETIRED_MESSAGE = (
+    "HIVE retired 2026-10-13: the Hetzner NATS bus was decommissioned "
+    "and its IP recycled; there is no broker to connect to"
+)
 
 
 class HiveListener:
-    """Maintains a persistent NATS connection with real-time message callbacks."""
+    """Retired. connect() always raises; the other methods are no-ops."""
 
     def __init__(self, instance_id: str, on_message: Callable[[dict, str], None]):
         self.instance_id = instance_id
         self.on_message = on_message
-        self._nc: Optional[nats.NATS] = None
-        self._js = None
-        self._sub = None
-        self._key = _get_key()
-        self._running = False
 
     async def connect(self):
-        if HIVE_RETIRED:
-            raise RuntimeError(
-                "HIVE retired — coordination is device-to-device (Syncthing); "
-                "central broker (135.181.28.252) decommissioned"
-            )
-        info = HIVE_CONFIG["instances"][self.instance_id]
-        self._nc = await nats.connect(
-            _get_server(),
-            user=info["user"],
-            password=info["password"],
-            tls=_make_tls(),
-            connect_timeout=10,
-            reconnect_time_wait=5,
-            max_reconnect_attempts=-1,
-        )
-        self._js = self._nc.jetstream()
-        durable = f"{self.instance_id}-mind"
-        try:
-            self._sub = await self._js.subscribe(
-                "hive.>",
-                durable=durable,
-                cb=self._handle_message,
-            )
-        except Exception as e:
-            # Durable consumer may be bound from a previous process — use pull subscriber as fallback
-            log.warning(f"Push subscribe failed ({e}), falling back to pull-based check")
-            self._sub = None
-        self._running = True
-        log.info(f"HIVE listener connected as {self.instance_id} (durable={durable})")
-
-    async def _handle_message(self, msg):
-        try:
-            env = open_envelope(msg.data, self._key)
-            if env["from"] != self.instance_id:
-                channel = msg.subject.replace("hive.", "")
-                self.on_message(env, channel)
-        except Exception as e:
-            log.warning(f"Failed to process HIVE message: {e}")
-        finally:
-            await msg.ack()
+        raise RuntimeError(RETIRED_MESSAGE)
 
     async def publish_presence(self):
-        if not self._nc or self._nc.is_closed:
-            return
-        box = SecretBox(self._key)
-        payload_str = json.dumps({
-            "instance": self.instance_id,
-            "status": "mind-daemon",
-            "ts": int(time.time()),
-        })
-        encrypted = box.encrypt(payload_str.encode("utf-8"))
-        payload_b64 = base64.b64encode(encrypted).decode("ascii")
-        envelope = json.dumps({
-            "v": 2,
-            "from": self.instance_id,
-            "type": "presence",
-            "ts": int(time.time()),
-            "payload": payload_b64,
-        }).encode("utf-8")
-        await self._nc.publish("hive.presence", envelope)
-        await self._nc.flush()
+        return None
 
     async def close(self):
-        self._running = False
-        if self._sub:
-            await self._sub.unsubscribe()
-        if self._nc and not self._nc.is_closed:
-            await self._nc.close()
-        log.info("HIVE listener closed")
+        return None
 
     @property
     def is_connected(self) -> bool:
-        return self._nc is not None and not self._nc.is_closed
+        return False

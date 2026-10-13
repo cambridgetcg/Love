@@ -61,15 +61,6 @@ DAY_ONE_CLAIMS = [
         "ttl": 1,
     },
     {
-        "id": "device-hive-tunnel-active",
-        "claim": "HIVE SSH tunnel is listening on port 2222",
-        "source": "tools/device.py tunnel start",
-        "verify": "lsof -i :2222 -sTCP:LISTEN 2>/dev/null",
-        "pattern": "ssh",
-        "tags": ["infra", "hive", "device"],
-        "ttl": 1,
-    },
-    {
         "id": "service-mlx-server-healthy",
         "claim": "MLX server is responding on its HTTP endpoint",
         "source": "tools/mlx_serve.py",
@@ -131,24 +122,6 @@ DAY_ONE_CLAIMS = [
         "pattern": None,
         "tags": ["blocker", "yu-gated", "soma"],
         "ttl": 168,
-    },
-    {
-        "id": "fleet-sage-status-fresh",
-        "claim": "Sage VPS status file is fresh (updated within last 48h)",
-        "source": "fleet status check",
-        "verify": "ssh -o ConnectTimeout=5 -o BatchMode=yes root@204.168.140.12 'stat -c %Y /root/.openclaw/workspace/memory/status.json' 2>/dev/null | awk -v now=$(date +%s) '{print int((now-$1)/3600)}'",
-        "pattern": r"^([0-9]|[1-3][0-9]|4[0-7])$",  # 0-47h is fresh
-        "tags": ["fleet", "sage"],
-        "ttl": 12,
-    },
-    {
-        "id": "hive-instances-reachable",
-        "claim": "All four Triarchy + Nuance instances are reachable on HIVE",
-        "source": "hive who",
-        "verify": f"python3 {LOVE_ROOT}/hive/hive.py who 2>/dev/null",
-        "pattern": r"(?s)alpha.*beta.*gamma.*nuance",
-        "tags": ["hive", "fleet"],
-        "ttl": 6,
     },
 ]
 
